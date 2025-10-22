@@ -24,21 +24,25 @@ export async function checkCriterion(taskId: string, criterionIndex: string) {
     }
 
     if (index < 0 || index >= task.acceptance_criteria.length) {
-      spinner.fail(`Criterion index ${index} out of range (0-${task.acceptance_criteria.length - 1})`);
+      spinner.fail(
+        `Criterion index ${index} out of range (0-${task.acceptance_criteria.length - 1})`
+      );
       process.exit(1);
     }
 
     // Update criterion
     task.acceptance_criteria[index].checked = true;
 
-    await backlog.updateTask(id, {
-      acceptance_criteria: task.acceptance_criteria,
-    }, 'user');
+    await backlog.updateTask(
+      id,
+      {
+        acceptance_criteria: task.acceptance_criteria,
+      },
+      'user'
+    );
 
     spinner.succeed(chalk.green('Criterion checked!'));
-    console.log(
-      chalk.green(`\n${icons.done} "${task.acceptance_criteria[index].text}"\n`)
-    );
+    console.log(chalk.green(`\n${icons.done} "${task.acceptance_criteria[index].text}"\n`));
   } catch (error) {
     spinner.fail(chalk.red('Failed to check criterion'));
     logger.error((error as Error).message);
@@ -66,21 +70,25 @@ export async function uncheckCriterion(taskId: string, criterionIndex: string) {
     }
 
     if (index < 0 || index >= task.acceptance_criteria.length) {
-      spinner.fail(`Criterion index ${index} out of range (0-${task.acceptance_criteria.length - 1})`);
+      spinner.fail(
+        `Criterion index ${index} out of range (0-${task.acceptance_criteria.length - 1})`
+      );
       process.exit(1);
     }
 
     // Update criterion
     task.acceptance_criteria[index].checked = false;
 
-    await backlog.updateTask(id, {
-      acceptance_criteria: task.acceptance_criteria,
-    }, 'user');
+    await backlog.updateTask(
+      id,
+      {
+        acceptance_criteria: task.acceptance_criteria,
+      },
+      'user'
+    );
 
     spinner.succeed(chalk.green('Criterion unchecked!'));
-    console.log(
-      chalk.gray(`\n${icons.pending} "${task.acceptance_criteria[index].text}"\n`)
-    );
+    console.log(chalk.gray(`\n${icons.pending} "${task.acceptance_criteria[index].text}"\n`));
   } catch (error) {
     spinner.fail(chalk.red('Failed to uncheck criterion'));
     logger.error((error as Error).message);
@@ -112,16 +120,18 @@ export async function addCriterion(taskId: string, text: string) {
       checked: false,
     });
 
-    await backlog.updateTask(id, {
-      acceptance_criteria: task.acceptance_criteria,
-    }, 'user');
+    await backlog.updateTask(
+      id,
+      {
+        acceptance_criteria: task.acceptance_criteria,
+      },
+      'user'
+    );
 
     const index = task.acceptance_criteria.length - 1;
 
     spinner.succeed(chalk.green('Criterion added!'));
-    console.log(
-      chalk.white(`\n${icons.pending} [${index}] "${text}"\n`)
-    );
+    console.log(chalk.white(`\n${icons.pending} [${index}] "${text}"\n`));
   } catch (error) {
     spinner.fail(chalk.red('Failed to add criterion'));
     logger.error((error as Error).message);

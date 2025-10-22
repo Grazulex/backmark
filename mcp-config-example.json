@@ -13,9 +13,7 @@
       "name": "Backmark Task Manager",
       "description": "Specialized agent for managing tasks using Backmark CLI",
       "promptFile": ".claude/agents/backmark-agent.md",
-      "tools": [
-        "bash"
-      ],
+      "tools": ["bash"],
       "autoActivate": {
         "when": "backlog directory exists",
         "pattern": "backlog/config.yml"

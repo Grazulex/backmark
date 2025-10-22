@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
-import chalk from 'chalk';
 import boxen from 'boxen';
-import { initCommand } from './commands/init.js';
-import { taskCommands } from './commands/task/index.js';
+import chalk from 'chalk';
+import { Command } from 'commander';
 import { boardCommands } from './commands/board/index.js';
+import { initCommand } from './commands/init.js';
 import { searchCommand } from './commands/search.js';
+import { taskCommands } from './commands/task/index.js';
 
 const program = new Command();
 
@@ -23,11 +23,7 @@ program
   .name('backmark')
   .description(
     boxen(
-      banner +
-        '\n' +
-        chalk.white('Markdown-native task management') +
-        '\n' +
-        chalk.gray('with colorful CLI and Kanban board'),
+      `${banner}\n${chalk.white('Markdown-native task management')}\n${chalk.gray('with colorful CLI and Kanban board')}`,
       {
         padding: 1,
         margin: 1,
@@ -43,6 +39,7 @@ program
   .command('init')
   .description('Initialize a new backlog in the current directory')
   .argument('[name]', 'Project name')
+  .option('--install-agent', 'Install Backmark agent for Claude Code')
   .action(initCommand);
 
 // Task commands

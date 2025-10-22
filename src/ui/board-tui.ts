@@ -1,8 +1,8 @@
 import blessed from 'blessed';
 import type { Widgets } from 'blessed';
 import chalk from 'chalk';
-import { Backlog } from '../core/backlog';
-import type { Task } from '../types';
+import type { Backlog } from '../core/backlog';
+import type { ProjectConfig, Task } from '../types';
 
 export class BoardTUI {
   private screen: Widgets.Screen;
@@ -27,7 +27,9 @@ export class BoardTUI {
 
   async render() {
     // Clear screen
-    this.screen.children.forEach((child) => child.destroy());
+    for (const child of this.screen.children) {
+      child.destroy();
+    }
     this.boxes.clear();
 
     // Header
@@ -56,7 +58,7 @@ export class BoardTUI {
       const tasks = await this.backlog.getTasksByStatus(columnName);
 
       // Last column takes remaining width
-      const width = i === numCols - 1 ? (screenWidth as number) - (i * colWidth) : colWidth;
+      const width = i === numCols - 1 ? (screenWidth as number) - i * colWidth : colWidth;
 
       const box = blessed.box({
         top: 3,
@@ -115,7 +117,7 @@ export class BoardTUI {
 
   private formatHeader(): string {
     const title = '{bold}{cyan-fg}🎯 Backmark Kanban Board{/cyan-fg}{/bold}';
-    const project = this.backlog.getConfig<any>('project');
+    const project = this.backlog.getConfig<ProjectConfig>('project');
     const projectName = project?.name || 'Unknown';
     return `${title}  {gray-fg}│{/gray-fg}  {white-fg}${projectName}{/white-fg}`;
   }
@@ -211,7 +213,9 @@ export class BoardTUI {
     const isAI = first.toLowerCase().includes('ai') || first.toLowerCase().includes('claude');
 
     if (assignees.length === 1) {
-      return isAI ? `{magenta-fg}🤖${first}{/magenta-fg}` : `{gray-fg}👤{/gray-fg}{white-fg}${first}{/white-fg}`;
+      return isAI
+        ? `{magenta-fg}🤖${first}{/magenta-fg}`
+        : `{gray-fg}👤{/gray-fg}{white-fg}${first}{/white-fg}`;
     }
 
     const icon = isAI ? '🤖' : '👤';
@@ -232,7 +236,7 @@ export class BoardTUI {
 
   private truncate(text: string, maxLength: number): string {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength - 3) + '...';
+    return `${text.substring(0, maxLength - 3)}...`;
   }
 
   private setupKeybindings() {
@@ -293,15 +297,19 @@ export class BoardTUI {
     this.screen.append(helpBox);
     helpBox.focus();
 
-    this.screen.onceKey(['escape', 'enter', 'space'] as any, () => {
+    const closeHelp = () => {
       helpBox.destroy();
       this.screen.render();
-    });
+    };
+
+    this.screen.onceKey('escape', closeHelp);
+    this.screen.onceKey('enter', closeHelp);
+    this.screen.onceKey('space', closeHelp);
 
     this.screen.render();
   }
 
-  startAutoRefresh(intervalSeconds: number = 3) {
+  startAutoRefresh(intervalSeconds = 3) {
     this.refreshInterval = setInterval(async () => {
       await this.render();
     }, intervalSeconds * 1000);

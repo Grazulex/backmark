@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { Backlog } from '../../core/backlog';
-import { colorizeStatus, colorizePriority, formatTaskId, icons } from '../../utils/colors';
+import type { Task, TaskPriority, TaskStatus } from '../../types';
+import { colorizePriority, colorizeStatus, formatTaskId, icons } from '../../utils/colors';
 import { logger } from '../../utils/logger';
-import type { TaskPriority, TaskStatus } from '../../types';
 
 interface EditTaskOptions {
   status?: TaskStatus;
@@ -38,7 +38,7 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
       process.exit(1);
     }
 
-    const updates: any = {};
+    const updates: Partial<Task> = {};
 
     // Simple field updates
     if (options.status) updates.status = options.status;
@@ -50,33 +50,35 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
 
     // Keywords management
     if (options.addKeyword) {
-      const keywords = [...task.keywords, ...options.addKeyword.split(',').map(k => k.trim())];
+      const keywords = [...task.keywords, ...options.addKeyword.split(',').map((k) => k.trim())];
       updates.keywords = [...new Set(keywords)]; // Remove duplicates
     }
     if (options.removeKeyword) {
-      const toRemove = options.removeKeyword.split(',').map(k => k.trim());
-      updates.keywords = task.keywords.filter(k => !toRemove.includes(k));
+      const toRemove = options.removeKeyword.split(',').map((k) => k.trim());
+      updates.keywords = task.keywords.filter((k) => !toRemove.includes(k));
     }
 
     // Labels management
     if (options.addLabel) {
-      const labels = [...task.labels, ...options.addLabel.split(',').map(l => l.trim())];
+      const labels = [...task.labels, ...options.addLabel.split(',').map((l) => l.trim())];
       updates.labels = [...new Set(labels)]; // Remove duplicates
     }
     if (options.removeLabel) {
-      const toRemove = options.removeLabel.split(',').map(l => l.trim());
-      updates.labels = task.labels.filter(l => !toRemove.includes(l));
+      const toRemove = options.removeLabel.split(',').map((l) => l.trim());
+      updates.labels = task.labels.filter((l) => !toRemove.includes(l));
     }
 
     // Dependencies management
     if (options.addDependency) {
-      const deps = options.addDependency.split(',').map(d => Number.parseInt(d.trim(), 10));
+      const deps = options.addDependency.split(',').map((d) => Number.parseInt(d.trim(), 10));
       const newDeps = [...task.dependencies, ...deps];
       updates.dependencies = [...new Set(newDeps)]; // Remove duplicates
     }
     if (options.removeDependency) {
-      const toRemove = options.removeDependency.split(',').map(d => Number.parseInt(d.trim(), 10));
-      updates.dependencies = task.dependencies.filter(d => !toRemove.includes(d));
+      const toRemove = options.removeDependency
+        .split(',')
+        .map((d) => Number.parseInt(d.trim(), 10));
+      updates.dependencies = task.dependencies.filter((d) => !toRemove.includes(d));
     }
 
     if (Object.keys(updates).length === 0) {
@@ -89,7 +91,7 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
     spinner.succeed(chalk.green('Task updated successfully!'));
 
     // Display changes
-    console.log('\n' + chalk.bold.cyan('Updated:'));
+    console.log(`\n${chalk.bold.cyan('Updated:')}`);
     if (options.status) {
       console.log(`  ${icons.status} Status: ${colorizeStatus(updatedTask.status)}`);
     }
@@ -100,13 +102,17 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
       console.log(`  ${icons.milestone} Milestone: ${chalk.yellow(updatedTask.milestone)}`);
     }
     if (options.addKeyword || options.removeKeyword) {
-      console.log(`  ${icons.keyword} Keywords: ${updatedTask.keywords.map(k => chalk.blue(`#${k}`)).join(' ')}`);
+      console.log(
+        `  ${icons.keyword} Keywords: ${updatedTask.keywords.map((k) => chalk.blue(`#${k}`)).join(' ')}`
+      );
     }
     if (options.addLabel || options.removeLabel) {
-      console.log(`     Labels: ${updatedTask.labels.map(l => chalk.cyan(`[${l}]`)).join(' ')}`);
+      console.log(`     Labels: ${updatedTask.labels.map((l) => chalk.cyan(`[${l}]`)).join(' ')}`);
     }
     if (options.addDependency || options.removeDependency) {
-      console.log(`  ${icons.dependency} Dependencies: ${updatedTask.dependencies.map(d => formatTaskId(d, true)).join(', ')}`);
+      console.log(
+        `  ${icons.dependency} Dependencies: ${updatedTask.dependencies.map((d) => formatTaskId(d, true)).join(', ')}`
+      );
     }
 
     console.log();
@@ -129,17 +135,19 @@ export async function assignTask(taskId: string, assignees: string) {
       process.exit(1);
     }
 
-    const assigneeList = assignees.split(',').map(a => a.trim());
-    const updatedTask = await backlog.updateTask(id, { assignees: assigneeList }, 'user');
+    const assigneeList = assignees.split(',').map((a) => a.trim());
+    const _updatedTask = await backlog.updateTask(id, { assignees: assigneeList }, 'user');
 
     spinner.succeed(chalk.green('Task assigned successfully!'));
     console.log(
       `\n${icons.user} Assignees: `,
-      assigneeList.map(a =>
-        a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude')
-          ? chalk.magenta(a)
-          : chalk.white(a)
-      ).join(', '),
+      assigneeList
+        .map((a) =>
+          a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude')
+            ? chalk.magenta(a)
+            : chalk.white(a)
+        )
+        .join(', '),
       '\n'
     );
   } catch (error) {

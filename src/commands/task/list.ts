@@ -1,17 +1,17 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import { Backlog } from '../../core/backlog';
+import type { TaskFilters, TaskPriority } from '../../types';
 import {
-  colorizeStatus,
   colorizePriority,
-  formatTaskId,
-  formatKeywords,
+  colorizeStatus,
   formatAssignees,
-  truncate,
+  formatKeywords,
+  formatTaskId,
   icons,
+  truncate,
 } from '../../utils/colors';
 import { logger } from '../../utils/logger';
-import type { TaskFilters } from '../../types';
 
 interface ListTasksOptions {
   status?: string;
@@ -30,7 +30,7 @@ export async function listTasks(options: ListTasksOptions) {
     // Build filters
     const filters: TaskFilters = {
       status: options.status,
-      priority: options.priority as any,
+      priority: options.priority as TaskPriority | undefined,
       assignee: options.assignee,
       label: options.label,
       keyword: options.keyword,
@@ -54,8 +54,7 @@ export async function listTasks(options: ListTasksOptions) {
     if (options.assignee) activeFilters.push(`assignee=${chalk.cyan(options.assignee)}`);
     if (options.keyword) activeFilters.push(`keyword=${chalk.cyan(options.keyword)}`);
     if (options.milestone) activeFilters.push(`milestone=${chalk.cyan(options.milestone)}`);
-    if (options.parent !== undefined)
-      activeFilters.push(`parent=${chalk.cyan(options.parent)}`);
+    if (options.parent !== undefined) activeFilters.push(`parent=${chalk.cyan(options.parent)}`);
 
     console.log();
     if (activeFilters.length > 0) {
@@ -133,10 +132,7 @@ export async function listTasks(options: ListTasksOptions) {
 
     console.log(chalk.bold('Summary: '), statusSummary);
     console.log(chalk.bold.cyan('─'.repeat(70)));
-    console.log(
-      chalk.bold(`${icons.task} Total: ${chalk.cyan(tasks.length)} task(s)`),
-      '\n'
-    );
+    console.log(chalk.bold(`${icons.task} Total: ${chalk.cyan(tasks.length)} task(s)`), '\n');
 
     // AI tasks info
     const aiTasks = tasks.filter((t) =>
@@ -149,12 +145,9 @@ export async function listTasks(options: ListTasksOptions) {
     );
 
     if (aiTasks.length > 0) {
+      console.log(chalk.magenta(`${icons.ai} AI-assigned tasks: ${chalk.bold(aiTasks.length)}`));
       console.log(
-        chalk.magenta(`${icons.ai} AI-assigned tasks: ${chalk.bold(aiTasks.length)}`)
-      );
-      console.log(
-        chalk.gray('  View AI details: ') +
-          chalk.cyan('backmark task view <id> --ai-all\n')
+        chalk.gray('  View AI details: ') + chalk.cyan('backmark task view <id> --ai-all\n')
       );
     }
   } catch (error) {

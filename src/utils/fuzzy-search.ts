@@ -6,11 +6,7 @@ export interface SearchOptions {
   maxResults?: number;
 }
 
-export function searchTasks(
-  tasks: Task[],
-  query: string,
-  options: SearchOptions = {}
-): Task[] {
+export function searchTasks(tasks: Task[], query: string, options: SearchOptions = {}): Task[] {
   const { threshold = 0.3, maxResults = 50 } = options;
 
   const fuse = new Fuse(tasks, {

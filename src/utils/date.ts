@@ -1,6 +1,9 @@
 import { format as dateFnsFormat, parseISO } from 'date-fns';
 
-export function formatDateWithPattern(date: string | undefined, pattern: string = 'yyyy-MM-dd HH:mm'): string {
+export function formatDateWithPattern(
+  date: string | undefined,
+  pattern = 'yyyy-MM-dd HH:mm'
+): string {
   if (!date) return '—';
   try {
     return dateFnsFormat(parseISO(date), pattern);

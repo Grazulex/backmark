@@ -2,17 +2,17 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import { Backlog } from '../../core/backlog';
+import type { TaskPriority } from '../../types';
 import {
-  colorizeStatus,
   colorizePriority,
-  formatTaskId,
+  colorizeStatus,
+  formatDate,
   formatKeywords,
   formatLabels,
-  formatDate,
+  formatTaskId,
   icons,
 } from '../../utils/colors';
 import { logger } from '../../utils/logger';
-import type { TaskPriority } from '../../types';
 
 interface CreateTaskOptions {
   description?: string;
@@ -52,13 +52,9 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     }
 
     // Parse arrays from comma-separated strings
-    const assignees = options.assignees
-      ? options.assignees.split(',').map((a) => a.trim())
-      : [];
+    const assignees = options.assignees ? options.assignees.split(',').map((a) => a.trim()) : [];
     const labels = options.labels ? options.labels.split(',').map((l) => l.trim()) : [];
-    const keywords = options.keywords
-      ? options.keywords.split(',').map((k) => k.trim())
-      : [];
+    const keywords = options.keywords ? options.keywords.split(',').map((k) => k.trim()) : [];
     const dependencies = options.dependsOn
       ? options.dependsOn.split(',').map((d) => Number.parseInt(d.trim(), 10))
       : [];
@@ -91,7 +87,7 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     spinner.succeed(chalk.green('Task created successfully!'));
 
     // Display task info with colors and icons
-    console.log('\n' + chalk.bold.cyan('─'.repeat(70)));
+    console.log(`\n${chalk.bold.cyan('─'.repeat(70))}`);
     console.log(
       chalk.bold.white('Task Created:'),
       formatTaskId(task.id, true),
@@ -99,10 +95,7 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     );
     console.log(chalk.bold.cyan('─'.repeat(70)));
 
-    console.log(
-      `${icons.status} ${chalk.bold('Status:      ')}`,
-      colorizeStatus(task.status)
-    );
+    console.log(`${icons.status} ${chalk.bold('Status:      ')}`, colorizeStatus(task.status));
     console.log(
       `${icons.priority} ${chalk.bold('Priority:    ')}`,
       colorizePriority(task.priority)
@@ -137,11 +130,8 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     }
 
     // Dates
-    console.log('\n' + chalk.bold.gray('Dates:'));
-    console.log(
-      `   ${chalk.bold('Created:     ')}`,
-      formatDate(task.created_date, 'long')
-    );
+    console.log(`\n${chalk.bold.gray('Dates:')}`);
+    console.log(`   ${chalk.bold('Created:     ')}`, formatDate(task.created_date, 'long'));
     if (task.start_date) {
       console.log(`${icons.date} ${chalk.bold('Start:       ')}`, formatDate(task.start_date));
     }
@@ -149,10 +139,7 @@ export async function createTask(title: string, options: CreateTaskOptions) {
       console.log(`${icons.date} ${chalk.bold('End:         ')}`, formatDate(task.end_date));
     }
     if (task.release_date) {
-      console.log(
-        `${icons.date} ${chalk.bold('Release:     ')}`,
-        formatDate(task.release_date)
-      );
+      console.log(`${icons.date} ${chalk.bold('Release:     ')}`, formatDate(task.release_date));
     }
 
     // Hierarchy
@@ -172,12 +159,18 @@ export async function createTask(title: string, options: CreateTaskOptions) {
 
     console.log(chalk.bold.cyan('─'.repeat(70)));
     console.log(chalk.dim('File:'), chalk.cyan(task.filePath));
-    console.log(chalk.bold.cyan('─'.repeat(70)) + '\n');
+    console.log(`${chalk.bold.cyan('─'.repeat(70))}\n`);
 
     // Helpful next steps
-    if (task.assignees.some((a) => a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude'))) {
+    if (
+      task.assignees.some(
+        (a) => a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude')
+      )
+    ) {
       console.log(chalk.bold.magenta(`${icons.ai} AI Workflow - Next Steps:`));
-      console.log(chalk.magenta(`  backmark task ai-plan ${task.id} "Your implementation plan..."`));
+      console.log(
+        chalk.magenta(`  backmark task ai-plan ${task.id} "Your implementation plan..."`)
+      );
       console.log(chalk.magenta(`  backmark task view ${task.id} --ai-all\n`));
     }
   } catch (error) {

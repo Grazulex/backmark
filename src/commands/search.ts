@@ -1,17 +1,17 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import { Backlog } from '../core/backlog';
-import { searchTasks } from '../utils/fuzzy-search';
+import type { TaskFilters, TaskPriority } from '../types';
 import {
-  colorizeStatus,
   colorizePriority,
-  formatTaskId,
+  colorizeStatus,
   formatKeywords,
-  truncate,
+  formatTaskId,
   icons,
+  truncate,
 } from '../utils/colors';
+import { searchTasks } from '../utils/fuzzy-search';
 import { logger } from '../utils/logger';
-import type { TaskFilters } from '../types';
 
 interface SearchOptions {
   status?: string;
@@ -29,7 +29,7 @@ export async function searchCommand(query: string, options: SearchOptions) {
     // Get all tasks (or filtered tasks)
     const filters: TaskFilters = {
       status: options.status,
-      priority: options.priority as any,
+      priority: options.priority as TaskPriority | undefined,
       assignee: options.assignee,
       milestone: options.milestone,
       keyword: options.keyword,
@@ -133,10 +133,7 @@ export async function searchCommand(query: string, options: SearchOptions) {
     // Summary
     console.log();
     console.log(chalk.bold.cyan('─'.repeat(70)));
-    console.log(
-      chalk.bold(`${icons.task} Found: ${chalk.cyan(results.length)} task(s)`),
-      '\n'
-    );
+    console.log(chalk.bold(`${icons.task} Found: ${chalk.cyan(results.length)} task(s)`), '\n');
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);

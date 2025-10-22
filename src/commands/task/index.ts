@@ -1,11 +1,11 @@
 import type { Command } from 'commander';
+import { aiDocCommand, aiNoteCommand, aiPlanCommand, aiReviewCommand } from './ai';
+import { addCriterion, checkCriterion, uncheckCriterion } from './check';
 import { createTask } from './create';
+import { assignTask, closeTask, editTask } from './edit';
+import { showBlocked, showDependencies, showTree } from './hierarchy';
 import { listTasks } from './list';
 import { viewTask } from './view';
-import { aiPlanCommand, aiNoteCommand, aiDocCommand, aiReviewCommand } from './ai';
-import { checkCriterion, uncheckCriterion, addCriterion } from './check';
-import { editTask, assignTask, closeTask } from './edit';
-import { showTree, showDependencies, showBlocked } from './hierarchy';
 
 export function taskCommands(program: Command) {
   program
@@ -145,8 +145,5 @@ export function taskCommands(program: Command) {
     .argument('<id>', 'Task ID')
     .action(showDependencies);
 
-  program
-    .command('blocked')
-    .description('List all blocked tasks')
-    .action(showBlocked);
+  program.command('blocked').description('List all blocked tasks').action(showBlocked);
 }

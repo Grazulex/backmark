@@ -1,0 +1,42 @@
+# Source files
+src/
+tests/
+*.test.ts
+*.spec.ts
+
+# Development files
+.vscode/
+.idea/
+*.log
+*.tgz
+
+# Build configuration
+tsconfig.json
+biome.json
+vitest.config.ts
+
+# Scripts
+scripts/
+
+# Test files
+test-fixes.sh
+BUGFIX_REPORT.md
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Documentation (keep README.md)
+CLAUDE.md
+docs/
+
+# Local backlog (don't publish example backlogs)
+backlog/
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

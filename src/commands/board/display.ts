@@ -1,14 +1,15 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import { Backlog } from '../../core/backlog';
-import { logger } from '../../utils/logger';
+import type { ProjectConfig } from '../../types';
 import {
-  colorizeStatus,
   colorizePriority,
-  formatTaskId,
+  colorizeStatus,
   formatKeywords,
+  formatTaskId,
   icons,
 } from '../../utils/colors';
+import { logger } from '../../utils/logger';
 
 interface DisplayBoardOptions {
   watch?: boolean;
@@ -27,19 +28,17 @@ export async function displayBoard(options: DisplayBoardOptions = {}) {
       }
 
       // Header
-      const project = backlog.getConfig<any>('project');
-      console.log('\n' + chalk.bold.cyan('═'.repeat(100)));
+      const project = backlog.getConfig<ProjectConfig>('project');
+      console.log(`\n${chalk.bold.cyan('═'.repeat(100))}`);
       console.log(
         chalk.bold.blue(`${icons.task} Backmark Kanban Board`) +
           chalk.gray(' │ ') +
           chalk.white(project?.name || 'Unknown Project')
       );
-      console.log(chalk.bold.cyan('═'.repeat(100)) + '\n');
+      console.log(`${chalk.bold.cyan('═'.repeat(100))}\n`);
 
       // Get max number of tasks in any column
-      const columnTasks = await Promise.all(
-        columns.map((col) => backlog.getTasksByStatus(col))
-      );
+      const columnTasks = await Promise.all(columns.map((col) => backlog.getTasksByStatus(col)));
 
       // Create table
       const table = new Table({
@@ -83,14 +82,13 @@ export async function displayBoard(options: DisplayBoardOptions = {}) {
 
           // Format task card
           const lines: string[] = [];
-          lines.push(formatTaskId(task.id, true) + ' ' + colorizePriority(task.priority));
+          lines.push(`${formatTaskId(task.id, true)} ${colorizePriority(task.priority)}`);
           lines.push(chalk.white(truncate(task.title, 20)));
 
           if (task.assignees.length > 0) {
             const assignee = task.assignees[0];
             const isAI =
-              assignee.toLowerCase().includes('ai') ||
-              assignee.toLowerCase().includes('claude');
+              assignee.toLowerCase().includes('ai') || assignee.toLowerCase().includes('claude');
             const icon = isAI ? '🤖' : '👤';
             const color = isAI ? chalk.magenta : chalk.white;
             lines.push(icon + color(truncate(assignee, 15)));
@@ -118,7 +116,7 @@ export async function displayBoard(options: DisplayBoardOptions = {}) {
       console.log(table.toString());
 
       // Footer stats
-      console.log('\n' + chalk.bold.cyan('─'.repeat(100)));
+      console.log(`\n${chalk.bold.cyan('─'.repeat(100))}`);
 
       const allTasks = await backlog.getTasks();
       const statusCounts = columnTasks.map((tasks, i) => {
@@ -145,8 +143,7 @@ export async function displayBoard(options: DisplayBoardOptions = {}) {
       if (options.watch) {
         console.log(
           chalk.gray(
-            '\nAuto-refresh: 3s  |  Press Ctrl+C to quit  |  Last update: ' +
-              new Date().toLocaleTimeString()
+            `\nAuto-refresh: 3s  |  Press Ctrl+C to quit  |  Last update: ${new Date().toLocaleTimeString()}`
           )
         );
       }
@@ -171,5 +168,5 @@ export async function displayBoard(options: DisplayBoardOptions = {}) {
 
 function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength - 3) + '...';
+  return `${text.substring(0, maxLength - 3)}...`;
 }

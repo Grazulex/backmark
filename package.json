@@ -1,12 +1,21 @@
 {
-  "name": "backmark",
-  "version": "0.1.0",
+  "name": "@grazulex/backmark",
+  "version": "0.2.0",
   "description": "Markdown-native task management with colorful CLI and Kanban board",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
     "backmark": "./dist/cli.js"
   },
+  "files": ["dist", "templates", ".claude", "README.md", "LICENSE"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grazulex/backmark.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Grazulex/backmark/issues"
+  },
+  "homepage": "https://github.com/Grazulex/backmark#readme",
   "scripts": {
     "dev": "tsx src/cli.ts",
     "build": "tsc && node scripts/fix-imports.mjs",
@@ -18,15 +27,10 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "check": "biome check . && tsc --noEmit"
+    "check": "biome check . && tsc --noEmit",
+    "prepublishOnly": "npm run check && npm run build"
   },
-  "keywords": [
-    "task-management",
-    "markdown",
-    "cli",
-    "kanban",
-    "productivity"
-  ],
+  "keywords": ["task-management", "markdown", "cli", "kanban", "productivity"],
   "author": "Jean-Marc Strauven",
   "license": "MIT",
   "dependencies": {

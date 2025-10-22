@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { Backlog } from '../../core/backlog';
-import { formatTaskId, colorizeStatus, truncate, icons } from '../../utils/colors';
+import { colorizeStatus, formatTaskId, icons, truncate } from '../../utils/colors';
 import { logger } from '../../utils/logger';
 
 export async function showTree(taskId: string) {
@@ -19,22 +19,26 @@ export async function showTree(taskId: string) {
       process.exit(1);
     }
 
-    console.log('\n' + chalk.bold.cyan('═'.repeat(70)));
-    console.log(chalk.bold.white(`Task Hierarchy Tree`));
-    console.log(chalk.bold.cyan('═'.repeat(70)) + '\n');
+    console.log(`\n${chalk.bold.cyan('═'.repeat(70))}`);
+    console.log(chalk.bold.white('Task Hierarchy Tree'));
+    console.log(`${chalk.bold.cyan('═'.repeat(70))}\n`);
 
     // Show parent if exists
     if (task.parent_task) {
       const parent = await backlog.getTaskById(task.parent_task);
       if (parent) {
         console.log(chalk.gray('Parent:'));
-        console.log(`  ${formatTaskId(parent.id, true)} ${chalk.white(parent.title)} ${colorizeStatus(parent.status)}\n`);
+        console.log(
+          `  ${formatTaskId(parent.id, true)} ${chalk.white(parent.title)} ${colorizeStatus(parent.status)}\n`
+        );
         console.log(chalk.gray('  │'));
       }
     }
 
     // Show current task
-    console.log(`${icons.task} ${formatTaskId(task.id, true)} ${chalk.bold.white(task.title)} ${colorizeStatus(task.status)}`);
+    console.log(
+      `${icons.task} ${formatTaskId(task.id, true)} ${chalk.bold.white(task.title)} ${colorizeStatus(task.status)}`
+    );
 
     // Show subtasks
     if (task.subtasks.length > 0) {
@@ -68,7 +72,7 @@ export async function showTree(taskId: string) {
       console.log(chalk.gray('\n  (No subtasks)'));
     }
 
-    console.log('\n' + chalk.bold.cyan('═'.repeat(70)) + '\n');
+    console.log(`\n${chalk.bold.cyan('═'.repeat(70))}\n`);
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
@@ -91,9 +95,13 @@ export async function showDependencies(taskId: string) {
       process.exit(1);
     }
 
-    console.log('\n' + chalk.bold.cyan('═'.repeat(70)));
-    console.log(chalk.bold.white(`${icons.dependency} Dependencies for ${formatTaskId(task.id, true)}: ${task.title}`));
-    console.log(chalk.bold.cyan('═'.repeat(70)) + '\n');
+    console.log(`\n${chalk.bold.cyan('═'.repeat(70))}`);
+    console.log(
+      chalk.bold.white(
+        `${icons.dependency} Dependencies for ${formatTaskId(task.id, true)}: ${task.title}`
+      )
+    );
+    console.log(`${chalk.bold.cyan('═'.repeat(70))}\n`);
 
     // Dependencies (tasks this one depends on)
     if (task.dependencies.length > 0) {
@@ -129,7 +137,7 @@ export async function showDependencies(taskId: string) {
 
     // Tasks that depend on this one
     const allTasks = await backlog.getTasks();
-    const dependents = allTasks.filter(t => t.dependencies.includes(id));
+    const dependents = allTasks.filter((t) => t.dependencies.includes(id));
 
     if (dependents.length > 0) {
       console.log(chalk.bold.yellow('Tasks depending on this:'));
@@ -142,7 +150,7 @@ export async function showDependencies(taskId: string) {
       console.log(chalk.gray('No tasks depend on this one'));
     }
 
-    console.log('\n' + chalk.bold.cyan('═'.repeat(70)) + '\n');
+    console.log(`\n${chalk.bold.cyan('═'.repeat(70))}\n`);
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
@@ -154,7 +162,7 @@ export async function showBlocked() {
     const backlog = await Backlog.load();
     const blockedTasks = await backlog.getBlockedTasks();
 
-    console.log('\n' + chalk.bold.red(`${icons.blocked} Blocked Tasks`) + '\n');
+    console.log(`\n${chalk.bold.red(`${icons.blocked} Blocked Tasks`)}\n`);
 
     if (blockedTasks.length === 0) {
       console.log(chalk.green('No blocked tasks! 🎉\n'));
@@ -165,7 +173,10 @@ export async function showBlocked() {
       console.log(
         `${icons.blocked} ${formatTaskId(task.id, true)} ${chalk.white(task.title)} ${colorizeStatus(task.status)}`
       );
-      console.log(chalk.gray('  Blocked by:'), task.blocked_by.map(id => formatTaskId(id, true)).join(', '));
+      console.log(
+        chalk.gray('  Blocked by:'),
+        task.blocked_by.map((id) => formatTaskId(id, true)).join(', ')
+      );
       console.log();
     }
 

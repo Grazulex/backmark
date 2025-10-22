@@ -79,6 +79,16 @@ backlog/
 └── .gitignore       # Ignore logs and temp files
 ```
 
+**Install Claude Code Agent (Optional)**
+```bash
+# Install agent during initialization
+backmark init "My Project" --install-agent
+
+# You'll be prompted during init if you don't specify the option
+```
+
+The agent will be installed to `~/.config/claude-code/skills/backmark.md` and provides specialized task management capabilities for Claude Code.
+
 ### 2. Create Your First Task
 ```bash
 backmark task create "Implement user authentication" \

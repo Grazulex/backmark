@@ -1,8 +1,8 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import matter from 'gray-matter';
 import { load as parse } from 'js-yaml';
-import type { Task, TaskData, TaskFilters, Config, ChangelogEntry } from '../types';
+import type { ChangelogEntry, Config, Task, TaskData, TaskFilters } from '../types';
 import { getCurrentTimestamp } from '../utils/date';
 
 export class Backlog {
@@ -23,7 +23,7 @@ export class Backlog {
       const configContent = await fs.readFile(configPath, 'utf-8');
       const config = parse(configContent) as Config;
       return new Backlog(cwd, config);
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Backlog not initialized. Run ' + '`backmark init`' + ' first.');
     }
   }
@@ -150,9 +150,12 @@ export class Backlog {
     }
 
     // Si les dépendances changent, mettre à jour blocked_by
-    if (updates.dependencies && JSON.stringify(updates.dependencies) !== JSON.stringify(task.dependencies)) {
+    if (
+      updates.dependencies &&
+      JSON.stringify(updates.dependencies) !== JSON.stringify(task.dependencies)
+    ) {
       await this.updateBlockedByRelations(id, task.dependencies, updates.dependencies);
-      changes.push(`dependencies updated`);
+      changes.push('dependencies updated');
     }
 
     // Mettre à jour le changelog
@@ -177,15 +180,11 @@ export class Backlog {
     return updatedTask;
   }
 
-  async addAIPlan(id: number, plan: string, user: string = 'AI'): Promise<Task> {
-    return this.updateTask(
-      id,
-      { ai_plan: plan },
-      user
-    );
+  async addAIPlan(id: number, plan: string, user = 'AI'): Promise<Task> {
+    return this.updateTask(id, { ai_plan: plan }, user);
   }
 
-  async addAINote(id: number, note: string, user: string = 'AI'): Promise<Task> {
+  async addAINote(id: number, note: string, user = 'AI'): Promise<Task> {
     const task = await this.getTaskById(id);
     if (!task) throw new Error(`Task #${id} not found`);
 
@@ -197,11 +196,11 @@ export class Backlog {
     return this.updateTask(id, { ai_notes: newNotes }, user);
   }
 
-  async addAIDocumentation(id: number, doc: string, user: string = 'AI'): Promise<Task> {
+  async addAIDocumentation(id: number, doc: string, user = 'AI'): Promise<Task> {
     return this.updateTask(id, { ai_documentation: doc }, user);
   }
 
-  async addAIReview(id: number, review: string, user: string = 'AI'): Promise<Task> {
+  async addAIReview(id: number, review: string, user = 'AI'): Promise<Task> {
     return this.updateTask(id, { ai_review: review }, user);
   }
 
@@ -243,8 +242,8 @@ export class Backlog {
     newDeps: number[]
   ): Promise<void> {
     // Trouver les dépendances ajoutées et supprimées
-    const added = newDeps.filter(d => !oldDeps.includes(d));
-    const removed = oldDeps.filter(d => !newDeps.includes(d));
+    const added = newDeps.filter((d) => !oldDeps.includes(d));
+    const removed = oldDeps.filter((d) => !newDeps.includes(d));
 
     // Pour chaque dépendance ajoutée, ajouter taskId à son blocked_by
     for (const depId of added) {
@@ -260,7 +259,7 @@ export class Backlog {
     for (const depId of removed) {
       const depTask = await this.getTaskById(depId);
       if (depTask) {
-        depTask.blocked_by = depTask.blocked_by.filter(id => id !== taskId);
+        depTask.blocked_by = depTask.blocked_by.filter((id) => id !== taskId);
         const content = this.serializeTask(depTask);
         await fs.writeFile(depTask.filePath, content, 'utf-8');
       }
@@ -309,12 +308,12 @@ export class Backlog {
   private sanitizeFileName(name: string): string {
     // Normaliser les caractères Unicode (décomposition)
     // puis supprimer uniquement les caractères vraiment problématiques pour les systèmes de fichiers
-    return name
-      .normalize('NFD') // Décompose les caractères accentués (é -> e + ´)
-      .replace(/[\u0300-\u036f]/g, '') // Supprime les marques diacritiques
-      .replace(/[<>:"/\\|?*\x00-\x1f]/g, '') // Supprime les caractères interdits dans les noms de fichiers
-      .replace(/\s+/g, ' ') // Normalise les espaces
-      .trim();
+    const normalized = name.normalize('NFD'); // Décompose les caractères accentués (é -> e + ´)
+    // biome-ignore lint/suspicious/noMisleadingCharacterClass: Intentional use to remove diacritics after NFD normalization
+    const withoutDiacritics = normalized.replace(/[\u0300-\u036f]/g, ''); // Supprime les marques diacritiques
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: Intentional use to sanitize filenames by removing control characters
+    const sanitized = withoutDiacritics.replace(/[<>:"/\\|?*\x00-\x1f]/g, ''); // Supprime les caractères interdits dans les noms de fichiers
+    return sanitized.replace(/\s+/g, ' ').trim(); // Normalise les espaces
   }
 
   private matchesFilters(task: Task, filters?: TaskFilters): boolean {

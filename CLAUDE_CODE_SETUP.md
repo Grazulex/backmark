@@ -37,7 +37,20 @@ which backmark
 
 The Backmark agent is already configured in `.claude/agents/backmark-agent.md`.
 
-To use it with Claude Code, you can either:
+**⚡ Easiest Way: Use `--install-agent` option**
+
+When initializing a new project, use the `--install-agent` flag:
+
+```bash
+cd /path/to/your/project
+backmark init "Your Project Name" --install-agent
+```
+
+This will automatically install the agent to `~/.config/claude-code/skills/backmark.md`.
+
+If you don't use the flag, you'll be prompted during initialization.
+
+**Manual Installation Options:**
 
 #### Option A: Use as a Skill (Recommended)
 

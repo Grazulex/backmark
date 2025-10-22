@@ -72,8 +72,7 @@ export async function aiDocCommand(taskId: string, content: string) {
 
     spinner.succeed(chalk.green('AI documentation added successfully!'));
     console.log(
-      chalk.magenta(`\n${icons.ai} View with: `) +
-        chalk.cyan(`backmark task view ${id} --ai-doc\n`)
+      chalk.magenta(`\n${icons.ai} View with: `) + chalk.cyan(`backmark task view ${id} --ai-doc\n`)
     );
   } catch (error) {
     spinner.fail(chalk.red('Failed to add AI documentation'));

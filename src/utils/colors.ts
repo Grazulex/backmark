@@ -34,7 +34,7 @@ export function colorizePriority(priority: TaskPriority): string {
   return colorMap[priority](priority);
 }
 
-export function formatTaskId(id: number, zeroPadded: boolean = true): string {
+export function formatTaskId(id: number, zeroPadded = true): string {
   const formatted = zeroPadded ? String(id).padStart(3, '0') : String(id);
   return chalk.bold.cyan(`#${formatted}`);
 }
@@ -71,18 +71,24 @@ export function formatLabels(labels: string[]): string {
 
 export function formatAssignees(assignees: string[]): string {
   if (assignees.length === 0) return chalk.gray('—');
-  return assignees.map((a) => {
-    // Coloration spéciale pour les IA
-    if (a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude') || a.toLowerCase().includes('gpt')) {
-      return chalk.magenta(a);
-    }
-    return chalk.white(a);
-  }).join(', ');
+  return assignees
+    .map((a) => {
+      // Coloration spéciale pour les IA
+      if (
+        a.toLowerCase().includes('ai') ||
+        a.toLowerCase().includes('claude') ||
+        a.toLowerCase().includes('gpt')
+      ) {
+        return chalk.magenta(a);
+      }
+      return chalk.white(a);
+    })
+    .join(', ');
 }
 
 export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength - 3) + '...';
+  return `${text.substring(0, maxLength - 3)}...`;
 }
 
 // Icônes pour une meilleure UX

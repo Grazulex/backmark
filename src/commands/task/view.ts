@@ -1,14 +1,14 @@
-import chalk from 'chalk';
 import boxen from 'boxen';
+import chalk from 'chalk';
 import { Backlog } from '../../core/backlog';
 import {
-  colorizeStatus,
   colorizePriority,
-  formatTaskId,
-  formatKeywords,
-  formatLabels,
+  colorizeStatus,
   formatAssignees,
   formatDate,
+  formatKeywords,
+  formatLabels,
+  formatTaskId,
   icons,
 } from '../../utils/colors';
 import { logger } from '../../utils/logger';
@@ -39,20 +39,26 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     // Header
-    console.log('\n' + chalk.bold.cyan('═'.repeat(80)));
+    console.log(`\n${chalk.bold.cyan('═'.repeat(80))}`);
     console.log(
       chalk.bold.white(`${icons.task} Task ${formatTaskId(task.id, true)}: ${task.title}`)
     );
-    console.log(chalk.bold.cyan('═'.repeat(80)) + '\n');
+    console.log(`${chalk.bold.cyan('═'.repeat(80))}\n`);
 
     // Main info
     console.log(chalk.bold.yellow('📊 Overview'));
     console.log(chalk.gray('─'.repeat(80)));
     console.log(`${icons.status} ${chalk.bold('Status:      ')}`, colorizeStatus(task.status));
-    console.log(`${icons.priority} ${chalk.bold('Priority:    ')}`, colorizePriority(task.priority));
+    console.log(
+      `${icons.priority} ${chalk.bold('Priority:    ')}`,
+      colorizePriority(task.priority)
+    );
 
     if (task.milestone) {
-      console.log(`${icons.milestone} ${chalk.bold('Milestone:   ')}`, chalk.yellow(task.milestone));
+      console.log(
+        `${icons.milestone} ${chalk.bold('Milestone:   ')}`,
+        chalk.yellow(task.milestone)
+      );
     }
 
     if (task.assignees.length > 0) {
@@ -68,7 +74,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     // Dates
-    console.log('\n' + chalk.bold.yellow(`${icons.date} Dates`));
+    console.log(`\n${chalk.bold.yellow(`${icons.date} Dates`)}`);
     console.log(chalk.gray('─'.repeat(80)));
     console.log(`   ${chalk.bold('Created:     ')}`, formatDate(task.created_date, 'long'));
     console.log(`   ${chalk.bold('Updated:     ')}`, formatDate(task.updated_date, 'long'));
@@ -93,7 +99,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
       task.dependencies.length > 0 ||
       task.blocked_by.length > 0
     ) {
-      console.log('\n' + chalk.bold.yellow(`${icons.dependency} Relationships`));
+      console.log(`\n${chalk.bold.yellow(`${icons.dependency} Relationships`)}`);
       console.log(chalk.gray('─'.repeat(80)));
 
       if (task.parent_task) {
@@ -124,14 +130,14 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
 
     // Description
     if (task.description) {
-      console.log('\n' + chalk.bold.yellow('📝 Description'));
+      console.log(`\n${chalk.bold.yellow('📝 Description')}`);
       console.log(chalk.gray('─'.repeat(80)));
       console.log(chalk.white(task.description));
     }
 
     // Acceptance Criteria
     if (task.acceptance_criteria.length > 0) {
-      console.log('\n' + chalk.bold.yellow('✓ Acceptance Criteria'));
+      console.log(`\n${chalk.bold.yellow('✓ Acceptance Criteria')}`);
       console.log(chalk.gray('─'.repeat(80)));
       for (const criterion of task.acceptance_criteria) {
         const icon = criterion.checked ? chalk.green(icons.done) : chalk.gray(icons.pending);
@@ -141,13 +147,17 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     // AI Sections - Always show if present, but can be filtered
-    const showAIPlan = options.aiPlan || options.aiAll || (!options.aiNotes && !options.aiDoc && !options.aiReview);
-    const showAINotes = options.aiNotes || options.aiAll || (!options.aiPlan && !options.aiDoc && !options.aiReview);
-    const showAIDoc = options.aiDoc || options.aiAll || (!options.aiPlan && !options.aiNotes && !options.aiReview);
-    const showAIReview = options.aiReview || options.aiAll || (!options.aiPlan && !options.aiNotes && !options.aiDoc);
+    const showAIPlan =
+      options.aiPlan || options.aiAll || (!options.aiNotes && !options.aiDoc && !options.aiReview);
+    const showAINotes =
+      options.aiNotes || options.aiAll || (!options.aiPlan && !options.aiDoc && !options.aiReview);
+    const showAIDoc =
+      options.aiDoc || options.aiAll || (!options.aiPlan && !options.aiNotes && !options.aiReview);
+    const showAIReview =
+      options.aiReview || options.aiAll || (!options.aiPlan && !options.aiNotes && !options.aiDoc);
 
     if (showAIPlan && task.ai_plan) {
-      console.log('\n' + chalk.bold.magenta(`${icons.ai} AI Plan`));
+      console.log(`\n${chalk.bold.magenta(`${icons.ai} AI Plan`)}`);
       console.log(chalk.gray('─'.repeat(80)));
       console.log(
         boxen(chalk.white(task.ai_plan), {
@@ -159,7 +169,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     if (showAINotes && task.ai_notes) {
-      console.log('\n' + chalk.bold.magenta(`${icons.ai} AI Notes`));
+      console.log(`\n${chalk.bold.magenta(`${icons.ai} AI Notes`)}`);
       console.log(chalk.gray('─'.repeat(80)));
       console.log(
         boxen(chalk.white(task.ai_notes), {
@@ -171,7 +181,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     if (showAIDoc && task.ai_documentation) {
-      console.log('\n' + chalk.bold.magenta(`${icons.ai} AI Documentation`));
+      console.log(`\n${chalk.bold.magenta(`${icons.ai} AI Documentation`)}`);
       console.log(chalk.gray('─'.repeat(80)));
       console.log(
         boxen(chalk.white(task.ai_documentation), {
@@ -183,7 +193,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     if (showAIReview && task.ai_review) {
-      console.log('\n' + chalk.bold.magenta(`${icons.ai} AI Review`));
+      console.log(`\n${chalk.bold.magenta(`${icons.ai} AI Review`)}`);
       console.log(chalk.gray('─'.repeat(80)));
       console.log(
         boxen(chalk.white(task.ai_review), {
@@ -196,14 +206,12 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
 
     // Changelog
     if (task.changelog.length > 0) {
-      console.log('\n' + chalk.bold.yellow('📜 History'));
+      console.log(`\n${chalk.bold.yellow('📜 History')}`);
       console.log(chalk.gray('─'.repeat(80)));
       for (const entry of task.changelog.slice(-10)) {
         // Show last 10 entries
         const timestamp = chalk.gray(formatDate(entry.timestamp, 'long'));
-        const user = entry.user
-          ? chalk.cyan(`[${entry.user}]`)
-          : chalk.gray('[system]');
+        const user = entry.user ? chalk.cyan(`[${entry.user}]`) : chalk.gray('[system]');
         const action = chalk.yellow(entry.action);
         const details = chalk.white(entry.details);
         console.log(`   ${timestamp} ${user} ${action}: ${details}`);
@@ -215,12 +223,16 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     }
 
     // Footer
-    console.log('\n' + chalk.bold.cyan('═'.repeat(80)));
+    console.log(`\n${chalk.bold.cyan('═'.repeat(80))}`);
     console.log(chalk.dim('File: ') + chalk.cyan(task.filePath));
-    console.log(chalk.bold.cyan('═'.repeat(80)) + '\n');
+    console.log(`${chalk.bold.cyan('═'.repeat(80))}\n`);
 
     // AI suggestions
-    if (task.assignees.some((a) => a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude'))) {
+    if (
+      task.assignees.some(
+        (a) => a.toLowerCase().includes('ai') || a.toLowerCase().includes('claude')
+      )
+    ) {
       if (!task.ai_plan) {
         console.log(chalk.magenta(`${icons.ai} Tip: Add an AI plan with:`));
         console.log(chalk.gray(`  backmark task ai-plan ${task.id} "Your plan..."\n`));
