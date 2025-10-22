@@ -1,0 +1,60 @@
+{
+  "name": "backmark",
+  "version": "0.1.0",
+  "description": "Markdown-native task management with colorful CLI and Kanban board",
+  "type": "module",
+  "main": "dist/cli.js",
+  "bin": {
+    "backmark": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc && node scripts/fix-imports.mjs",
+    "start": "node dist/cli.js",
+    "install:global": "npm run build && npm link",
+    "uninstall:global": "npm unlink -g backmark",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "check": "biome check . && tsc --noEmit"
+  },
+  "keywords": [
+    "task-management",
+    "markdown",
+    "cli",
+    "kanban",
+    "productivity"
+  ],
+  "author": "Jean-Marc Strauven",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^14.0.1",
+    "inquirer": "^12.2.0",
+    "ora": "^8.1.1",
+    "boxen": "^8.0.1",
+    "cli-table3": "^0.6.5",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "fuse.js": "^7.0.0",
+    "date-fns": "^4.1.0",
+    "zod": "^3.23.8",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/blessed": "^0.1.25",
+    "@types/js-yaml": "^4.0.9",
+    "@types/inquirer": "^9.0.7",
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.7.2",
+    "tsx": "^4.19.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
