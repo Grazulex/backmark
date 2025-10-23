@@ -4,8 +4,10 @@ import { colorizeStatus, formatTaskId, icons, truncate } from '../../utils/color
 import { logger } from '../../utils/logger';
 
 export async function showTree(taskId: string) {
+  let backlog: Backlog | null = null;
+
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -76,12 +78,16 @@ export async function showTree(taskId: string) {
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function showDependencies(taskId: string) {
+  let backlog: Backlog | null = null;
+
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -154,12 +160,16 @@ export async function showDependencies(taskId: string) {
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function showBlocked() {
+  let backlog: Backlog | null = null;
+
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const blockedTasks = await backlog.getBlockedTasks();
 
     console.log(`\n${chalk.bold.red(`${icons.blocked} Blocked Tasks`)}\n`);
@@ -184,5 +194,7 @@ export async function showBlocked() {
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

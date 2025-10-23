@@ -46,4 +46,10 @@ export interface TaskRepository {
    * Does nothing for FileSystem implementation
    */
   rebuild?(): Promise<void>;
+
+  /**
+   * Close the repository and cleanup resources (for indexed implementations)
+   * Does nothing for FileSystem implementation
+   */
+  close?(): Promise<void>;
 }

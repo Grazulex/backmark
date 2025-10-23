@@ -24,8 +24,9 @@ interface ListTasksOptions {
 }
 
 export async function listTasks(options: ListTasksOptions) {
+  let backlog: Backlog | null = null;
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
 
     // Build filters
     const filters: TaskFilters = {
@@ -153,5 +154,7 @@ export async function listTasks(options: ListTasksOptions) {
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

@@ -32,8 +32,9 @@ interface CreateTaskOptions {
 export async function createTask(title: string, options: CreateTaskOptions) {
   const spinner = ora('Creating task...').start();
 
+  let backlog: Backlog | null = null;
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
 
     // Interactive prompt for description if not provided
     let description = options.description;
@@ -189,5 +190,7 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     spinner.fail(chalk.red('Failed to create task'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

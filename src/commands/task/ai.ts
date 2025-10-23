@@ -6,9 +6,10 @@ import { logger } from '../../utils/logger';
 
 export async function aiPlanCommand(taskId: string, content: string) {
   const spinner = ora('Adding AI plan...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -27,14 +28,17 @@ export async function aiPlanCommand(taskId: string, content: string) {
     spinner.fail(chalk.red('Failed to add AI plan'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function aiNoteCommand(taskId: string, content: string) {
   const spinner = ora('Adding AI note...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -53,14 +57,17 @@ export async function aiNoteCommand(taskId: string, content: string) {
     spinner.fail(chalk.red('Failed to add AI note'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function aiDocCommand(taskId: string, content: string) {
   const spinner = ora('Adding AI documentation...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -78,14 +85,17 @@ export async function aiDocCommand(taskId: string, content: string) {
     spinner.fail(chalk.red('Failed to add AI documentation'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function aiReviewCommand(taskId: string, content: string) {
   const spinner = ora('Adding AI review...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -104,5 +114,7 @@ export async function aiReviewCommand(taskId: string, content: string) {
     spinner.fail(chalk.red('Failed to add AI review'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

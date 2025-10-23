@@ -23,8 +23,10 @@ interface SearchOptions {
 }
 
 export async function searchCommand(query: string, options: SearchOptions) {
+  let backlog: Backlog | null = null;
+
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
 
     // Get all tasks (or filtered tasks)
     const filters: TaskFilters = {
@@ -140,5 +142,7 @@ export async function searchCommand(query: string, options: SearchOptions) {
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

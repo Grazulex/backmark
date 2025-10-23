@@ -22,9 +22,10 @@ interface EditTaskOptions {
 
 export async function editTask(taskId: string, options: EditTaskOptions) {
   const spinner = ora('Updating task...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -120,14 +121,17 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
     spinner.fail(chalk.red('Failed to update task'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function assignTask(taskId: string, assignees: string) {
   const spinner = ora('Assigning task...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -154,14 +158,17 @@ export async function assignTask(taskId: string, assignees: string) {
     spinner.fail(chalk.red('Failed to assign task'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function closeTask(taskId: string) {
   const spinner = ora('Closing task...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -177,5 +184,7 @@ export async function closeTask(taskId: string) {
     spinner.fail(chalk.red('Failed to close task'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

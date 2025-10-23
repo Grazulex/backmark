@@ -442,5 +442,11 @@ export async function renderBoard(backlog: Backlog, columns: string[]): Promise<
     );
   }
 
-  render(<Board backlog={backlog} columns={columns} />);
+  const { waitUntilExit } = render(<Board backlog={backlog} columns={columns} />);
+
+  // Wait for the board to exit, then cleanup
+  await waitUntilExit();
+
+  // Close the backlog to stop LokiJS autosave timer
+  await backlog.close();
 }

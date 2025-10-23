@@ -149,6 +149,20 @@ export class LokiIndexedRepository implements TaskRepository {
     await this.sync();
   }
 
+  /**
+   * Close the database and stop autosave timer
+   */
+  async close(): Promise<void> {
+    if (!this.initialized) return;
+
+    return new Promise<void>((resolve) => {
+      this.db.close(() => {
+        this.initialized = false;
+        resolve();
+      });
+    });
+  }
+
   async getTasks(filters?: TaskFilters): Promise<Task[]> {
     await this.initialize();
 

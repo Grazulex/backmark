@@ -6,9 +6,10 @@ import { logger } from '../../utils/logger';
 
 export async function checkCriterion(taskId: string, criterionIndex: string) {
   const spinner = ora('Checking criterion...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
     const index = Number.parseInt(criterionIndex, 10);
 
@@ -47,14 +48,17 @@ export async function checkCriterion(taskId: string, criterionIndex: string) {
     spinner.fail(chalk.red('Failed to check criterion'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function uncheckCriterion(taskId: string, criterionIndex: string) {
   const spinner = ora('Unchecking criterion...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
     const index = Number.parseInt(criterionIndex, 10);
 
@@ -93,14 +97,17 @@ export async function uncheckCriterion(taskId: string, criterionIndex: string) {
     spinner.fail(chalk.red('Failed to uncheck criterion'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
 
 export async function addCriterion(taskId: string, text: string) {
   const spinner = ora('Adding criterion...').start();
+  let backlog: Backlog | null = null;
 
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -136,5 +143,7 @@ export async function addCriterion(taskId: string, text: string) {
     spinner.fail(chalk.red('Failed to add criterion'));
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }

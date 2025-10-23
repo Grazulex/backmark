@@ -30,6 +30,23 @@ export class Backlog {
 
       const backlogPath = path.join(cwd, 'backlog');
 
+      // Auto-migrate: add performance settings if missing
+      let needsSave = false;
+      if (!config.performance) {
+        config.performance = {
+          useIndex: true,
+          rebuildIndexOnStart: false,
+        };
+        needsSave = true;
+      }
+
+      // Save updated config if needed
+      if (needsSave) {
+        const { dump } = await import('js-yaml');
+        const updatedContent = dump(config, { lineWidth: -1 });
+        await fs.writeFile(configPath, updatedContent, 'utf-8');
+      }
+
       // Choose repository based on config
       const useIndex = config.performance?.useIndex ?? true;
       const rebuildIndex = config.performance?.rebuildIndexOnStart ?? false;
@@ -227,6 +244,14 @@ export class Backlog {
 
   getConfig<T = unknown>(key: string): T {
     return key.split('.').reduce((obj, k) => obj?.[k], this.config as never) as T;
+  }
+
+  /**
+   * Close the backlog and cleanup resources
+   * Important for LokiJS to stop autosave timer
+   */
+  async close(): Promise<void> {
+    await this.repository.close?.();
   }
 
   private async addSubtaskToParent(parentId: number, subtaskId: number): Promise<void> {

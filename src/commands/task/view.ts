@@ -22,8 +22,10 @@ interface ViewTaskOptions {
 }
 
 export async function viewTask(taskId: string, options: ViewTaskOptions) {
+  let backlog: Backlog | null = null;
+
   try {
-    const backlog = await Backlog.load();
+    backlog = await Backlog.load();
     const id = Number.parseInt(taskId, 10);
 
     if (Number.isNaN(id)) {
@@ -256,5 +258,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
   } catch (error) {
     logger.error((error as Error).message);
     process.exit(1);
+  } finally {
+    await backlog?.close();
   }
 }
