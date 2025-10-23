@@ -138,7 +138,7 @@ export async function initCommand(projectName?: string, options?: InitOptions) {
     try {
       await fs.access(gitignorePath);
     } catch {
-      await fs.writeFile(gitignorePath, '*.log\n.DS_Store\n', 'utf-8');
+      await fs.writeFile(gitignorePath, '*.log\n.DS_Store\n.cache/\n', 'utf-8');
     }
 
     spinner.succeed(chalk.green('Backlog initialized successfully!'));

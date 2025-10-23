@@ -4,16 +4,21 @@ import matter from 'gray-matter';
 import { load as parse } from 'js-yaml';
 import type { ChangelogEntry, Config, Task, TaskData, TaskFilters } from '../types';
 import { getCurrentTimestamp } from '../utils/date';
+import { FileSystemRepository } from './repositories/FileSystemRepository';
+import { LokiIndexedRepository } from './repositories/LokiIndexedRepository';
+import type { TaskRepository } from './repositories/TaskRepository';
 
 export class Backlog {
   private rootPath: string;
   private backlogPath: string;
   private config: Config;
+  private repository: TaskRepository;
 
-  private constructor(rootPath: string, config: Config) {
+  private constructor(rootPath: string, config: Config, repository: TaskRepository) {
     this.rootPath = rootPath;
     this.backlogPath = path.join(rootPath, 'backlog');
     this.config = config;
+    this.repository = repository;
   }
 
   static async load(cwd: string = process.cwd()): Promise<Backlog> {
@@ -22,7 +27,31 @@ export class Backlog {
     try {
       const configContent = await fs.readFile(configPath, 'utf-8');
       const config = parse(configContent) as Config;
-      return new Backlog(cwd, config);
+
+      const backlogPath = path.join(cwd, 'backlog');
+
+      // Choose repository based on config
+      const useIndex = config.performance?.useIndex ?? true;
+      const rebuildIndex = config.performance?.rebuildIndexOnStart ?? false;
+
+      let repository: TaskRepository;
+
+      if (useIndex) {
+        const lokiRepo = new LokiIndexedRepository(backlogPath);
+
+        // Rebuild or sync index
+        if (rebuildIndex) {
+          await lokiRepo.rebuild?.();
+        } else {
+          await lokiRepo.sync?.();
+        }
+
+        repository = lokiRepo;
+      } else {
+        repository = new FileSystemRepository(backlogPath);
+      }
+
+      return new Backlog(cwd, config, repository);
     } catch (_error) {
       throw new Error('Backlog not initialized. Run ' + '`backmark init`' + ' first.');
     }
@@ -92,33 +121,17 @@ export class Backlog {
       await this.updateBlockedByRelations(id, [], data.dependencies);
     }
 
-    const content = this.serializeTask(task);
-    await fs.writeFile(filePath, content, 'utf-8');
+    await this.repository.createTask(task);
 
     return task;
   }
 
   async getTasks(filters?: TaskFilters): Promise<Task[]> {
-    const files = await fs.readdir(this.backlogPath);
-    const taskFiles = files.filter((f) => f.startsWith('task-') && f.endsWith('.md'));
-
-    const tasks: Task[] = [];
-    for (const file of taskFiles) {
-      const filePath = path.join(this.backlogPath, file);
-      const content = await fs.readFile(filePath, 'utf-8');
-      const task = this.parseTask(content, filePath);
-
-      if (this.matchesFilters(task, filters)) {
-        tasks.push(task);
-      }
-    }
-
-    return tasks.sort((a, b) => a.id - b.id); // Sort by ID ascending (oldest first)
+    return this.repository.getTasks(filters);
   }
 
   async getTaskById(id: number): Promise<Task | null> {
-    const tasks = await this.getTasks();
-    return tasks.find((t) => t.id === id) || null;
+    return this.repository.getTaskById(id);
   }
 
   async getTasksByStatus(status: string): Promise<Task[]> {
@@ -173,9 +186,8 @@ export class Backlog {
       changelog: [...task.changelog, newChangelog],
     };
 
-    // Sauvegarder
-    const content = this.serializeTask(updatedTask);
-    await fs.writeFile(task.filePath, content, 'utf-8');
+    // Sauvegarder via repository
+    await this.repository.updateTask(updatedTask);
 
     return updatedTask;
   }
@@ -225,8 +237,7 @@ export class Backlog {
 
     if (!parent.subtasks.includes(subtaskId)) {
       parent.subtasks.push(subtaskId);
-      const content = this.serializeTask(parent);
-      await fs.writeFile(parent.filePath, content, 'utf-8');
+      await this.repository.updateTask(parent);
     }
   }
 
@@ -250,8 +261,7 @@ export class Backlog {
       const depTask = await this.getTaskById(depId);
       if (depTask && !depTask.blocked_by.includes(taskId)) {
         depTask.blocked_by.push(taskId);
-        const content = this.serializeTask(depTask);
-        await fs.writeFile(depTask.filePath, content, 'utf-8');
+        await this.repository.updateTask(depTask);
       }
     }
 
@@ -260,45 +270,13 @@ export class Backlog {
       const depTask = await this.getTaskById(depId);
       if (depTask) {
         depTask.blocked_by = depTask.blocked_by.filter((id) => id !== taskId);
-        const content = this.serializeTask(depTask);
-        await fs.writeFile(depTask.filePath, content, 'utf-8');
+        await this.repository.updateTask(depTask);
       }
     }
   }
 
-  private parseTask(content: string, filePath: string): Task {
-    const { data, content: body } = matter(content);
-
-    return {
-      ...data,
-      description: body.trim(),
-      filePath,
-      keywords: data.keywords || [],
-      assignees: data.assignees || [],
-      labels: data.labels || [],
-      subtasks: data.subtasks || [],
-      dependencies: data.dependencies || [],
-      blocked_by: data.blocked_by || [],
-      changelog: data.changelog || [],
-      acceptance_criteria: data.acceptance_criteria || [],
-    } as Task;
-  }
-
-  private serializeTask(task: Task): string {
-    const { description, filePath, ...frontmatter } = task;
-
-    // Remove undefined values to avoid YAML serialization errors
-    const cleanedFrontmatter = Object.fromEntries(
-      Object.entries(frontmatter).filter(([_, v]) => v !== undefined)
-    );
-
-    return matter.stringify(description, cleanedFrontmatter);
-  }
-
   private async getNextTaskId(): Promise<number> {
-    const tasks = await this.getTasks();
-    if (tasks.length === 0) return 1;
-    return Math.max(...tasks.map((t) => t.id)) + 1;
+    return this.repository.getNextTaskId();
   }
 
   private formatId(id: number): string {
@@ -314,19 +292,5 @@ export class Backlog {
     // biome-ignore lint/suspicious/noControlCharactersInRegex: Intentional use to sanitize filenames by removing control characters
     const sanitized = withoutDiacritics.replace(/[<>:"/\\|?*\x00-\x1f]/g, ''); // Supprime les caractères interdits dans les noms de fichiers
     return sanitized.replace(/\s+/g, ' ').trim(); // Normalise les espaces
-  }
-
-  private matchesFilters(task: Task, filters?: TaskFilters): boolean {
-    if (!filters) return true;
-
-    if (filters.status && task.status !== filters.status) return false;
-    if (filters.priority && task.priority !== filters.priority) return false;
-    if (filters.assignee && !task.assignees.includes(filters.assignee)) return false;
-    if (filters.label && !task.labels.some((l) => l === filters.label)) return false;
-    if (filters.keyword && !task.keywords.some((k) => k === filters.keyword)) return false;
-    if (filters.milestone && task.milestone !== filters.milestone) return false;
-    if (filters.parent !== undefined && task.parent_task !== filters.parent) return false;
-
-    return true;
   }
 }

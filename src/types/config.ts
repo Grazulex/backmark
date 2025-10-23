@@ -3,6 +3,7 @@ export interface Config {
   board: BoardConfig;
   display: DisplayConfig;
   search: SearchConfig;
+  performance?: PerformanceConfig;
 }
 
 export interface ProjectConfig {
@@ -25,6 +26,11 @@ export interface SearchConfig {
   maxResults: number;
 }
 
+export interface PerformanceConfig {
+  useIndex: boolean;
+  rebuildIndexOnStart?: boolean;
+}
+
 export const DEFAULT_CONFIG: Config = {
   project: {
     name: 'My Project',
@@ -41,5 +47,9 @@ export const DEFAULT_CONFIG: Config = {
   search: {
     threshold: 0.3,
     maxResults: 50,
+  },
+  performance: {
+    useIndex: true,
+    rebuildIndexOnStart: false,
   },
 };
