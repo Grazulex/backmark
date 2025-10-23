@@ -126,6 +126,7 @@ export function taskCommands(program: Command) {
     .command('close')
     .description('Close a task (set status to Done)')
     .argument('<id>', 'Task ID')
+    .option('--force', 'Force close even if validations fail')
     .action(closeTask);
 
   // Hierarchy Commands

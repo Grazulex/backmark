@@ -241,7 +241,12 @@ export class Backlog {
     return allTasks.filter((t) => t.blocked_by.length > 0);
   }
 
-  getConfig<T = unknown>(key: string): T {
+  getConfig(): Config;
+  getConfig<T = unknown>(key: string): T;
+  getConfig<T = unknown>(key?: string): T | Config {
+    if (!key) {
+      return this.config;
+    }
     return key.split('.').reduce((obj, k) => obj?.[k], this.config as never) as T;
   }
 

@@ -115,4 +115,6 @@ export const icons = {
   done: '✓',
   pending: '○',
   inProgress: '●',
+  error: '✗',
+  warning: '⚠',
 };
