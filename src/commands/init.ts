@@ -13,46 +13,42 @@ import { logger } from '../utils/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function installClaudeAgent(): Promise<boolean> {
+async function installClaudeAgent(projectPath: string): Promise<boolean> {
   const spinner = ora('Installing Backmark agent for Claude Code...').start();
 
   try {
-    // Determine home directory
-    const homeDir = process.env.HOME || process.env.USERPROFILE;
-    if (!homeDir) {
-      spinner.fail(chalk.red('Could not determine home directory'));
-      return false;
-    }
-
-    // Claude Code skills directory
-    const skillsDir = path.join(homeDir, '.config', 'claude-code', 'skills');
-    const targetFile = path.join(skillsDir, 'backmark.md');
-
-    // Find the source agent file (in the installed package)
+    // Find the source files (in the installed package)
     // Go up from dist/commands/init.js to package root
     const packageRoot = path.resolve(__dirname, '..', '..');
-    const sourceFile = path.join(packageRoot, '.claude', 'agents', 'backmark-agent.md');
+    const sourceAgentFile = path.join(packageRoot, '.claude', 'agents', 'backmark-agent.md');
+    const sourceSettingsFile = path.join(packageRoot, '.claude', 'settings.local.json');
 
-    // Check if source file exists
+    // Check if source files exist
     try {
-      await fs.access(sourceFile);
+      await fs.access(sourceAgentFile);
     } catch {
       spinner.fail(chalk.red('Agent file not found in package'));
-      logger.info(chalk.gray(`Expected location: ${sourceFile}`));
+      logger.info(chalk.gray(`Expected location: ${sourceAgentFile}`));
       return false;
     }
 
-    // Create skills directory if it doesn't exist
-    await fs.mkdir(skillsDir, { recursive: true });
+    // Create .claude/agents directory in the project
+    const claudeDir = path.join(projectPath, '.claude');
+    const agentsDir = path.join(claudeDir, 'agents');
+    await fs.mkdir(agentsDir, { recursive: true });
+
+    // Target files in project
+    const targetAgentFile = path.join(agentsDir, 'backmark-agent.md');
+    const targetSettingsFile = path.join(claudeDir, 'settings.local.json');
 
     // Check if agent already exists
     try {
-      await fs.access(targetFile);
+      await fs.access(targetAgentFile);
       const { overwrite } = await inquirer.prompt([
         {
           type: 'confirm',
           name: 'overwrite',
-          message: 'Backmark agent already exists. Overwrite?',
+          message: 'Backmark agent already exists in this project. Overwrite?',
           default: false,
         },
       ]);
@@ -66,12 +62,22 @@ async function installClaudeAgent(): Promise<boolean> {
     }
 
     // Copy the agent file
-    const agentContent = await fs.readFile(sourceFile, 'utf-8');
-    await fs.writeFile(targetFile, agentContent, 'utf-8');
+    const agentContent = await fs.readFile(sourceAgentFile, 'utf-8');
+    await fs.writeFile(targetAgentFile, agentContent, 'utf-8');
+
+    // Copy the settings file if it exists
+    try {
+      await fs.access(sourceSettingsFile);
+      const settingsContent = await fs.readFile(sourceSettingsFile, 'utf-8');
+      await fs.writeFile(targetSettingsFile, settingsContent, 'utf-8');
+    } catch {
+      // Settings file doesn't exist in package, skip
+    }
 
     spinner.succeed(chalk.green('Backmark agent installed successfully!'));
-    logger.info(chalk.gray(`Location: ${targetFile}`));
-    logger.info(chalk.cyan('\nYou can now use Backmark with Claude Code!'));
+    logger.info(chalk.gray(`Location: ${targetAgentFile}`));
+    logger.info(chalk.cyan('\nYou can now use the backmark-manager agent with Claude Code!'));
+    logger.info(chalk.gray('Use /agent backmark-manager to activate it in your project'));
 
     return true;
   } catch (error) {
@@ -186,7 +192,7 @@ export async function initCommand(projectName?: string, options?: InitOptions) {
 
     if (shouldInstallAgent) {
       console.log();
-      await installClaudeAgent();
+      await installClaudeAgent(cwd);
     }
   } catch (error) {
     spinner.fail(chalk.red('Failed to initialize backlog'));
