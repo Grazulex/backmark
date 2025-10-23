@@ -131,7 +131,7 @@
 
 ### 🎯 Core Task Management
 - **Markdown-based storage**: Every task is a `.md` file with YAML frontmatter
-- **Rich metadata**: Priorities (low/medium/high/critical), statuses, keywords, milestones, dates
+- **Rich metadata**: Priorities (low/medium/high/critical), statuses, milestones, dates
 - **Hierarchical tasks**: Parent/child relationships with unlimited nesting
 - **Dependencies**: Track task dependencies with `depends_on` and `blocked_by` fields
 - **Acceptance criteria**: Built-in checklists with check/uncheck commands
@@ -438,7 +438,6 @@ Create a new task with rich metadata.
 | `-p, --priority <priority>` | Priority: low, medium, high, critical | `-p high` |
 | `-a, --assignees <assignees>` | Comma-separated assignees | `-a "Alice,Bob,Claude"` |
 | `-l, --labels <labels>` | Comma-separated labels | `-l "feature,backend"` |
-| `-k, --keywords <keywords>` | Search keywords | `-k "auth,security,jwt"` |
 | `-m, --milestone <milestone>` | Milestone | `-m "v1.0"` |
 | `--start <date>` | Start date (YYYY-MM-DD) | `--start "2025-10-25"` |
 | `--end <date>` | End date (YYYY-MM-DD) | `--end "2025-10-30"` |
@@ -456,7 +455,6 @@ backmark task create "Build REST API" \
   -d "Implement RESTful API with Express.js" \
   -p high \
   -a "Alice,Claude" \
-  -k "backend,api,express" \
   -m "v1.0" \
   --start "2025-10-25" \
   --end "2025-10-30"
@@ -542,8 +540,6 @@ Edit task properties.
 | `--start <date>` | Update start date |
 | `--end <date>` | Update end date |
 | `--release <date>` | Update release date |
-| `--add-keyword <keywords>` | Add keywords |
-| `--remove-keyword <keywords>` | Remove keywords |
 | `--add-label <labels>` | Add labels |
 | `--remove-label <labels>` | Remove labels |
 | `--add-dependency <ids>` | Add dependencies |
@@ -556,9 +552,6 @@ backmark task edit 1 --status "In Progress"
 
 # Update priority
 backmark task edit 1 --priority critical
-
-# Add keywords
-backmark task edit 1 --add-keyword "urgent,hotfix"
 
 # Multiple updates
 backmark task edit 1 --status "Done" --add-label "verified" --priority high
@@ -895,14 +888,12 @@ Fuzzy search across all tasks.
 | `-p, --priority <priority>` | Filter by priority |
 | `-a, --assignee <assignee>` | Filter by assignee |
 | `-m, --milestone <milestone>` | Filter by milestone |
-| `-k, --keyword <keyword>` | Filter by keyword |
 | `-l, --label <label>` | Filter by label |
 
 **Search Weights:**
 - Title: 40%
 - Description: 30%
-- Keywords: 20%
-- Labels: 10%
+- Labels: 30%
 
 **Examples:**
 ```bash
@@ -1494,10 +1485,6 @@ closed_date: null
 # Organization
 status: "In Progress"
 priority: "high"
-keywords:
-  - "backend"
-  - "security"
-  - "auth"
 milestone: "v1.0"
 
 # People and labels
@@ -1810,7 +1797,6 @@ Status:        In Progress
 Priority:      high
 Milestone:     v1.0
 Assignees:     Claude, Alice
-Keywords:      #backend #security #auth
 Labels:        [feature] [backend]
 
 Dates:
@@ -1877,17 +1863,17 @@ Found 3 tasks (sorted by relevance):
 
 1. #001 - Implement user authentication [Score: 0.95]
    Status: In Progress | Priority: high | Assignee: Claude
-   Keywords: #backend #security #auth
+   Labels: #backend #security #auth
    "Implement JWT-based authentication system with user registration..."
 
 2. #007 - Add OAuth providers [Score: 0.72]
    Status: To Do | Priority: medium | Assignee: Alice
-   Keywords: #auth #oauth #google
+   Labels: #auth #oauth #google
    "Add Google and GitHub OAuth authentication..."
 
 3. #012 - Refactor auth middleware [Score: 0.58]
    Status: Done | Priority: low | Assignee: Bob
-   Keywords: #refactor #auth #middleware
+   Labels: #refactor #auth #middleware
    "Refactor authentication middleware for better performance..."
 ```
 
@@ -1953,7 +1939,6 @@ Press Ctrl+C to exit • Auto-refresh in 3s...
 | AI Assignees | 🟣 Magenta | `Claude`, `GPT`, `AI` |
 | Human Assignees | White | `Alice`, `Bob` |
 | Milestones | 🟡 Yellow | `🎯 v1.0` |
-| Keywords | 🔵 Blue | `#auth`, `#backend` |
 | Labels | 🔵 Cyan | `[feature]`, `[bug]` |
 | Task IDs | Bold White | `#001` |
 | Success Messages | 🟢 Green | `✓ Task created` |
@@ -1971,8 +1956,7 @@ backmark task create "Fix login redirect loop" \
   -d "Users get stuck in redirect loop after login" \
   -p critical \
   -a "Bob" \
-  -k "bug,urgent,frontend,login" \
-  -l "hotfix,v1.0"
+  -l "bug,urgent,frontend,login,hotfix,v1.0"
 
 # 2. Add acceptance criteria
 backmark task add-criterion 1 "Login redirects to dashboard"
@@ -2216,19 +2200,7 @@ backmark task list --milestone "Sprint-5" --status "Done"
 
 ## 🔍 Advanced Tips
 
-### 1. **Use Keywords Strategically**
-Keywords are indexed with 20% weight in fuzzy search.
-
-```bash
-# Good keyword usage (specific, searchable)
-backmark task create "Login bug" \
-  -k "bug,auth,login,critical,frontend"
-
-# Search by keyword
-backmark search "authentication" --keyword "auth"
-```
-
-### 2. **Leverage Dependencies for Complex Projects**
+### 1. **Leverage Dependencies for Complex Projects**
 Create dependency chains to track prerequisites and blockers.
 
 ```bash
@@ -2246,7 +2218,7 @@ backmark task blocked
 backmark task deps 5
 ```
 
-### 3. **Use AI Notes as Continuous Dev Log**
+### 2. **Use AI Notes as Continuous Dev Log**
 AI notes are timestamped automatically - perfect for debugging later.
 
 ```bash
@@ -2262,7 +2234,7 @@ backmark task ai-note 1 "Ready for review"
 backmark task view 1 --ai-notes
 ```
 
-### 4. **Board Watch Mode for Pairing**
+### 3. **Board Watch Mode for Pairing**
 Perfect for pair programming or AI collaboration.
 
 ```bash
@@ -2274,7 +2246,7 @@ backmark task edit 5 --status "In Progress"
 # Board updates automatically in Terminal 1!
 ```
 
-### 5. **Export for Reporting**
+### 4. **Export for Reporting**
 Use search and list to generate reports.
 
 ```bash

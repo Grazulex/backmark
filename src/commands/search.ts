@@ -76,7 +76,7 @@ export async function searchCommand(query: string, options: SearchOptions) {
         chalk.bold.cyan('Title'),
         chalk.bold.cyan('Status'),
         chalk.bold.cyan('Priority'),
-        chalk.bold.cyan('Keywords'),
+        chalk.bold.cyan('Labels'),
         chalk.bold.cyan('Milestone'),
       ],
       style: {

@@ -40,7 +40,7 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
     -s, --status <status>         Status (default: "To Do")
     -p, --priority <priority>     Priority: low, medium, high, critical
     -a, --assignees <list>        Comma-separated assignees
-    -k, --keywords <list>         Comma-separated keywords
+    -l, --labels <list>           Comma-separated labels
     -m, --milestone <name>        Milestone
     --start <date>                Start date (YYYY-MM-DD)
     --end <date>                  End date (YYYY-MM-DD)
@@ -100,7 +100,7 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
   1. **Review the task request** from the user
   2. **Check existing tasks** to avoid duplicates:
      ```bash
-     backmark search "<keywords>"
+     backmark search "<query>"
      ```
   3. **Create the task** if needed:
      ```bash
@@ -234,15 +234,7 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
   backmark task ai-note <id> "Added error handling"
   ```
 
-  ### 4. Use Keywords Strategically
-  Keywords are indexed for search:
-  ```bash
-  -k "bug,urgent,auth,security"
-  -k "feature,api,rest,backend"
-  -k "refactor,performance,optimization"
-  ```
-
-  ### 5. Track Dependencies
+  ### 4. Track Dependencies
   When tasks depend on others:
   ```bash
   # Task 5 depends on tasks 3 and 4

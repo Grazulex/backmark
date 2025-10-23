@@ -42,7 +42,6 @@ Chaque tâche est un fichier Markdown avec les métadonnées suivantes :
 #### Organisation
 - `status` : Statut de la tâche (To Do, In Progress, Review, Done, etc.)
 - `priority` : Priorité (low, medium, high, critical)
-- `keywords` : Liste de mots-clés pour catégorisation
 - `milestone` : Milestone associé (ex: "v1.0", "Sprint 3", etc.)
 
 #### Hiérarchie et dépendances
@@ -245,10 +244,6 @@ closed_date: null
 # Organisation
 status: "In Progress"
 priority: "high"
-keywords:
-  - "search"
-  - "fuse.js"
-  - "performance"
 milestone: "v1.0"
 
 # Personnes et labels
@@ -305,7 +300,7 @@ ai_plan: |
   ### 2. Indexation des tâches
   - Modifier src/core/backlog.ts pour indexer toutes les tâches
   - Créer une méthode searchTasks(query: string, filters?: SearchFilters)
-  - Supporter les recherches dans : title, description, keywords, labels
+  - Supporter les recherches dans : title, description, labels
 
   ### 3. Commande CLI
   - Créer src/commands/search.ts
@@ -341,7 +336,7 @@ ai_documentation: |
 
   ### Configuration Fuse.js
   - **threshold**: 0.3 (0 = exact, 1 = match anything)
-  - **keys**: title, description, keywords, labels
+  - **keys**: title, description, labels
   - **includeScore**: true pour trier par pertinence
 
   ### Performance
@@ -845,9 +840,8 @@ backmark task create "Implement search feature" \
   --end "2025-10-25" \
   --release "2025-11-01" \
   --milestone "v1.0" \
-  --keywords "search,fuse.js,performance" \
   --assignees "@alice,@bob" \
-  --labels "feature,backend"
+  --labels "feature,backend,search,fuse.js,performance"
 
 # Task management - Gestion des sous-tâches
 backmark task create "Setup Fuse.js configuration" --parent 10

@@ -73,7 +73,7 @@ Follow all protocols and best practices defined in that file.
 ## Quick Reference
 
 ### Your Workflow
-1. Check existing tasks: `backmark search "<keywords>"`
+1. Check existing tasks: `backmark search "<query>"`
 2. Create task if needed: `backmark task create "..." -a "Claude"`
 3. Make plan: `backmark task ai-plan <id> "..."`
 4. Start work: `backmark task edit <id> --status "In Progress"`
@@ -129,7 +129,7 @@ Create a test task:
 backmark task create "Test task for Claude Code" \
   -p medium \
   -a "Claude" \
-  -k "test,setup"
+  -l "test,setup"
 
 # View it
 backmark task list
@@ -278,7 +278,7 @@ backmark task close 1
 
 ```bash
 # User reports bug, Claude creates task
-backmark task create "Fix login redirect loop" -p critical -a "Claude" -k "bug,urgent"
+backmark task create "Fix login redirect loop" -p critical -a "Claude" -l "bug,urgent"
 
 # Claude investigates and plans
 backmark task ai-plan 2 "
