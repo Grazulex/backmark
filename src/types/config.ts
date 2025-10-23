@@ -17,7 +17,7 @@ export interface BoardConfig {
 export interface DisplayConfig {
   dateFormat: string;
   zeroPaddedIds: boolean;
-  theme: string;
+  theme: string; // Reserved for future use (custom color themes)
 }
 
 export interface SearchConfig {

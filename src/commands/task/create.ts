@@ -131,15 +131,27 @@ export async function createTask(title: string, options: CreateTaskOptions) {
 
     // Dates
     console.log(`\n${chalk.bold.gray('Dates:')}`);
-    console.log(`   ${chalk.bold('Created:     ')}`, formatDate(task.created_date, 'long'));
+    console.log(
+      `   ${chalk.bold('Created:     ')}`,
+      formatDate(task.created_date, 'long', backlog)
+    );
     if (task.start_date) {
-      console.log(`${icons.date} ${chalk.bold('Start:       ')}`, formatDate(task.start_date));
+      console.log(
+        `${icons.date} ${chalk.bold('Start:       ')}`,
+        formatDate(task.start_date, 'short', backlog)
+      );
     }
     if (task.end_date) {
-      console.log(`${icons.date} ${chalk.bold('End:         ')}`, formatDate(task.end_date));
+      console.log(
+        `${icons.date} ${chalk.bold('End:         ')}`,
+        formatDate(task.end_date, 'short', backlog)
+      );
     }
     if (task.release_date) {
-      console.log(`${icons.date} ${chalk.bold('Release:     ')}`, formatDate(task.release_date));
+      console.log(
+        `${icons.date} ${chalk.bold('Release:     ')}`,
+        formatDate(task.release_date, 'short', backlog)
+      );
     }
 
     // Hierarchy

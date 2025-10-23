@@ -1,5 +1,7 @@
 import chalk from 'chalk';
+import type { Backlog } from '../core/backlog';
 import type { TaskPriority, TaskStatus } from '../types';
+import { formatDateWithPattern } from './date';
 
 export const colors = {
   primary: chalk.blue,
@@ -39,14 +41,24 @@ export function formatTaskId(id: number, zeroPadded = true): string {
   return chalk.bold.cyan(`#${formatted}`);
 }
 
-export function formatDate(date: string | undefined, format: 'short' | 'long' = 'short'): string {
+export function formatDate(
+  date: string | undefined,
+  format: 'short' | 'long' = 'short',
+  backlog?: Backlog
+): string {
   if (!date) return chalk.gray('—');
 
-  const d = new Date(date);
-  if (format === 'short') {
-    return chalk.gray(d.toISOString().split('T')[0]);
+  // Get date format from config if backlog is provided
+  let pattern: string;
+  if (backlog) {
+    const configFormat = backlog.getConfig<string>('display.dateFormat');
+    pattern = format === 'short' ? configFormat.split(' ')[0] : configFormat;
+  } else {
+    // Fallback to default formats
+    pattern = format === 'short' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm';
   }
-  return chalk.gray(d.toLocaleString());
+
+  return chalk.gray(formatDateWithPattern(date, pattern));
 }
 
 export function formatKeywords(keywords: string[], maxLength?: number): string {

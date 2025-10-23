@@ -76,20 +76,35 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
     // Dates
     console.log(`\n${chalk.bold.yellow(`${icons.date} Dates`)}`);
     console.log(chalk.gray('─'.repeat(80)));
-    console.log(`   ${chalk.bold('Created:     ')}`, formatDate(task.created_date, 'long'));
-    console.log(`   ${chalk.bold('Updated:     ')}`, formatDate(task.updated_date, 'long'));
+    console.log(
+      `   ${chalk.bold('Created:     ')}`,
+      formatDate(task.created_date, 'long', backlog)
+    );
+    console.log(
+      `   ${chalk.bold('Updated:     ')}`,
+      formatDate(task.updated_date, 'long', backlog)
+    );
 
     if (task.start_date) {
-      console.log(`   ${chalk.bold('Start:       ')}`, formatDate(task.start_date, 'long'));
+      console.log(
+        `   ${chalk.bold('Start:       ')}`,
+        formatDate(task.start_date, 'long', backlog)
+      );
     }
     if (task.end_date) {
-      console.log(`   ${chalk.bold('End:         ')}`, formatDate(task.end_date, 'long'));
+      console.log(`   ${chalk.bold('End:         ')}`, formatDate(task.end_date, 'long', backlog));
     }
     if (task.release_date) {
-      console.log(`   ${chalk.bold('Release:     ')}`, formatDate(task.release_date, 'long'));
+      console.log(
+        `   ${chalk.bold('Release:     ')}`,
+        formatDate(task.release_date, 'long', backlog)
+      );
     }
     if (task.closed_date) {
-      console.log(`   ${chalk.bold('Closed:      ')}`, formatDate(task.closed_date, 'long'));
+      console.log(
+        `   ${chalk.bold('Closed:      ')}`,
+        formatDate(task.closed_date, 'long', backlog)
+      );
     }
 
     // Hierarchy & Dependencies
@@ -210,7 +225,7 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
       console.log(chalk.gray('─'.repeat(80)));
       for (const entry of task.changelog.slice(-10)) {
         // Show last 10 entries
-        const timestamp = chalk.gray(formatDate(entry.timestamp, 'long'));
+        const timestamp = chalk.gray(formatDate(entry.timestamp, 'long', backlog));
         const user = entry.user ? chalk.cyan(`[${entry.user}]`) : chalk.gray('[system]');
         const action = chalk.yellow(entry.action);
         const details = chalk.white(entry.details);
