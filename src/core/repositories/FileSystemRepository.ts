@@ -70,7 +70,6 @@ export class FileSystemRepository implements TaskRepository {
       ...data,
       description: body.trim(),
       filePath,
-      keywords: data.keywords || [],
       assignees: data.assignees || [],
       labels: data.labels || [],
       subtasks: data.subtasks || [],
@@ -99,7 +98,6 @@ export class FileSystemRepository implements TaskRepository {
     if (filters.priority && task.priority !== filters.priority) return false;
     if (filters.assignee && !task.assignees.includes(filters.assignee)) return false;
     if (filters.label && !task.labels.some((l) => l === filters.label)) return false;
-    if (filters.keyword && !task.keywords.some((k) => k === filters.keyword)) return false;
     if (filters.milestone && task.milestone !== filters.milestone) return false;
     if (filters.parent !== undefined && task.parent_task !== filters.parent) return false;
 

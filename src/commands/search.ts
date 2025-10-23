@@ -5,7 +5,7 @@ import type { TaskFilters, TaskPriority } from '../types';
 import {
   colorizePriority,
   colorizeStatus,
-  formatKeywords,
+  formatLabels,
   formatTaskId,
   icons,
   truncate,
@@ -18,7 +18,6 @@ interface SearchOptions {
   priority?: string;
   assignee?: string;
   milestone?: string;
-  keyword?: string;
   label?: string;
 }
 
@@ -34,7 +33,6 @@ export async function searchCommand(query: string, options: SearchOptions) {
       priority: options.priority as TaskPriority | undefined,
       assignee: options.assignee,
       milestone: options.milestone,
-      keyword: options.keyword,
       label: options.label,
     };
 
@@ -64,7 +62,6 @@ export async function searchCommand(query: string, options: SearchOptions) {
       if (options.priority) activeFilters.push(`priority=${chalk.cyan(options.priority)}`);
       if (options.assignee) activeFilters.push(`assignee=${chalk.cyan(options.assignee)}`);
       if (options.milestone) activeFilters.push(`milestone=${chalk.cyan(options.milestone)}`);
-      if (options.keyword) activeFilters.push(`keyword=${chalk.cyan(options.keyword)}`);
       if (options.label) activeFilters.push(`label=${chalk.cyan(options.label)}`);
 
       console.log(chalk.gray('Filters: ') + activeFilters.join(', '));
@@ -126,7 +123,7 @@ export async function searchCommand(query: string, options: SearchOptions) {
         truncate(displayTitle, 35),
         colorizeStatus(task.status),
         colorizePriority(task.priority),
-        formatKeywords(task.keywords, 15),
+        formatLabels(task.labels, 15),
         task.milestone ? chalk.yellow(task.milestone) : chalk.gray('—'),
       ];
 

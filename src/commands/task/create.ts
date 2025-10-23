@@ -7,7 +7,6 @@ import {
   colorizePriority,
   colorizeStatus,
   formatDate,
-  formatKeywords,
   formatLabels,
   formatTaskId,
   icons,
@@ -20,7 +19,6 @@ interface CreateTaskOptions {
   priority?: TaskPriority;
   assignees?: string;
   labels?: string;
-  keywords?: string;
   milestone?: string;
   start?: string;
   end?: string;
@@ -55,7 +53,6 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     // Parse arrays from comma-separated strings
     const assignees = options.assignees ? options.assignees.split(',').map((a) => a.trim()) : [];
     const labels = options.labels ? options.labels.split(',').map((l) => l.trim()) : [];
-    const keywords = options.keywords ? options.keywords.split(',').map((k) => k.trim()) : [];
     const dependencies = options.dependsOn
       ? options.dependsOn.split(',').map((d) => Number.parseInt(d.trim(), 10))
       : [];
@@ -76,7 +73,6 @@ export async function createTask(title: string, options: CreateTaskOptions) {
       priority: options.priority,
       assignees,
       labels,
-      keywords,
       milestone: options.milestone,
       start_date: options.start,
       end_date: options.end,
@@ -122,12 +118,8 @@ export async function createTask(title: string, options: CreateTaskOptions) {
       );
     }
 
-    if (task.keywords.length > 0) {
-      console.log(`${icons.keyword} ${chalk.bold('Keywords:    ')}`, formatKeywords(task.keywords));
-    }
-
     if (task.labels.length > 0) {
-      console.log(`   ${chalk.bold('Labels:      ')}`, formatLabels(task.labels));
+      console.log(`${icons.label} ${chalk.bold('Labels:      ')}`, formatLabels(task.labels));
     }
 
     // Dates

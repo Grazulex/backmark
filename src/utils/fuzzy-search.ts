@@ -13,8 +13,7 @@ export function searchTasks(tasks: Task[], query: string, options: SearchOptions
     keys: [
       { name: 'title', weight: 0.4 },
       { name: 'description', weight: 0.3 },
-      { name: 'keywords', weight: 0.2 },
-      { name: 'labels', weight: 0.1 },
+      { name: 'labels', weight: 0.3 },
     ],
     threshold,
     includeScore: true,

@@ -6,7 +6,6 @@ import {
   colorizeStatus,
   formatAssignees,
   formatDate,
-  formatKeywords,
   formatLabels,
   formatTaskId,
   icons,
@@ -67,12 +66,8 @@ export async function viewTask(taskId: string, options: ViewTaskOptions) {
       console.log(`${icons.user} ${chalk.bold('Assignees:   ')}`, formatAssignees(task.assignees));
     }
 
-    if (task.keywords.length > 0) {
-      console.log(`${icons.keyword} ${chalk.bold('Keywords:    ')}`, formatKeywords(task.keywords));
-    }
-
     if (task.labels.length > 0) {
-      console.log(`   ${chalk.bold('Labels:      ')}`, formatLabels(task.labels));
+      console.log(`${icons.label} ${chalk.bold('Labels:      ')}`, formatLabels(task.labels));
     }
 
     // Dates

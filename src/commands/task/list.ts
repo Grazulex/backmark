@@ -6,7 +6,7 @@ import {
   colorizePriority,
   colorizeStatus,
   formatAssignees,
-  formatKeywords,
+  formatLabels,
   formatTaskId,
   icons,
   truncate,
@@ -18,7 +18,6 @@ interface ListTasksOptions {
   priority?: string;
   assignee?: string;
   label?: string;
-  keyword?: string;
   milestone?: string;
   parent?: number;
 }
@@ -34,7 +33,6 @@ export async function listTasks(options: ListTasksOptions) {
       priority: options.priority as TaskPriority | undefined,
       assignee: options.assignee,
       label: options.label,
-      keyword: options.keyword,
       milestone: options.milestone,
       parent: options.parent,
     };
@@ -53,7 +51,7 @@ export async function listTasks(options: ListTasksOptions) {
     if (options.status) activeFilters.push(`status=${chalk.cyan(options.status)}`);
     if (options.priority) activeFilters.push(`priority=${chalk.cyan(options.priority)}`);
     if (options.assignee) activeFilters.push(`assignee=${chalk.cyan(options.assignee)}`);
-    if (options.keyword) activeFilters.push(`keyword=${chalk.cyan(options.keyword)}`);
+    if (options.label) activeFilters.push(`label=${chalk.cyan(options.label)}`);
     if (options.milestone) activeFilters.push(`milestone=${chalk.cyan(options.milestone)}`);
     if (options.parent !== undefined) activeFilters.push(`parent=${chalk.cyan(options.parent)}`);
 
@@ -70,7 +68,7 @@ export async function listTasks(options: ListTasksOptions) {
         chalk.bold.cyan('Status'),
         chalk.bold.cyan('Priority'),
         chalk.bold.cyan('Assignees'),
-        chalk.bold.cyan('Keywords'),
+        chalk.bold.cyan('Labels'),
         chalk.bold.cyan('Milestone'),
       ],
       style: {
@@ -105,7 +103,7 @@ export async function listTasks(options: ListTasksOptions) {
         colorizeStatus(task.status),
         colorizePriority(task.priority),
         formatAssignees(task.assignees).substring(0, 15),
-        formatKeywords(task.keywords, 15),
+        formatLabels(task.labels, 15),
         task.milestone ? chalk.yellow(task.milestone) : chalk.gray('—'),
       ];
 

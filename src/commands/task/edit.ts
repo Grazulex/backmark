@@ -12,8 +12,6 @@ interface EditTaskOptions {
   start?: string;
   end?: string;
   release?: string;
-  addKeyword?: string;
-  removeKeyword?: string;
   addLabel?: string;
   removeLabel?: string;
   addDependency?: string;
@@ -48,16 +46,6 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
     if (options.start) updates.start_date = options.start;
     if (options.end) updates.end_date = options.end;
     if (options.release) updates.release_date = options.release;
-
-    // Keywords management
-    if (options.addKeyword) {
-      const keywords = [...task.keywords, ...options.addKeyword.split(',').map((k) => k.trim())];
-      updates.keywords = [...new Set(keywords)]; // Remove duplicates
-    }
-    if (options.removeKeyword) {
-      const toRemove = options.removeKeyword.split(',').map((k) => k.trim());
-      updates.keywords = task.keywords.filter((k) => !toRemove.includes(k));
-    }
 
     // Labels management
     if (options.addLabel) {
@@ -102,13 +90,10 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
     if (options.milestone) {
       console.log(`  ${icons.milestone} Milestone: ${chalk.yellow(updatedTask.milestone)}`);
     }
-    if (options.addKeyword || options.removeKeyword) {
-      console.log(
-        `  ${icons.keyword} Keywords: ${updatedTask.keywords.map((k) => chalk.blue(`#${k}`)).join(' ')}`
-      );
-    }
     if (options.addLabel || options.removeLabel) {
-      console.log(`     Labels: ${updatedTask.labels.map((l) => chalk.cyan(`[${l}]`)).join(' ')}`);
+      console.log(
+        `  ${icons.label} Labels: ${updatedTask.labels.map((l) => chalk.cyan(`[${l}]`)).join(' ')}`
+      );
     }
     if (options.addDependency || options.removeDependency) {
       console.log(

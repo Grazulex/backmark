@@ -33,7 +33,6 @@ export interface Task {
   // Organisation
   status: TaskStatus;
   priority: TaskPriority;
-  keywords: string[];
   milestone?: string;
 
   // Personnes et labels
@@ -67,7 +66,6 @@ export interface TaskData {
   description?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
-  keywords?: string[];
   milestone?: string;
   assignees?: string[];
   labels?: string[];
@@ -83,7 +81,6 @@ export interface TaskFilters {
   priority?: TaskPriority;
   assignee?: string;
   label?: string;
-  keyword?: string;
   milestone?: string;
   parent?: number;
 }

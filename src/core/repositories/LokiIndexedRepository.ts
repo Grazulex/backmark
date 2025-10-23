@@ -14,7 +14,6 @@ interface TaskIndex {
   title: string;
   status: string;
   priority: string;
-  keywords: string[];
   milestone?: string;
   assignees: string[];
   labels: string[];
@@ -199,11 +198,6 @@ export class LokiIndexedRepository implements TaskRepository {
       indexedTasks = indexedTasks.filter((t) => t.labels.includes(label));
     }
 
-    if (filters?.keyword) {
-      const keyword = filters.keyword;
-      indexedTasks = indexedTasks.filter((t) => t.keywords.includes(keyword));
-    }
-
     // Load full tasks (including description and AI fields)
     const tasks: Task[] = [];
     for (const indexed of indexedTasks) {
@@ -306,7 +300,6 @@ export class LokiIndexedRepository implements TaskRepository {
       title: data.title,
       status: data.status,
       priority: data.priority,
-      keywords: data.keywords || [],
       milestone: data.milestone,
       assignees: data.assignees || [],
       labels: data.labels || [],
@@ -338,7 +331,6 @@ export class LokiIndexedRepository implements TaskRepository {
       description: body.trim(),
       status: indexed.status,
       priority: indexed.priority,
-      keywords: indexed.keywords,
       milestone: indexed.milestone,
       assignees: indexed.assignees,
       labels: indexed.labels,

@@ -61,24 +61,19 @@ export function formatDate(
   return chalk.gray(formatDateWithPattern(date, pattern));
 }
 
-export function formatKeywords(keywords: string[], maxLength?: number): string {
-  if (keywords.length === 0) return chalk.gray('—');
+export function formatLabels(labels: string[], maxLength?: number): string {
+  if (labels.length === 0) return chalk.gray('—');
 
-  const formatted = keywords.map((k) => chalk.blue(`#${k}`)).join(' ');
+  const formatted = labels.map((l) => chalk.cyan(`[${l}]`)).join(' ');
 
   // Si trop long, on tronque et on affiche juste le nombre
-  if (maxLength && keywords.join(' ').length > maxLength) {
-    const firstKeyword = chalk.blue(`#${keywords[0]}`);
-    const remaining = keywords.length - 1;
-    return remaining > 0 ? `${firstKeyword} ${chalk.gray(`+${remaining}`)}` : firstKeyword;
+  if (maxLength && labels.join(' ').length > maxLength) {
+    const firstLabel = chalk.cyan(`[${labels[0]}]`);
+    const remaining = labels.length - 1;
+    return remaining > 0 ? `${firstLabel} ${chalk.gray(`+${remaining}`)}` : firstLabel;
   }
 
   return formatted;
-}
-
-export function formatLabels(labels: string[]): string {
-  if (labels.length === 0) return chalk.gray('—');
-  return labels.map((l) => chalk.cyan(`[${l}]`)).join(' ');
 }
 
 export function formatAssignees(assignees: string[]): string {
@@ -114,7 +109,7 @@ export const icons = {
   date: '📅',
   priority: '⚡',
   status: '▶',
-  keyword: '🏷️',
+  label: '🏷️',
   dependency: '🔗',
   blocked: '🚫',
   done: '✓',

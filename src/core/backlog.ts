@@ -98,12 +98,11 @@ export class Backlog {
       // Organisation
       status: data.status || 'To Do',
       priority: data.priority || 'medium',
-      keywords: data.keywords || [],
       milestone: data.milestone,
 
       // Personnes et labels
       assignees: data.assignees || [],
-      labels: [],
+      labels: data.labels || [],
 
       // Hiérarchie
       parent_task: data.parent_task,

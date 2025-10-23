@@ -257,13 +257,6 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
                 </Text>
               )}
 
-              {selectedTask.keywords.length > 0 && (
-                <Text>
-                  <Text bold>Keywords: </Text>
-                  <Text dimColor>{selectedTask.keywords.join(', ')}</Text>
-                </Text>
-              )}
-
               {selectedTask.labels.length > 0 && (
                 <Text>
                   <Text bold>Labels: </Text>

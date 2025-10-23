@@ -32,7 +32,7 @@ program
       }
     )
   )
-  .version('0.5.2');
+  .version('0.5.3');
 
 // Init command
 program
@@ -59,7 +59,6 @@ program
   .option('-p, --priority <priority>', 'Filter by priority')
   .option('-a, --assignee <assignee>', 'Filter by assignee')
   .option('-m, --milestone <milestone>', 'Filter by milestone')
-  .option('-k, --keyword <keyword>', 'Filter by keyword')
   .option('-l, --label <label>', 'Filter by label')
   .action(searchCommand);
 
