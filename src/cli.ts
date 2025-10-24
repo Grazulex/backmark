@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import { boardCommands } from './commands/board/index.js';
 import { initCommand } from './commands/init.js';
+import { overviewCommand } from './commands/overview.js';
 import { searchCommand } from './commands/search.js';
 import { taskCommands } from './commands/task/index.js';
 
@@ -32,7 +33,7 @@ program
       }
     )
   )
-  .version('0.5.4');
+  .version('0.6.1');
 
 // Init command
 program
@@ -61,6 +62,17 @@ program
   .option('-m, --milestone <milestone>', 'Filter by milestone')
   .option('-l, --label <label>', 'Filter by label')
   .action(searchCommand);
+
+// Overview command
+program
+  .command('overview')
+  .description('Display project statistics and overview')
+  .option('-m, --milestone <name>', 'Filter by milestone')
+  .option('--start <date>', 'Start date (YYYY-MM-DD)')
+  .option('--end <date>', 'End date (YYYY-MM-DD)')
+  .option('--compact', 'Compact view (less visual)')
+  .option('--team', 'Show detailed team breakdown')
+  .action(overviewCommand);
 
 // Parse arguments
 program.parse();

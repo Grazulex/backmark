@@ -984,6 +984,62 @@ backmark search "" --milestone "v1.0"
 
 ---
 
+### Overview
+
+#### `backmark overview [options]`
+Display comprehensive project statistics and analytics.
+
+**Options:**
+| Flag | Description |
+|------|-------------|
+| `-m, --milestone <name>` | Filter statistics by milestone |
+| `--start <date>` | Start date for filtering (YYYY-MM-DD) |
+| `--end <date>` | End date for filtering (YYYY-MM-DD) |
+| `--compact` | Compact view with single-line summaries |
+| `--team` | Show detailed team breakdown (up to 10 members) |
+
+**Statistics Displayed:**
+- **Task Summary**: Total tasks, completion rate, status breakdown with progress bars
+- **Priority Breakdown**: Distribution of tasks by priority level
+- **Milestone Progress**: Completion percentage for each milestone
+- **Team Activity**: Task distribution across team members (AI members highlighted)
+- **Alerts**: Blocked tasks, critical priorities, overdue tasks, tasks without criteria
+- **AI Collaboration**: AI-assigned tasks, AI documentation coverage, AI completion rate
+- **Velocity Trends**: Task completion rate over last 4 weeks
+
+**Examples:**
+```bash
+# Full statistics overview
+backmark overview
+
+# Compact single-line view
+backmark overview --compact
+
+# Filter by milestone
+backmark overview -m "v1.0"
+
+# Filter by date range
+backmark overview --start "2025-01-01" --end "2025-03-31"
+
+# Detailed team view
+backmark overview --team
+```
+
+**Sample Output (Compact Mode):**
+```
+📋 BACKMARK OVERVIEW - All Tasks
+
+Tasks:      25 total | 15 done (60%) | 5 in progress | 1 blocked
+Priority:   2 critical | 8 high | 10 medium | 5 low
+Milestones: v1.0 (75%) | v2.0 (30%)
+Team:       Claude (12) | Alice (8) | Bob (5)
+Velocity:   3.5 tasks/week (avg) | 4.2 days avg duration
+Alerts:     🚫 1 blocked | 🔴 2 critical
+AI Stats:   12 tasks | 75% with plan | 80% with review
+```
+
+---
+
 ### Kanban Board
 
 #### `backmark board show [options]`
