@@ -293,9 +293,6 @@ backmark --help
 ```bash
 # Basic initialization
 backmark init "My Project"
-
-# With Claude Code agent installation
-backmark init "My Project" --install-agent
 ```
 
 **What gets created:**
@@ -415,12 +412,10 @@ Initialize a new backlog in the current directory.
 
 **Options:**
 - `[name]` - Project name (optional, prompts if not provided)
-- `--install-agent` - Automatically install Claude Code agent
 
 **Example:**
 ```bash
 backmark init "E-Commerce Platform"
-backmark init "My Project" --install-agent
 ```
 
 ---
@@ -1915,9 +1910,6 @@ backmark/
 │       ├── task.ts              # Task type definitions
 │       ├── config.ts            # Config type definitions
 │       └── index.ts             # Type exports
-├── templates/
-│   ├── task.md                  # Task template
-│   └── config.yml               # Default config
 ├── .claude/
 │   ├── agents/
 │   │   └── backmark-agent.md   # Claude Code agent
@@ -2524,9 +2516,9 @@ npm install -g @grazulex/backmark
 
 # 2. Initialize in your project
 cd /path/to/your/project
-backmark init "Your Project" --install-agent
+backmark init "Your Project"
 
-# 3. Claude Code will now use Backmark automatically!
+# 3. Claude Code can now use Backmark!
 ```
 
 ### What Claude Code Does with Backmark
@@ -2576,23 +2568,6 @@ backmark task view <id> --ai-plan
 # Just the notes (dev log)
 backmark task view <id> --ai-notes
 ```
-
-### Full Setup Guide
-
-See [CLAUDE_CODE_SETUP.md](CLAUDE_CODE_SETUP.md) for detailed instructions.
-
-### Agent Installation
-
-The `--install-agent` flag during `backmark init` automatically installs the agent to:
-```
-~/.config/claude-code/skills/backmark.md
-```
-
-This provides Claude Code with:
-- Task management protocols
-- Best practices for AI documentation
-- Quick reference commands
-- Workflow templates
 
 ---
 
@@ -2967,13 +2942,10 @@ backmark task list
 #### Problem: Claude Code agent not working
 **Solution:**
 ```bash
-# 1. Verify agent installed
-ls ~/.config/claude-code/skills/backmark.md
+# Agent is located in the project:
+ls .claude/agents/backmark-agent.md
 
-# 2. Reinstall agent
-backmark init --install-agent
-
-# Or manually copy:
+# You can manually copy it to Claude Code skills if needed:
 cp .claude/agents/backmark-agent.md ~/.config/claude-code/skills/backmark.md
 ```
 
@@ -3013,9 +2985,6 @@ yamllint backlog/config.yml
 
 # 2. Restore default config
 backmark init --force  # Overwrites config
-
-# Or manually:
-cp templates/config.yml backlog/config.yml
 ```
 
 ### Git Integration Issues
