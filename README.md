@@ -3297,18 +3297,21 @@ Found a security issue? Please email security@backmark.dev (or create a private 
 - [x] **Acceptance Criteria** - Checklist-based task completion tracking
 - [x] **Validation System** - Pre-close checks for subtasks, dependencies, criteria
 
-### v0.7.0 - AI Workflow Enhancement (Q1 2025)
-- [ ] **AI Task Templates** - Pre-configured templates for AI-driven tasks
+### v0.7.0 - AI Workflow Enhancement (🚧 In Progress)
+- [x] **AI Task Templates** - Pre-configured templates for AI-driven tasks ✅
   - Feature template with structured `ai_plan` sections
   - Bug fix template with debugging checklist
   - Refactoring template with quality criteria
   - Research template with documentation structure
-- [ ] **AI Task Automation Commands**
+  - Custom template support in `backlog/templates/`
+  - Commands: `task templates`, `task template show <name>`
+  - Full documentation in AI Workflow Guide
+- [ ] **AI Task Automation Commands** (Future)
   - `task ai-breakdown <id>` - AI decomposes task into subtasks
   - `task ai-estimate <id>` - AI estimates complexity/duration
   - `task ai-suggest-tests <id>` - AI proposes acceptance criteria
   - `task ai-review-ready <id>` - Check if task ready for review
-- [ ] **Export to Markdown Report** - Generate documentation from completed tasks
+- [ ] **Export to Markdown Report** (Future)
   - Sprint reports with AI contributions highlighted
   - Release notes from task changelogs
   - AI work summary (plans, notes, reviews)
