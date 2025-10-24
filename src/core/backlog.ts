@@ -272,6 +272,13 @@ export class Backlog {
   }
 
   /**
+   * Get the backlog directory path
+   */
+  getBacklogPath(): string {
+    return this.backlogPath;
+  }
+
+  /**
    * Close the backlog and cleanup resources
    * Important for LokiJS to stop autosave timer
    */

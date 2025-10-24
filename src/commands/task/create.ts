@@ -13,6 +13,7 @@ import {
 } from '../../utils/colors';
 import { Errors } from '../../utils/errors';
 import { logger } from '../../utils/logger';
+import { applyTemplate, loadTemplate } from '../../utils/templates';
 
 interface CreateTaskOptions {
   description?: string;
@@ -26,6 +27,7 @@ interface CreateTaskOptions {
   release?: string;
   parent?: number;
   dependsOn?: string;
+  template?: string;
 }
 
 export async function createTask(title: string, options: CreateTaskOptions) {
@@ -35,8 +37,43 @@ export async function createTask(title: string, options: CreateTaskOptions) {
   try {
     backlog = await Backlog.load();
 
-    // Interactive prompt for description if not provided
+    // Load template if specified
     let description = options.description;
+    let templateMetadata: Record<string, unknown> = {};
+
+    if (options.template) {
+      spinner.text = `Loading template '${options.template}'...`;
+      try {
+        const template = await loadTemplate(options.template, backlog.getBacklogPath());
+        const applied = applyTemplate(template, {
+          status: options.status,
+          priority: options.priority,
+          labels: options.labels?.split(',').map((l) => l.trim()),
+          milestone: options.milestone,
+        });
+
+        // Use template description if no description provided
+        if (!description) {
+          description = applied.description;
+        }
+
+        // Use template metadata (will be merged with user options)
+        templateMetadata = applied.metadata;
+
+        spinner.succeed(chalk.green(`✓ Template '${options.template}' loaded`));
+        spinner.start('Creating task...');
+      } catch (error) {
+        spinner.fail(chalk.red(`Failed to load template '${options.template}'`));
+        console.error(chalk.yellow((error as Error).message));
+        console.log(
+          chalk.gray('\nTip: Use'), chalk.cyan('backmark task templates'),
+          chalk.gray('to list available templates')
+        );
+        process.exit(1);
+      }
+    }
+
+    // Interactive prompt for description if not provided and no template
     if (!description) {
       spinner.stop();
       const answers = await inquirer.prompt([
@@ -52,8 +89,11 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     }
 
     // Parse arrays from comma-separated strings
+    // User options override template metadata
     const assignees = options.assignees ? options.assignees.split(',').map((a) => a.trim()) : [];
-    const labels = options.labels ? options.labels.split(',').map((l) => l.trim()) : [];
+    const labels = options.labels
+      ? options.labels.split(',').map((l) => l.trim())
+      : (templateMetadata.labels as string[]) || [];
     const dependencies = options.dependsOn
       ? options.dependsOn.split(',').map((d) => Number.parseInt(d.trim(), 10))
       : [];
@@ -71,11 +111,11 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     const task = await backlog.createTask({
       title,
       description,
-      status: options.status,
-      priority: options.priority,
+      status: options.status || (templateMetadata.status as string),
+      priority: options.priority || (templateMetadata.priority as TaskPriority),
       assignees,
       labels,
-      milestone: options.milestone,
+      milestone: options.milestone || (templateMetadata.milestone as string),
       start_date: options.start,
       end_date: options.end,
       release_date: options.release,

@@ -5,6 +5,7 @@ import { createTask } from './create';
 import { assignTask, closeTask, editTask } from './edit';
 import { showBlocked, showDependencies, showTree } from './hierarchy';
 import { listTasks } from './list';
+import { listTemplatesCommand, showTemplateCommand } from './templates';
 import { viewTask } from './view';
 
 export function taskCommands(program: Command) {
@@ -13,6 +14,7 @@ export function taskCommands(program: Command) {
     .description('Create a new task')
     .argument('<title>', 'Task title')
     .option('-d, --description <text>', 'Task description')
+    .option('-t, --template <name>', 'Use a task template (feature, bugfix, refactoring, research)')
     .option('-s, --status <status>', 'Task status', 'To Do')
     .option('-p, --priority <priority>', 'Task priority (low, medium, high, critical)', 'medium')
     .option('-a, --assignees <assignees>', 'Comma-separated assignees')
@@ -143,4 +145,21 @@ export function taskCommands(program: Command) {
     .action(showDependencies);
 
   program.command('blocked').description('List all blocked tasks').action(showBlocked);
+
+  // Template Commands
+  program.command('templates').description('List all available task templates').action(listTemplatesCommand);
+
+  program
+    .command('template')
+    .description('Template operations')
+    .argument('<action>', 'Action: show')
+    .argument('<name>', 'Template name')
+    .action((action, name) => {
+      if (action === 'show') {
+        showTemplateCommand(name);
+      } else {
+        console.error(`Unknown action: ${action}`);
+        process.exit(1);
+      }
+    });
 }
