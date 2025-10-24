@@ -3151,55 +3151,65 @@ Found a security issue? Please email security@backmark.dev (or create a private 
 
 ## 🛤️ Roadmap
 
-### v0.6.0 - Enhanced Usability (Q1 2025)
-- [ ] **Task deletion** command (`task delete`)
-- [ ] **Import from CSV** (Jira, Trello export)
-- [ ] **Export to Markdown report** (`board export`)
-- [ ] **Bulk operations** (edit multiple tasks)
-- [ ] **Templates** for common task types
-- [ ] **Time tracking** (start, stop, total time)
-- [ ] **Task completion** percentage view
+> **Philosophy**: Backmark is designed for **vibe coding with AI**. Features focus on improving human-AI collaboration, not replacing traditional project management tools.
 
-### v0.7.0 - Collaboration (Q2 2025)
-- [ ] **Git integration** (auto-commit option)
-- [ ] **Multi-user support** (track who changed what)
-- [ ] **Mentions** in task comments (`@user`)
-- [ ] **Notifications** (task assigned, status changed)
-- [ ] **Team view** (tasks by assignee)
-- [ ] **Activity feed** (recent changes)
+### v0.7.0 - AI Workflow Enhancement (Q1 2025)
+- [ ] **AI Task Templates** - Pre-configured templates for AI-driven tasks
+  - Feature template with structured `ai_plan` sections
+  - Bug fix template with debugging checklist
+  - Refactoring template with quality criteria
+  - Research template with documentation structure
+- [ ] **AI Task Automation Commands**
+  - `task ai-breakdown <id>` - AI decomposes task into subtasks
+  - `task ai-estimate <id>` - AI estimates complexity/duration
+  - `task ai-suggest-tests <id>` - AI proposes acceptance criteria
+  - `task ai-review-ready <id>` - Check if task ready for review
+- [ ] **Export to Markdown Report** - Generate documentation from completed tasks
+  - Sprint reports with AI contributions highlighted
+  - Release notes from task changelogs
+  - AI work summary (plans, notes, reviews)
 
-### v0.8.0 - Advanced Features (Q2 2025)
-- [ ] **Custom fields** (add your own metadata)
-- [ ] **Webhooks** (integrate with external tools)
-- [ ] **Task archiving** (move old tasks out of active backlog)
-- [ ] **Recurring tasks** (daily, weekly, monthly)
-- [ ] **Task estimates** (story points, hours)
-- [ ] **Burndown charts** (terminal-based)
-- [ ] **Gantt view** (ASCII art timeline)
+### v0.8.0 - Enhanced AI Documentation (Q2 2025)
+- [ ] **Structured AI Sections** - Richer AI documentation format
+  - Code snippets in `ai_plan` with syntax highlighting
+  - Decision trees in `ai_notes`
+  - Test results in `ai_review`
+  - Architecture diagrams in `ai_documentation`
+- [ ] **AI Changelog Intelligence**
+  - `task ai-summary <id>` - AI-generated summary of changelog
+  - Timeline view of AI interventions
+  - Pattern detection (frequent blockers, common issues)
+- [ ] **Task Completion Percentage** - Visual progress tracking
+  - Based on subtasks, dependencies, acceptance criteria
+  - AI confidence score (plan coverage, review completeness)
 
-### v0.9.0 - AI Enhancements (Q3 2025)
-- [ ] **AI task suggestions** (based on codebase)
-- [ ] **Automatic subtask creation** (AI breaks down tasks)
-- [ ] **Smart search** (natural language queries)
-- [ ] **Task prioritization** (AI suggests priority)
-- [ ] **Code-to-task linking** (detect related code)
-- [ ] **MCP server** (Model Context Protocol integration)
+### v0.9.0 - AI Context & Integration (Q3 2025)
+- [ ] **MCP Server** (Model Context Protocol) - Deep AI agent integration
+  - Expose Backmark data as MCP resources
+  - AI agents can read/update tasks programmatically
+  - Automatic task creation from AI conversations
+- [ ] **Code-to-Task Linking** - Connect tasks to codebase
+  - Detect related files/functions mentioned in tasks
+  - Track which code was modified for each task
+  - AI can auto-link code references
+- [ ] **Smart Dependencies** - AI-suggested task relationships
+  - Auto-detect dependencies from task descriptions
+  - Suggest blockers based on code analysis
+  - Recommend subtask ordering
 
-### v1.0.0 - Stable Release (Q4 2025)
-- [ ] **Full test coverage** (>90%)
-- [ ] **Complete documentation**
-- [ ] **Performance optimization** (handle 10,000+ tasks)
-- [ ] **Plugin system** (extend Backmark)
-- [ ] **Web UI** (optional, view-only)
-- [ ] **Mobile app** (optional, view-only)
+### v1.0.0 - Production Ready (Q4 2025)
+- [x] **Full test coverage** (>80% for critical modules) ✅
+- [ ] **Complete documentation** - Guides for AI-driven workflows
+- [ ] **Performance optimization** - Handle large projects efficiently
+- [ ] **Git integration** - Optional auto-commit of AI changes
+- [ ] **Plugin system** - Extend AI capabilities
 
 ### Future Ideas (v2.0+)
-- [ ] **Real-time collaboration** (multiple users, live updates)
-- [ ] **Visual board editor** (TUI drag-and-drop)
-- [ ] **AI code review** integration
-- [ ] **Project analytics** (velocity, cycle time)
-- [ ] **Custom workflows** (state machines)
-- [ ] **API** (REST API for integrations)
+- [ ] **AI Code Review Integration** - Link AI reviews to PRs
+- [ ] **Multi-AI Collaboration** - Track work from different AI assistants
+- [ ] **Learning Mode** - AI learns from your workflow patterns
+- [ ] **Natural Language Queries** - "Show me blocked AI tasks in v2.0"
+- [ ] **AI Pair Programming Metrics** - Track AI contribution quality
 
 **Vote on features:** https://github.com/Grazulex/backmark/discussions
 
