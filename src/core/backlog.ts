@@ -40,6 +40,26 @@ export class Backlog {
         needsSave = true;
       }
 
+      // Auto-migrate: add validations settings if missing
+      if (!config.validations) {
+        config.validations = {
+          close: {
+            check_subtasks: true,
+            check_dependencies: true,
+            check_blocked_by: true,
+            check_acceptance_criteria: true,
+            warn_missing_ai_review: true,
+            warn_early_close: true,
+            warn_late_close: true,
+            warn_quick_close: 300,
+            suggest_parent_close: true,
+            notify_unblocked: true,
+            allow_force: true,
+          },
+        };
+        needsSave = true;
+      }
+
       // Save updated config if needed
       if (needsSave) {
         const { dump } = await import('js-yaml');
