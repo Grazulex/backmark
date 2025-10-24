@@ -567,12 +567,81 @@ backmark task assign 1 "Alice,Bob,Claude"
 backmark task assign 1 "Claude"
 ```
 
-#### `backmark task close <id>`
-Close a task (status → Done, adds closed_date).
+#### `backmark task close <id> [options]`
+Close a task (status → Done, adds closed_date) with smart validations.
 
-**Example:**
+**Options:**
+- `--force` - Force close even if validations fail
+
+**Smart Validations:**
+
+Before closing, Backmark validates:
+- ✅ **Subtasks completed**: All child tasks must be Done
+- ✅ **Dependencies resolved**: All required tasks must be Done
+- ✅ **No blockers**: Tasks in `blocked_by` must be Done
+- ✅ **Acceptance criteria**: All criteria must be checked
+
+**Warnings** (prompt for confirmation):
+- ⚠️ **Missing AI review**: AI-assigned task without `ai-review`
+- ⚠️ **Date mismatch**: Closing before/after planned dates
+- ⚠️ **Too quick**: Task completed in < 5 minutes (configurable)
+
+**Suggestions** (after close):
+- 💡 **Parent completion**: Suggests closing parent if all siblings done
+- 💡 **Unblocked tasks**: Notifies newly unblocked tasks
+
+**Examples:**
 ```bash
+# Normal close (with validations)
 backmark task close 1
+
+# Error: subtasks not done
+✗ Cannot close task #1: Parent Task
+
+Blocking issues:
+  ✗ 2 subtask(s) not completed:
+    - #2 Subtask 1 (To Do)
+    - #3 Subtask 2 (In Progress)
+
+Use --force to close anyway
+
+# Force close (bypass validations)
+backmark task close 1 --force
+✓ Task #001 marked as Done (forced)
+
+# With warnings
+backmark task close 5
+
+⚠ Warnings:
+  ⚠ Task completed very quickly (2m 15s)
+? Continue closing this task? (Y/n)
+
+# With suggestions
+✓ Task #3 closed
+
+💡 Suggestions:
+  All subtasks of #1 (Parent Task) are now complete!
+    Run: backmark task close 1
+```
+
+**Configuration:**
+
+Customize validation behavior in `backlog/config.yml`:
+
+```yaml
+validations:
+  close:
+    check_subtasks: true              # Validate subtasks
+    check_dependencies: true          # Validate dependencies
+    check_blocked_by: true            # Validate blockers
+    check_acceptance_criteria: true   # Validate criteria
+    warn_missing_ai_review: true      # Warn if no AI review
+    warn_early_close: true            # Warn if before end_date
+    warn_late_close: true             # Warn if after end_date
+    warn_quick_close: 300             # Warn if < 300 seconds
+    suggest_parent_close: true        # Suggest parent close
+    notify_unblocked: true            # Notify unblocked tasks
+    allow_force: true                 # Allow --force option
 ```
 
 ---
@@ -1609,6 +1678,20 @@ search:
 performance:
   useIndex: true              # Use LokiJS for fast queries (recommended)
   rebuildIndexOnStart: false  # Force rebuild index on start (debug only)
+
+validations:
+  close:
+    check_subtasks: true              # Validate all subtasks are done
+    check_dependencies: true          # Validate all dependencies are resolved
+    check_blocked_by: true            # Validate no blocking tasks remain
+    check_acceptance_criteria: true   # Validate all criteria are checked
+    warn_missing_ai_review: true      # Warn if AI task has no review
+    warn_early_close: true            # Warn if closing before end_date
+    warn_late_close: true             # Warn if closing after end_date
+    warn_quick_close: 300             # Warn if task < N seconds (0=disabled)
+    suggest_parent_close: true        # Suggest closing parent when all children done
+    notify_unblocked: true            # Notify about newly unblocked tasks
+    allow_force: true                 # Allow --force to bypass validations
 ```
 
 ### Customization Examples
@@ -1645,6 +1728,59 @@ display:
 performance:
   useIndex: true               # Use LokiJS index (default: true)
   rebuildIndexOnStart: false   # Rebuild every time (default: false)
+```
+
+#### 5. Customize Task Close Validations
+```yaml
+validations:
+  close:
+    # Strict validations (blocking)
+    check_subtasks: true              # Require all subtasks done
+    check_dependencies: false         # Skip dependency check
+    check_acceptance_criteria: true   # Require all criteria checked
+
+    # Warnings (non-blocking)
+    warn_quick_close: 600             # Warn if task < 10 minutes
+    warn_missing_ai_review: false     # Don't warn about missing AI review
+
+    # Suggestions
+    suggest_parent_close: true        # Suggest parent close
+    notify_unblocked: true            # Notify unblocked tasks
+
+    # Force option
+    allow_force: true                 # Allow --force flag
+```
+
+**Common Scenarios:**
+
+```yaml
+# Strict mode (maximum validation)
+validations:
+  close:
+    check_subtasks: true
+    check_dependencies: true
+    check_blocked_by: true
+    check_acceptance_criteria: true
+    warn_quick_close: 60              # Very strict (1 minute)
+    allow_force: false                # No bypass allowed
+
+# Relaxed mode (minimal validation)
+validations:
+  close:
+    check_subtasks: false
+    check_dependencies: false
+    check_blocked_by: false
+    check_acceptance_criteria: false
+    warn_quick_close: 0               # Disabled
+    allow_force: true
+
+# AI-focused mode (focus on AI documentation)
+validations:
+  close:
+    check_subtasks: true
+    warn_missing_ai_review: true      # Strict on AI review
+    warn_quick_close: 300
+    suggest_parent_close: true
 ```
 
 ### Performance Settings Explained
