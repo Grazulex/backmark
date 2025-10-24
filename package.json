@@ -7,7 +7,13 @@
   "bin": {
     "backmark": "./dist/cli.js"
   },
-  "files": ["dist", "templates", ".claude", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "templates",
+    ".claude",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Grazulex/backmark.git"
@@ -24,13 +30,20 @@
     "uninstall:global": "npm unlink -g backmark",
     "test": "vitest",
     "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "check": "biome check . && tsc --noEmit",
     "prepublishOnly": "npm run check && npm run build"
   },
-  "keywords": ["task-management", "markdown", "cli", "kanban", "productivity"],
+  "keywords": [
+    "task-management",
+    "markdown",
+    "cli",
+    "kanban",
+    "productivity"
+  ],
   "author": "Jean-Marc Strauven",
   "license": "MIT",
   "dependencies": {
@@ -56,6 +69,7 @@
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^2.1.9",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
