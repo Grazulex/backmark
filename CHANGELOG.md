@@ -5,6 +5,51 @@ All notable changes to Backmark will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0-alpha.0] - 2025-10-24
+
+### Added
+- **AI Task Templates** - Pre-configured templates for common task types
+  - `feature` template - New feature development with structured AI plan sections
+  - `bugfix` template - Bug fixes with debugging checklist and root cause analysis
+  - `refactoring` template - Code improvements with quality metrics and patterns
+  - `research` template - Investigation tasks with comparison matrix and findings
+  - Custom template support in `backlog/templates/` directory
+  - Template metadata (status, priority, labels) automatically applied to tasks
+- **New Commands**
+  - `task templates` - List all available templates (built-in and custom)
+  - `task template show <name>` - View template content and metadata
+  - `task create --template <name>` - Create task from template
+- **Template Features**
+  - Built-in templates included in npm package
+  - User can create custom templates with YAML frontmatter
+  - Templates referenced as `custom:<name>` for user templates
+  - Template options can be overridden at creation time
+  - Automatic label merging between template and user options
+
+### Improved
+- Enhanced `applyTemplate()` function to properly filter undefined/null values
+- Template metadata merging preserves template defaults when user options are null/undefined
+- Better error messages for missing templates with helpful suggestions
+
+### Documentation
+- Updated `.claude/agents/backmark-agent.md` with template usage and examples
+- Added comprehensive "Pattern 0: Using Task Templates" to AI Workflow Guide
+- Updated Quick Start guide with template section and examples
+- Enhanced README with complete template reference and examples
+- Added template tips and best practices across all documentation
+
+### Testing
+- Added comprehensive test suite for templates (`tests/unit/templates.test.ts`)
+- 17 new tests covering template loading, applying, and merging
+- Tests for built-in templates, error handling, and metadata merging
+- All tests passing with full coverage of template functionality
+
+### Technical
+- New `src/utils/templates.ts` module for template management
+- Template discovery supports both built-in and user directories
+- Gray-matter for parsing template frontmatter
+- Path resolution works in both development and production builds
+
 ## [0.6.2] - 2025-10-24
 
 ### Added
