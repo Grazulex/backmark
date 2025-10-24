@@ -615,6 +615,165 @@ Implementation is **production-ready with minor concerns**. Core functionality w
 
 ## 🔄 Workflow Patterns
 
+### Pattern 0: Using Task Templates (NEW in v0.7.0)
+
+**Use for**: Quickly creating well-structured tasks for common scenarios
+
+Task templates provide pre-filled task structures with best practices baked in. They're especially useful for AI agents to maintain consistency across tasks.
+
+**Available Templates**:
+
+1. **feature** - New feature development
+2. **bugfix** - Bug fixes with debugging workflow
+3. **refactoring** - Code improvements with quality metrics
+4. **research** - Investigation and technology evaluation
+
+**Basic Usage**:
+
+```bash
+# List available templates
+backmark task templates
+
+# View template content
+backmark task template show feature
+
+# Create task from template
+backmark task create "Add user authentication" --template feature \
+  -p high \
+  -a "Claude" \
+  -m "v1.0"
+```
+
+**What Templates Provide**:
+
+- ✅ Pre-structured description with sections for planning
+- ✅ Default metadata (status, priority, labels)
+- ✅ AI-friendly structure (objectives, plan sections, testing checklist)
+- ✅ Best practices guidance
+- ✅ Consistent format across the team
+
+**Template Workflow Example**:
+
+```bash
+# 1. Human creates task from template
+backmark task create "Implement payment processing" \
+  --template feature \
+  -p critical \
+  -a "Claude" \
+  -l "backend,payment,stripe" \
+  -m "v2.0"
+
+# The template provides structure like:
+# - 📝 Description: {to be filled}
+# - 🎯 Objectives: (checklist of goals)
+# - 🤖 AI Plan: (section for implementation plan)
+# - 🧪 Testing Strategy: (testing checklist)
+# - ⚠️ Risks & Considerations: (potential issues)
+
+# 2. AI fills in the template sections
+backmark task view 75  # AI reads the structured template
+
+backmark task ai-plan 75 "$(cat <<'EOF'
+## Implementation Plan
+
+Following the template structure:
+
+### Phase 1: Stripe Setup
+- Install stripe SDK
+- Configure API keys in environment
+- Create payment intent endpoint
+
+### Phase 2: Frontend Integration
+[... detailed plan based on template structure ...]
+EOF
+)"
+
+# 3. Continue with standard workflow
+# The template provides guardrails and reminders throughout
+```
+
+**Custom Templates**:
+
+You can create your own templates for your specific workflows:
+
+```bash
+# 1. Create template file in backlog/templates/
+mkdir -p backlog/templates
+cat > backlog/templates/api-endpoint.md << 'EOF'
+---
+status: To Do
+priority: medium
+labels:
+  - api
+  - backend
+---
+
+# API Endpoint Development
+
+## 📝 Endpoint Specification
+- **Method**: {GET/POST/PUT/DELETE}
+- **Path**: /api/{endpoint}
+- **Auth**: {Required/Public}
+
+## 🎯 Request/Response
+### Request
+```json
+{
+  "field": "type"
+}
+```
+
+### Response
+```json
+{
+  "data": {}
+}
+```
+
+## 🤖 Implementation Plan
+- [ ] Create route handler
+- [ ] Add input validation (Zod schema)
+- [ ] Implement business logic
+- [ ] Add error handling
+- [ ] Write tests
+- [ ] Update API documentation
+
+## 🧪 Testing Checklist
+- [ ] Valid input
+- [ ] Invalid input (400)
+- [ ] Unauthorized (401)
+- [ ] Edge cases
+EOF
+
+# 2. Use your custom template
+backmark task create "Add /api/users endpoint" --template custom:api-endpoint
+```
+
+**When to Use Templates**:
+
+✅ **Use templates for**:
+- Common, repeatable task types
+- Onboarding new team members (AI or human)
+- Ensuring best practices are followed
+- Maintaining consistency across tasks
+- Quick task creation with good structure
+
+❌ **Don't use templates for**:
+- Highly unique, one-off tasks
+- When you need a completely custom structure
+- Very simple tasks that don't need structure
+
+**Tips for AI Agents**:
+
+When using templates, remember to:
+1. Read the template structure first
+2. Fill in all sections marked with `{placeholders}`
+3. Use the provided checklists as your acceptance criteria
+4. Follow the suggested implementation phases
+5. Update sections as you work (don't leave template text)
+
+---
+
 ### Pattern 1: The Standard Flow
 
 **Use for**: Most features and bug fixes
@@ -1749,32 +1908,57 @@ backmark task create "Spike: Evaluate GraphQL vs REST for mobile API" \
 
 Spikes are about learning, not production code. Document findings in `ai_documentation`.
 
-### Technique 3: Template Tasks
+### Technique 3: Custom Task Templates
 
-Create reusable task templates:
+Backmark includes built-in templates (feature, bugfix, refactoring, research), but you can create your own for project-specific workflows:
 
 ```bash
-# Create a feature template
-cat > ~/backmark-templates/feature.md << 'EOF'
-## Requirements
-- [ ] What functionality?
-- [ ] Who is the user?
-- [ ] Success criteria?
+# Create a custom template in your backlog
+mkdir -p backlog/templates
+cat > backlog/templates/deployment.md << 'EOF'
+---
+status: To Do
+priority: high
+labels:
+  - deployment
+  - devops
+---
 
-## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
+# Deployment Task
 
-## Implementation Notes
-- Estimated time:
-- Key files:
-- Dependencies:
+## 🎯 Deployment Target
+- **Environment**: {production/staging/dev}
+- **Version**: {version number}
+- **Release Date**: {YYYY-MM-DD}
+
+## 📋 Pre-Deployment Checklist
+- [ ] All tests passing in CI
+- [ ] Code reviewed and approved
+- [ ] Database migrations prepared
+- [ ] Environment variables configured
+- [ ] Rollback plan documented
+
+## 🚀 Deployment Steps
+1. [ ] Backup database
+2. [ ] Run migrations
+3. [ ] Deploy application
+4. [ ] Smoke test
+5. [ ] Monitor for errors
+
+## ✅ Post-Deployment Verification
+- [ ] Health check endpoint responding
+- [ ] Key features tested
+- [ ] No error spikes in logs
+- [ ] Performance metrics acceptable
 EOF
 
-# Use the template
-backmark task create "Add export feature" \
-  --description "$(cat ~/backmark-templates/feature.md)"
+# Use your custom template
+backmark task create "Deploy v2.0 to production" \
+  --template custom:deployment \
+  -p critical
 ```
+
+See [Pattern 0: Using Task Templates](#pattern-0-using-task-templates-new-in-v070) for more details on the template system.
 
 ### Technique 4: Pair Programming with AI
 

@@ -121,20 +121,31 @@ export function applyTemplate(
   metadata: Record<string, unknown>;
   description: string;
 } {
-  // Merge template metadata with user options (user options take precedence)
+  // Filter out undefined and null values from user options
+  const filteredUserOptions = Object.entries(userOptions).reduce(
+    (acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {} as Record<string, unknown>
+  );
+
+  // Merge template metadata with filtered user options (user options take precedence)
   const metadata = {
     ...template.metadata,
-    ...userOptions,
+    ...filteredUserOptions,
   };
 
   // Merge labels if both exist
-  if (template.metadata.labels && userOptions.labels) {
+  if (template.metadata.labels && filteredUserOptions.labels) {
     const templateLabels = Array.isArray(template.metadata.labels)
       ? template.metadata.labels
       : [template.metadata.labels];
-    const userLabels = Array.isArray(userOptions.labels)
-      ? userOptions.labels
-      : [userOptions.labels];
+    const userLabels = Array.isArray(filteredUserOptions.labels)
+      ? filteredUserOptions.labels
+      : [filteredUserOptions.labels];
     metadata.labels = [...new Set([...templateLabels, ...userLabels])];
   }
 

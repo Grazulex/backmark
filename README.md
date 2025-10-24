@@ -131,6 +131,7 @@
 
 ### 🎯 Core Task Management
 - **Markdown-based storage**: Every task is a `.md` file with YAML frontmatter
+- **Task templates** (NEW in v0.7.0): Pre-structured tasks for common workflows (feature, bugfix, refactoring, research) + custom templates
 - **Rich metadata**: Priorities (low/medium/high/critical), statuses, milestones, dates
 - **Hierarchical tasks**: Parent/child relationships with unlimited nesting
 - **Dependencies**: Track task dependencies with `depends_on` and `blocked_by` fields
@@ -429,6 +430,7 @@ Create a new task with rich metadata.
 | Flag | Description | Example |
 |------|-------------|---------|
 | `-d, --description <text>` | Task description | `-d "Implement JWT auth"` |
+| `-t, --template <name>` | Use task template (NEW in v0.7.0) | `-t feature` or `-t custom:my-template` |
 | `-s, --status <status>` | Status (default: "To Do") | `-s "In Progress"` |
 | `-p, --priority <priority>` | Priority: low, medium, high, critical | `-p high` |
 | `-a, --assignees <assignees>` | Comma-separated assignees | `-a "Alice,Bob,Claude"` |
@@ -638,6 +640,166 @@ validations:
     notify_unblocked: true            # Notify unblocked tasks
     allow_force: true                 # Allow --force option
 ```
+
+---
+
+### Task Templates
+
+**NEW in v0.7.0** - Task templates provide pre-structured tasks for common workflows, making it faster to create well-organized tasks.
+
+#### `backmark task templates`
+List all available task templates.
+
+**Output:**
+```
+📋 Available Task Templates:
+
+Built-in Templates:
+  ✨  feature - New feature development
+  🐛  bugfix - Bug fix with debugging steps
+  ♻️  refactoring - Code refactoring and improvement
+  🔍  research - Research and investigation
+
+Custom Templates:
+  ✨  custom:deployment - Deployment checklist
+
+Usage:
+  backmark task create "Task title" --template <name>
+  backmark task template show <name> # View template content
+
+Custom templates location:
+  /path/to/backlog/templates/
+```
+
+#### `backmark task template show <name>`
+View the content and metadata of a specific template.
+
+**Examples:**
+```bash
+backmark task template show feature
+backmark task template show custom:deployment
+```
+
+#### Using Templates
+
+Templates can be used during task creation with the `--template` option:
+
+```bash
+# Create task from built-in template
+backmark task create "Add payment processing" \
+  --template feature \
+  -p high \
+  -a "Claude" \
+  -m "v2.0"
+
+# Create task from custom template
+backmark task create "Deploy v2.0" \
+  --template custom:deployment \
+  -p critical
+```
+
+**What Templates Provide:**
+- 📝 Pre-structured description with sections
+- 🎯 Default metadata (status, priority, labels)
+- ✅ Pre-filled checklists and objectives
+- 🤖 AI-friendly structure for planning
+- 📋 Best practices baked in
+
+**Built-in Templates:**
+
+1. **feature** - New feature development
+   - Objectives checklist
+   - Implementation plan section
+   - Testing strategy
+   - Risks and considerations
+
+2. **bugfix** - Bug fixes
+   - Bug description template
+   - Reproduction steps
+   - Root cause analysis section
+   - Fix verification checklist
+
+3. **refactoring** - Code improvements
+   - Code smell checklist
+   - Refactoring patterns
+   - Quality metrics
+   - Testing plan
+
+4. **research** - Investigation tasks
+   - Research questions
+   - Experiments to run
+   - Comparison matrix
+   - Recommendations section
+
+**Creating Custom Templates:**
+
+Create your own templates in `backlog/templates/`:
+
+```bash
+# Create templates directory
+mkdir -p backlog/templates
+
+# Create custom template
+cat > backlog/templates/deployment.md << 'EOF'
+---
+status: To Do
+priority: high
+labels:
+  - deployment
+  - devops
+---
+
+# Deployment Task
+
+## 🎯 Deployment Target
+- **Environment**: {production/staging/dev}
+- **Version**: {version number}
+- **Release Date**: {YYYY-MM-DD}
+
+## 📋 Pre-Deployment Checklist
+- [ ] All tests passing in CI
+- [ ] Code reviewed and approved
+- [ ] Database migrations prepared
+- [ ] Environment variables configured
+- [ ] Rollback plan documented
+
+## 🚀 Deployment Steps
+1. [ ] Backup database
+2. [ ] Run migrations
+3. [ ] Deploy application
+4. [ ] Smoke test
+5. [ ] Monitor for errors
+
+## ✅ Post-Deployment Verification
+- [ ] Health check endpoint responding
+- [ ] Key features tested
+- [ ] No error spikes in logs
+- [ ] Performance metrics acceptable
+EOF
+
+# Use custom template
+backmark task create "Deploy v2.0 to production" \
+  --template custom:deployment
+```
+
+**Template Structure:**
+
+Templates are Markdown files with YAML frontmatter:
+
+```markdown
+---
+status: To Do
+priority: medium
+labels:
+  - feature
+---
+
+# Task Content
+
+Your structured task description...
+```
+
+See the [AI Workflow Guide](docs/ai-workflow.md#pattern-0-using-task-templates-new-in-v070) for detailed template usage patterns.
 
 ---
 

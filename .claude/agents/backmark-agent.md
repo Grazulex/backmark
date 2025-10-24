@@ -37,6 +37,7 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
   ```bash
   backmark task create "<title>" [options]
     -d, --description <text>      Task description
+    -t, --template <name>         Use a task template
     -s, --status <status>         Status (default: "To Do")
     -p, --priority <priority>     Priority: low, medium, high, critical
     -a, --assignees <list>        Comma-separated assignees
@@ -47,6 +48,38 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
     --parent <id>                 Parent task ID (for subtasks)
     --depends-on <ids>            Comma-separated dependency IDs
   ```
+
+  ### Task Templates
+
+  **Templates provide pre-structured task formats for common workflows:**
+
+  ```bash
+  # List available templates
+  backmark task templates
+
+  # View template content
+  backmark task template show <name>
+
+  # Create task from template
+  backmark task create "Task title" --template <name>
+  ```
+
+  **Built-in Templates:**
+  - **feature**: New feature development with structured AI plan sections
+  - **bugfix**: Bug fix with debugging checklist and root cause analysis
+  - **refactoring**: Code refactoring with quality metrics and patterns
+  - **research**: Research/investigation with comparison matrix
+
+  **Custom Templates:**
+  - Place custom templates in `backlog/templates/`
+  - Use YAML frontmatter for metadata (status, priority, labels)
+  - Reference with `--template custom:<name>`
+
+  **Template Benefits:**
+  - Pre-filled description structure with AI plan sections
+  - Automatic metadata (status, priority, labels)
+  - Consistent task formatting across the project
+  - Best practices baked into task structure
 
   ### Task Management
   ```bash
@@ -102,12 +135,26 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
      ```bash
      backmark search "<query>"
      ```
-  3. **Create the task** if needed:
+  3. **Choose appropriate template** for the task type:
+     - Use `feature` for new functionality
+     - Use `bugfix` for fixing bugs
+     - Use `refactoring` for code improvements
+     - Use `research` for investigations
+  4. **Create the task** with template:
+     ```bash
+     backmark task create "Implement feature X" \
+       --template feature \
+       -p high \
+       -a "Claude" \
+       -l "feature,backend" \
+       -m "v1.0"
+     ```
+     Or without template if custom structure needed:
      ```bash
      backmark task create "Implement feature X" \
        -p high \
        -a "Claude" \
-       -k "feature,backend" \
+       -l "feature,backend" \
        -m "v1.0"
      ```
 
@@ -373,11 +420,12 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
   ```bash
   # User asks: "Implement user authentication"
 
-  # 1. Create task
+  # 1. Create task with feature template
   backmark task create "Implement user authentication" \
+    --template feature \
     -p high \
     -a "Claude" \
-    -k "auth,security,backend" \
+    -l "auth,security,backend" \
     -m "v1.0"
 
   # 2. Create plan

@@ -95,6 +95,96 @@ File: /path/to/backlog/task-001 - Fix login bug.md
 
 ---
 
+## 📋 Using Task Templates (NEW in v0.7.0)
+
+Task templates provide pre-structured tasks for common scenarios, making it faster to create well-organized tasks.
+
+### Available Templates
+
+Backmark includes 4 built-in templates:
+- **feature** - New feature development
+- **bugfix** - Bug fixes with debugging workflow
+- **refactoring** - Code improvements with quality metrics
+- **research** - Investigation and technology evaluation
+
+### List Templates
+
+```bash
+backmark task templates
+```
+
+Output:
+```
+📋 Available Task Templates:
+
+Built-in Templates:
+  ✨  feature - New feature development
+  🐛  bugfix - Bug fix with debugging steps
+  ♻️  refactoring - Code refactoring and improvement
+  🔍  research - Research and investigation
+
+Usage:
+  backmark task create "Task title" --template <name>
+  backmark task template show <name> # View template content
+```
+
+### View Template Content
+
+```bash
+backmark task template show feature
+```
+
+### Create Task from Template
+
+```bash
+backmark task create "Add user authentication" \
+  --template feature \
+  --priority high \
+  --assignees "Claude" \
+  --milestone "v1.0"
+```
+
+The template provides a pre-structured description with:
+- 📝 Feature description section
+- 🎯 Objectives checklist
+- 🤖 AI plan section
+- 🧪 Testing strategy
+- ⚠️ Risks and considerations
+
+**Pro tip**: Templates are especially useful when working with AI agents, as they provide consistent structure for planning and documentation.
+
+### Custom Templates
+
+Create your own templates in `backlog/templates/`:
+
+```bash
+mkdir -p backlog/templates
+cat > backlog/templates/my-template.md << 'EOF'
+---
+status: To Do
+priority: medium
+labels:
+  - custom
+---
+
+# My Custom Template
+
+## Description
+{Add description here}
+
+## Checklist
+- [ ] Step 1
+- [ ] Step 2
+EOF
+
+# Use custom template
+backmark task create "My task" --template custom:my-template
+```
+
+See the [AI Workflow Guide](ai-workflow.md#pattern-0-using-task-templates-new-in-v070) for more details on templates.
+
+---
+
 ## 📋 List Your Tasks
 
 ### Basic Listing
@@ -492,6 +582,15 @@ backmark init "Project Name"
 # Create task
 backmark task create "Title" --status "To Do" --priority high
 
+# Create task from template
+backmark task create "Title" --template feature --priority high
+
+# List templates
+backmark task templates
+
+# View template
+backmark task template show feature
+
 # List tasks
 backmark task list --status "In Progress"
 
@@ -520,14 +619,16 @@ backmark task view <id> --ai-all
 
 ## 💡 Tips
 
-1. **Use filters**: Combine `--status`, `--priority`, `--label` to narrow down task lists
-2. **AI assignees**: Use "Claude", "AI", or any AI name to track AI work
-3. **Labels**: Use labels for cross-cutting concerns (bug, feature, security, etc.)
-4. **Milestones**: Group tasks by release version or sprint
-5. **Dependencies**: Use `--depends-on` to track task relationships
-6. **Subtasks**: Break down complex tasks into smaller, manageable pieces
-7. **Acceptance criteria**: Define done-ness criteria upfront
-8. **AI documentation**: Document AI decisions and implementations as you go
+1. **Use templates**: Start with templates (feature, bugfix, refactoring, research) for consistent task structure
+2. **Use filters**: Combine `--status`, `--priority`, `--label` to narrow down task lists
+3. **AI assignees**: Use "Claude", "AI", or any AI name to track AI work
+4. **Labels**: Use labels for cross-cutting concerns (bug, feature, security, etc.)
+5. **Milestones**: Group tasks by release version or sprint
+6. **Dependencies**: Use `--depends-on` to track task relationships
+7. **Subtasks**: Break down complex tasks into smaller, manageable pieces
+8. **Acceptance criteria**: Define done-ness criteria upfront
+9. **AI documentation**: Document AI decisions and implementations as you go
+10. **Custom templates**: Create project-specific templates in `backlog/templates/`
 
 ---
 
