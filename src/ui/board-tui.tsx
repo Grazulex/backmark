@@ -243,7 +243,7 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
                 <Text color={getPriorityColor(selectedTask.priority)}>{selectedTask.priority}</Text>
               </Text>
 
-              {selectedTask.assignees.length > 0 && (
+              {selectedTask.assignees && selectedTask.assignees.length > 0 && (
                 <Text>
                   <Text bold>Assignees: </Text>
                   {selectedTask.assignees.join(', ')}
@@ -257,7 +257,7 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
                 </Text>
               )}
 
-              {selectedTask.labels.length > 0 && (
+              {selectedTask.labels && selectedTask.labels.length > 0 && (
                 <Text>
                   <Text bold>Labels: </Text>
                   <Text dimColor>{selectedTask.labels.join(', ')}</Text>
@@ -288,7 +288,7 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
             </Box>
 
             {/* Acceptance Criteria */}
-            {selectedTask.acceptance_criteria.length > 0 && (
+            {selectedTask.acceptance_criteria && selectedTask.acceptance_criteria.length > 0 && (
               <Box marginTop={1} flexDirection="column">
                 <Text bold>
                   Acceptance Criteria (
@@ -307,10 +307,11 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
             )}
 
             {/* Dependencies */}
-            {(selectedTask.dependencies.length > 0 || selectedTask.blocked_by.length > 0) && (
+            {((selectedTask.dependencies && selectedTask.dependencies.length > 0) ||
+              (selectedTask.blocked_by && selectedTask.blocked_by.length > 0)) && (
               <Box marginTop={1} flexDirection="column">
                 <Text bold>Dependencies:</Text>
-                {selectedTask.dependencies.length > 0 && (
+                {selectedTask.dependencies && selectedTask.dependencies.length > 0 && (
                   <Text>
                     <Text> Depends on: </Text>
                     <Text color="cyan">
@@ -318,7 +319,7 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
                     </Text>
                   </Text>
                 )}
-                {selectedTask.blocked_by.length > 0 && (
+                {selectedTask.blocked_by && selectedTask.blocked_by.length > 0 && (
                   <Text>
                     <Text color="red"> Blocked by: </Text>
                     <Text color="red">
@@ -330,7 +331,8 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
             )}
 
             {/* Hierarchy */}
-            {(selectedTask.parent_task || selectedTask.subtasks.length > 0) && (
+            {(selectedTask.parent_task ||
+              (selectedTask.subtasks && selectedTask.subtasks.length > 0)) && (
               <Box marginTop={1} flexDirection="column">
                 <Text bold>Hierarchy:</Text>
                 {selectedTask.parent_task && (
@@ -339,7 +341,7 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
                     <Text color="cyan">#{selectedTask.parent_task}</Text>
                   </Text>
                 )}
-                {selectedTask.subtasks.length > 0 && (
+                {selectedTask.subtasks && selectedTask.subtasks.length > 0 && (
                   <Text>
                     <Text> Subtasks: </Text>
                     <Text color="cyan">
