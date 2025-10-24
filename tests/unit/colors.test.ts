@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  colorizeStatus,
   colorizePriority,
-  formatTaskId,
+  colorizeStatus,
   formatDate,
+  formatTaskId,
   icons,
 } from '../../src/utils/colors';
 

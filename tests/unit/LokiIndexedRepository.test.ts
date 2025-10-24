@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { LokiIndexedRepository } from '../../src/core/repositories/LokiIndexedRepository';
 import type { Task } from '../../src/types';
 

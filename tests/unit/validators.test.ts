@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { TaskValidator, DEFAULT_VALIDATION_CONFIG } from '../../src/utils/validators';
+import { describe, expect, it } from 'vitest';
 import type { Task } from '../../src/types/task';
+import { DEFAULT_VALIDATION_CONFIG, TaskValidator } from '../../src/utils/validators';
 
 describe('TaskValidator', () => {
   const createMockTask = (overrides: Partial<Task> = {}): Task => ({

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { logger } from '../../src/utils/logger';
 
 describe('logger', () => {
@@ -10,7 +10,7 @@ describe('logger', () => {
 
   afterEach(() => {
     consoleLogSpy.mockRestore();
-    delete process.env.DEBUG;
+    process.env.DEBUG = undefined;
   });
 
   describe('info', () => {
@@ -42,10 +42,7 @@ describe('logger', () => {
       logger.warning('This is a warning');
 
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('⚠'),
-        'This is a warning'
-      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('⚠'), 'This is a warning');
     });
   });
 
@@ -54,10 +51,7 @@ describe('logger', () => {
       logger.error('An error occurred');
 
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('✗'),
-        'An error occurred'
-      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('✗'), 'An error occurred');
     });
   });
 
@@ -117,10 +111,7 @@ describe('logger', () => {
 
       logger.info(multiLineMessage);
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('ℹ'),
-        multiLineMessage
-      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('ℹ'), multiLineMessage);
     });
 
     it('should handle messages with special characters', () => {
@@ -128,10 +119,7 @@ describe('logger', () => {
 
       logger.info(specialMessage);
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('ℹ'),
-        specialMessage
-      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('ℹ'), specialMessage);
     });
   });
 });

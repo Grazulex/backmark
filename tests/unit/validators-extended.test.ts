@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { Task } from '../../src/types/task';
 import {
-  TaskValidator,
   DEFAULT_VALIDATION_CONFIG,
+  TaskValidator,
+  formatSuggestions,
   formatValidationResult,
   formatWarnings,
-  formatSuggestions,
 } from '../../src/utils/validators';
-import type { Task } from '../../src/types/task';
 
 describe('validators.ts - Extended Coverage', () => {
   const createMockTask = (overrides: Partial<Task> = {}): Task => ({
@@ -89,9 +89,7 @@ describe('validators.ts - Extended Coverage', () => {
 
     it('should validate task with no acceptance criteria if check disabled', () => {
       const task = createMockTask({
-        acceptance_criteria: [
-          { text: 'Criterion 1', checked: false },
-        ],
+        acceptance_criteria: [{ text: 'Criterion 1', checked: false }],
         subtasks: [],
         dependencies: [],
         blocked_by: [],
@@ -211,10 +209,7 @@ describe('validators.ts - Extended Coverage', () => {
 
     it('should provide task details in blocking issues', () => {
       const task = createMockTask({ subtasks: [2] });
-      const allTasks = [
-        task,
-        createMockTask({ id: 2, title: 'Subtask Title', status: 'To Do' }),
-      ];
+      const allTasks = [task, createMockTask({ id: 2, title: 'Subtask Title', status: 'To Do' })];
 
       const validator = new TaskValidator(DEFAULT_VALIDATION_CONFIG);
       const result = validator.validateClose(task, allTasks);
@@ -227,10 +222,7 @@ describe('validators.ts - Extended Coverage', () => {
   describe('Formatting Functions', () => {
     it('should format validation result with blocking errors', () => {
       const task = createMockTask({ subtasks: [2] });
-      const allTasks = [
-        task,
-        createMockTask({ id: 2, status: 'To Do' }),
-      ];
+      const allTasks = [task, createMockTask({ id: 2, status: 'To Do' })];
 
       const validator = new TaskValidator(DEFAULT_VALIDATION_CONFIG);
       const result = validator.validateClose(task, allTasks);
@@ -277,9 +269,7 @@ describe('validators.ts - Extended Coverage', () => {
     });
 
     it('should format suggestions', () => {
-      const suggestions = [
-        { message: 'Test suggestion', command: 'backmark test' },
-      ];
+      const suggestions = [{ message: 'Test suggestion', command: 'backmark test' }];
 
       const formatted = formatSuggestions(suggestions);
 

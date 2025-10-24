@@ -71,15 +71,12 @@ export const Errors = {
     }),
 
   noTasksFound: (filters?: string) =>
-    formatError(
-      filters ? `No tasks found matching: ${filters}` : 'No tasks found',
-      {
-        suggestion: filters
-          ? 'Try removing some filters or create a new task'
-          : 'Create your first task',
-        example: 'backmark task create "My first task"',
-      }
-    ),
+    formatError(filters ? `No tasks found matching: ${filters}` : 'No tasks found', {
+      suggestion: filters
+        ? 'Try removing some filters or create a new task'
+        : 'Create your first task',
+      example: 'backmark task create "My first task"',
+    }),
 
   commandFailed: (command: string, error: Error) => {
     const baseMessage = formatError(`Failed to ${command}`, {
@@ -89,14 +86,10 @@ export const Errors = {
   },
 
   circularDependency: (taskId: number, dependencyId: number) =>
-    formatError(
-      `Circular dependency detected between tasks #${taskId} and #${dependencyId}`,
-      {
-        suggestion:
-          'Remove one of the dependencies to break the circular reference',
-        example: 'backmark task deps 1',
-      }
-    ),
+    formatError(`Circular dependency detected between tasks #${taskId} and #${dependencyId}`, {
+      suggestion: 'Remove one of the dependencies to break the circular reference',
+      example: 'backmark task deps 1',
+    }),
 
   boardRequiresTTY: () =>
     formatError('Interactive board requires a TTY terminal', {
@@ -106,9 +99,9 @@ export const Errors = {
     }),
 
   fileSystemError: (operation: string, path: string, error: Error) =>
-    formatError(`Failed to ${operation}: ${path}`, {
+    `${formatError(`Failed to ${operation}: ${path}`, {
       suggestion: 'Check file permissions and disk space',
-    }) + `\n${chalk.dim(error.message)}`,
+    })}\n${chalk.dim(error.message)}`,
 };
 
 /**
@@ -127,10 +120,7 @@ export function validateTaskId(value: string | number): number {
 /**
  * Validate criterion index
  */
-export function validateCriterionIndex(
-  index: string | number,
-  maxIndex: number
-): number {
+export function validateCriterionIndex(index: string | number, maxIndex: number): number {
   const idx = typeof index === 'string' ? Number.parseInt(index, 10) : index;
 
   if (Number.isNaN(idx) || idx < 0 || idx > maxIndex) {

@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { Task } from '../../src/types/task';
 import {
   StatsCalculator,
   createProgressBar,
   formatNumber,
   formatPercentage,
 } from '../../src/utils/stats';
-import type { Task } from '../../src/types/task';
 
 describe('StatsCalculator', () => {
   const createMockTask = (overrides: Partial<Task> = {}): Task => ({

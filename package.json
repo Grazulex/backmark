@@ -7,13 +7,7 @@
   "bin": {
     "backmark": "./dist/cli.js"
   },
-  "files": [
-    "dist",
-    "templates",
-    ".claude",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "templates", ".claude", "README.md", "LICENSE"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Grazulex/backmark.git"
@@ -37,13 +31,7 @@
     "check": "biome check . && tsc --noEmit",
     "prepublishOnly": "npm run check && npm run build"
   },
-  "keywords": [
-    "task-management",
-    "markdown",
-    "cli",
-    "kanban",
-    "productivity"
-  ],
+  "keywords": ["task-management", "markdown", "cli", "kanban", "productivity"],
   "author": "Jean-Marc Strauven",
   "license": "MIT",
   "dependencies": {

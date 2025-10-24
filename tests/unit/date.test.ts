@@ -1,9 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import {
-  formatDateWithPattern,
-  getCurrentTimestamp,
-  isValidDate,
-} from '../../src/utils/date';
+import { describe, expect, it } from 'vitest';
+import { formatDateWithPattern, getCurrentTimestamp, isValidDate } from '../../src/utils/date';
 
 describe('date.ts', () => {
   describe('formatDateWithPattern', () => {

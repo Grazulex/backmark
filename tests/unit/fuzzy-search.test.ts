@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { searchTasks } from '../../src/utils/fuzzy-search';
+import { describe, expect, it } from 'vitest';
 import type { Task } from '../../src/types/task';
+import { searchTasks } from '../../src/utils/fuzzy-search';
 
 describe('fuzzy-search.ts', () => {
   const createMockTask = (overrides: Partial<Task> = {}): Task => ({
@@ -108,9 +108,7 @@ describe('fuzzy-search.ts', () => {
     });
 
     it('should be case-insensitive', () => {
-      const tasks = [
-        createMockTask({ id: 1, title: 'AUTHENTICATION Feature' }),
-      ];
+      const tasks = [createMockTask({ id: 1, title: 'AUTHENTICATION Feature' })];
 
       const results = searchTasks(tasks, 'authentication');
       expect(results.length).toBeGreaterThan(0);
@@ -127,27 +125,21 @@ describe('fuzzy-search.ts', () => {
     });
 
     it('should handle special characters in query', () => {
-      const tasks = [
-        createMockTask({ id: 1, title: 'Fix: bug in login' }),
-      ];
+      const tasks = [createMockTask({ id: 1, title: 'Fix: bug in login' })];
 
       const results = searchTasks(tasks, 'Fix:');
       expect(results.length).toBeGreaterThan(0);
     });
 
     it('should find partial matches', () => {
-      const tasks = [
-        createMockTask({ id: 1, title: 'Implement authentication system' }),
-      ];
+      const tasks = [createMockTask({ id: 1, title: 'Implement authentication system' })];
 
       const results = searchTasks(tasks, 'auth');
       expect(results.length).toBeGreaterThan(0);
     });
 
     it('should handle unicode characters', () => {
-      const tasks = [
-        createMockTask({ id: 1, title: 'Améliorer la documentation' }),
-      ];
+      const tasks = [createMockTask({ id: 1, title: 'Améliorer la documentation' })];
 
       const results = searchTasks(tasks, 'Améliorer');
       expect(results.length).toBeGreaterThan(0);
