@@ -105,6 +105,18 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
   backmark task ai-review <id> "<review>"
   ```
 
+  ### AI Automation Commands (Smart Task Management)
+  ```bash
+  # Automatically break down complex task into subtasks
+  backmark task ai-breakdown <id>
+
+  # Estimate task complexity and duration
+  backmark task ai-estimate <id>
+
+  # Check if task is ready for review (validation)
+  backmark task ai-review-ready <id>
+  ```
+
   ### Acceptance Criteria
   ```bash
   backmark task add-criterion <id> "<text>"    # Add criterion
@@ -160,7 +172,24 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
 
   ### Before Implementation
 
-  1. **Create an implementation plan**:
+  1. **Check task complexity and get estimation** (optional but recommended):
+     ```bash
+     backmark task ai-estimate <id>
+     # This will show:
+     # - Complexity level (Simple/Moderate/Complex/Very Complex)
+     # - Estimated duration
+     # - Risk factors
+     # - Suggested priority
+     ```
+
+  2. **Consider breaking down complex tasks**:
+     ```bash
+     backmark task ai-breakdown <id>
+     # Automatically creates logical subtasks if task is complex
+     # Subtasks will have proper dependencies set
+     ```
+
+  3. **Create an implementation plan**:
      ```bash
      backmark task ai-plan <id> "## Implementation Plan
 
@@ -181,14 +210,14 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
      - src/services/FeatureService.ts"
      ```
 
-  2. **Add acceptance criteria**:
+  4. **Add acceptance criteria**:
      ```bash
      backmark task add-criterion <id> "Feature works as expected"
      backmark task add-criterion <id> "Tests passing"
      backmark task add-criterion <id> "Documentation updated"
      ```
 
-  3. **Update status**:
+  5. **Update status**:
      ```bash
      backmark task edit <id> --status "In Progress"
      ```
@@ -209,7 +238,19 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
 
   ### After Implementation
 
-  1. **Generate documentation**:
+  1. **Check if task is ready for review**:
+     ```bash
+     backmark task ai-review-ready <id>
+     # This validates:
+     # - All acceptance criteria completed
+     # - All subtasks closed
+     # - No blocking dependencies
+     # - AI documentation present
+     # - AI review completed
+     # Will provide detailed report and next steps if not ready
+     ```
+
+  2. **Generate documentation**:
      ```bash
      backmark task ai-doc <id> "## Feature Name
 
@@ -228,7 +269,7 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
      Key functions and their parameters."
      ```
 
-  2. **Perform self-review**:
+  3. **Perform self-review**:
      ```bash
      backmark task ai-review <id> "## Self Review
 
@@ -256,7 +297,7 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
      - Any additional edge cases to consider?"
      ```
 
-  3. **Close the task** (only when complete):
+  4. **Close the task** (only when complete and validated):
      ```bash
      backmark task close <id>
      ```
@@ -289,6 +330,18 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
 
   # Check blocked tasks
   backmark task blocked
+  ```
+
+  ### 5. Smart Task Breakdown
+  For complex tasks, use AI automation to help:
+  ```bash
+  # Get estimation first
+  backmark task ai-estimate 1
+
+  # If "Very Complex", break it down automatically
+  backmark task ai-breakdown 1
+
+  # This will create subtasks with dependencies automatically
   ```
 
   ### 6. Use Subtasks for Large Features

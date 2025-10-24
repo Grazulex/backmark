@@ -145,6 +145,10 @@
   - `ai_notes` - Timestamped development logs
   - `ai_documentation` - Auto-generated documentation
   - `ai_review` - Self-review and quality checks
+- **AI Automation Commands** (NEW in v0.8.0):
+  - `ai-breakdown` - Automatically decompose complex tasks into subtasks
+  - `ai-estimate` - Estimate task complexity, duration, and risks
+  - `ai-review-ready` - Validate task completion before review
 - **AI assignees**: Special highlighting for AI team members (Claude, GPT, Copilot, etc.)
 - **Vibe coding workflow**: Optimized for seamless human-AI collaboration
 - **Complete history**: Track all AI contributions with full audit trail
@@ -1007,6 +1011,152 @@ backmark task ai-review 1 "
 - No password reset flow (planned)
 "
 ```
+
+---
+
+### AI Automation Commands
+
+These commands use AI-powered analysis to help with task management workflow.
+
+#### `backmark task ai-breakdown <id>`
+Automatically analyze a task and break it down into logical subtasks with dependencies.
+
+**When to use:**
+- Task seems complex with multiple steps
+- Need help structuring implementation
+- Want to parallelize work with subtasks
+
+**What it does:**
+- Analyzes task title and description
+- Identifies implementation patterns (API, UI, bug fix, refactoring, research)
+- Creates appropriate subtasks with logical flow
+- Sets up dependency chains automatically
+- Labels subtasks as "auto-generated"
+
+**Example:**
+```bash
+# Create a complex task
+backmark task create "Implement user authentication system" \
+  -d "Add JWT-based auth with login, register, password reset" \
+  -p high
+
+# Let AI break it down
+backmark task ai-breakdown 1
+
+# Result: Creates 4-5 subtasks like:
+# - Design API endpoints and data models
+# - Implement backend logic (depends on #2)
+# - Add error handling and logging (depends on #3)
+# - Write unit and integration tests (depends on #4)
+# - Update API documentation (depends on #5)
+```
+
+#### `backmark task ai-estimate <id>`
+Get AI estimation of task complexity, duration, and risks.
+
+**What it analyzes:**
+- Description length and detail level
+- Number of acceptance criteria
+- Dependencies count
+- Subtasks count
+- Technical keywords (API, database, security, etc.)
+- Current status and documentation state
+
+**Provides:**
+- Complexity level (Simple/Moderate/Complex/Very Complex)
+- Estimated duration (hours to weeks)
+- Confidence level (50-85%)
+- Time breakdown by phase
+- Risk factors and uncertainties
+- Priority and milestone suggestions
+- Recommended actions
+
+**Example:**
+```bash
+backmark task ai-estimate 1
+
+# Output:
+# 📊 Estimation for Task #1: "Add user authentication"
+#
+# Complexity:     Moderate
+# Estimated Time: 1-2 days
+# Confidence:     75%
+#
+# Breakdown:
+#   • Moderate requirements (1-2 hours)
+#   • Few acceptance criteria (1-2 hours)
+#   • Technical implementation (2-3 hours)
+#   • Testing and documentation (1-2 hours)
+#
+# ⚠️  Risks & Uncertainties:
+#   ⚠  Security-critical - requires extra testing and review
+#
+# 💡 Suggestions:
+#   Priority:   high
+#   Milestone:  v1.0
+#
+# 📝 Recommended Actions:
+#   → Define acceptance criteria before starting
+```
+
+#### `backmark task ai-review-ready <id>`
+Validate if task is ready for human review with detailed checklist.
+
+**Validates:**
+- ✓ All acceptance criteria completed
+- ✓ All subtasks closed
+- ✓ No blocking dependencies remaining
+- ✓ Task not blocked by others
+- ✓ AI documentation present
+- ✓ AI review completed
+- ✓ End date set
+- ✓ Status is "In Progress" or "Review"
+
+**Provides:**
+- Complete validation checklist
+- List of blocking issues
+- Warnings for missing items
+- Suggested reviewers (from assignees)
+- Next steps if not ready
+- Command to move to Review status
+
+**Example:**
+```bash
+backmark task ai-review-ready 1
+
+# If ready:
+# ✅ Task is ready for review!
+#
+# Checklist:
+#   ✓ All acceptance criteria completed (3/3)
+#   ✓ All subtasks closed (4/4)
+#   ✓ No blocking dependencies (0/0)
+#   ✓ Not blocked by other tasks
+#   ✓ AI documentation present
+#   ✓ AI review completed
+#   ✓ End date set
+#   ✓ Status is "In Progress" or "Review"
+#
+# 💡 Recommendations:
+#   → Move to "Review" column
+#   → Suggested reviewers: @alice, @bob
+#   → Command: backmark task edit 1 --status Review
+
+# If not ready:
+# ⚠️  Task NOT ready for review
+#
+# 🚫 Blocking Issues:
+#   ✗ 1 acceptance criteria incomplete
+#   ✗ Subtask #3 still "In Progress"
+#   ✗ No AI documentation - consider adding implementation details
+#
+# 📝 Next Steps:
+#   1. Complete subtask #3
+#   2. Add documentation in ai_documentation
+#   3. Complete remaining acceptance criteria
+```
+
+**Workflow tip:** Use this before closing tasks to ensure nothing is missed!
 
 ---
 
@@ -3297,8 +3447,8 @@ Found a security issue? Please email security@backmark.dev (or create a private 
 - [x] **Acceptance Criteria** - Checklist-based task completion tracking
 - [x] **Validation System** - Pre-close checks for subtasks, dependencies, criteria
 
-### v0.7.0 - AI Workflow Enhancement (🚧 In Progress)
-- [x] **AI Task Templates** - Pre-configured templates for AI-driven tasks ✅
+### v0.7.0 - AI Workflow Enhancement ✅
+- [x] **AI Task Templates** - Pre-configured templates for AI-driven tasks
   - Feature template with structured `ai_plan` sections
   - Bug fix template with debugging checklist
   - Refactoring template with quality criteria
@@ -3306,17 +3456,21 @@ Found a security issue? Please email security@backmark.dev (or create a private 
   - Custom template support in `backlog/templates/`
   - Commands: `task templates`, `task template show <name>`
   - Full documentation in AI Workflow Guide
-- [ ] **AI Task Automation Commands** (Future)
-  - `task ai-breakdown <id>` - AI decomposes task into subtasks
-  - `task ai-estimate <id>` - AI estimates complexity/duration
-  - `task ai-suggest-tests <id>` - AI proposes acceptance criteria
-  - `task ai-review-ready <id>` - Check if task ready for review
+
+### v0.8.0 - AI Task Automation (🚧 In Progress)
+- [x] **AI Task Automation Commands** ✅
+  - `task ai-breakdown <id>` - Automatically decomposes tasks into subtasks
+  - `task ai-estimate <id>` - Estimates complexity, duration, and risks
+  - `task ai-review-ready <id>` - Validates task readiness for review
+  - Pattern recognition for API, UI, bugs, refactoring, research
+  - Local heuristic analysis (no external API calls)
+  - Full documentation in AI Automation Guide
 - [ ] **Export to Markdown Report** (Future)
   - Sprint reports with AI contributions highlighted
   - Release notes from task changelogs
   - AI work summary (plans, notes, reviews)
 
-### v0.8.0 - Enhanced AI Documentation (Q2 2025)
+### v0.9.0 - Enhanced AI Documentation (Q2 2025)
 - [ ] **Structured AI Sections** - Richer AI documentation format
   - Code snippets in `ai_plan` with syntax highlighting
   - Decision trees in `ai_notes`
@@ -3330,7 +3484,7 @@ Found a security issue? Please email security@backmark.dev (or create a private 
   - Based on subtasks, dependencies, acceptance criteria
   - AI confidence score (plan coverage, review completeness)
 
-### v0.9.0 - AI Context & Integration (Q3 2025)
+### v1.0.0 - AI Context & Integration (Q3 2025)
 - [ ] **MCP Server** (Model Context Protocol) - Deep AI agent integration
   - Expose Backmark data as MCP resources
   - AI agents can read/update tasks programmatically

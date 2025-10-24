@@ -66,7 +66,8 @@ export async function createTask(title: string, options: CreateTaskOptions) {
         spinner.fail(chalk.red(`Failed to load template '${options.template}'`));
         console.error(chalk.yellow((error as Error).message));
         console.log(
-          chalk.gray('\nTip: Use'), chalk.cyan('backmark task templates'),
+          chalk.gray('\nTip: Use'),
+          chalk.cyan('backmark task templates'),
           chalk.gray('to list available templates')
         );
         process.exit(1);

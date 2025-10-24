@@ -1,5 +1,6 @@
 import type { Command } from 'commander';
 import { aiDocCommand, aiNoteCommand, aiPlanCommand, aiReviewCommand } from './ai';
+import { aiBreakdownCommand, aiEstimateCommand, aiReviewReadyCommand } from './ai-automation';
 import { addCriterion, checkCriterion, uncheckCriterion } from './check';
 import { createTask } from './create';
 import { assignTask, closeTask, editTask } from './edit';
@@ -78,6 +79,25 @@ export function taskCommands(program: Command) {
     .argument('<content>', 'Review content')
     .action(aiReviewCommand);
 
+  // AI Automation Commands
+  program
+    .command('ai-breakdown')
+    .description('AI analyzes task and breaks it down into subtasks')
+    .argument('<id>', 'Task ID')
+    .action(aiBreakdownCommand);
+
+  program
+    .command('ai-estimate')
+    .description('AI estimates task complexity and duration')
+    .argument('<id>', 'Task ID')
+    .action(aiEstimateCommand);
+
+  program
+    .command('ai-review-ready')
+    .description('Check if task is ready for review')
+    .argument('<id>', 'Task ID')
+    .action(aiReviewReadyCommand);
+
   // Acceptance Criteria Commands
   program
     .command('check')
@@ -147,7 +167,10 @@ export function taskCommands(program: Command) {
   program.command('blocked').description('List all blocked tasks').action(showBlocked);
 
   // Template Commands
-  program.command('templates').description('List all available task templates').action(listTemplatesCommand);
+  program
+    .command('templates')
+    .description('List all available task templates')
+    .action(listTemplatesCommand);
 
   program
     .command('template')

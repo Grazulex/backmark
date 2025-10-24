@@ -5,6 +5,58 @@ All notable changes to Backmark will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2025-10-24
+
+### Added
+- **AI Automation Commands** - Intelligent task management assistance
+  - `task ai-breakdown <id>` - Automatically decompose complex tasks into logical subtasks
+    - Pattern recognition for API, UI, bug fix, refactoring, and research tasks
+    - Automatic dependency chain creation
+    - Inherits parent metadata (priority, milestone, assignees, labels)
+    - Smart skip logic for atomic tasks
+  - `task ai-estimate <id>` - Estimate task complexity and duration
+    - Analyzes description, criteria, dependencies, subtasks, and keywords
+    - Provides complexity level (Simple/Moderate/Complex/Very Complex)
+    - Estimates duration with confidence percentage
+    - Identifies risk factors and blockers
+    - Suggests priority and milestone assignments
+    - Recommends next actions
+  - `task ai-review-ready <id>` - Validate task readiness for review
+    - 8-point validation checklist
+    - Checks criteria, subtasks, dependencies, documentation
+    - Provides detailed blocking issues and warnings
+    - Suggests reviewers from assignees
+    - Offers actionable next steps
+
+### Improved
+- Enhanced `.claude/agents/backmark-agent.md` with AI automation workflow
+  - Added guidance on when to use ai-breakdown, ai-estimate, ai-review-ready
+  - Integrated automation commands into Before/After Implementation sections
+  - Updated best practices with smart task breakdown patterns
+- Expanded README.md with comprehensive AI Automation section
+  - Detailed command descriptions with examples
+  - Use cases and workflow patterns
+  - Sample outputs for each command
+
+### Documentation
+- **New**: Complete AI Automation guide (`docs/ai-automation.md`)
+  - In-depth explanation of each automation command
+  - Pattern detection details and breakdown strategies
+  - Complexity scoring algorithm documentation
+  - Validation checklist reference
+  - Workflow examples and integration patterns
+  - Configuration options (future features)
+  - Tips, best practices, and troubleshooting
+  - FAQs and limitations documentation
+
+### Technical
+- New module: `src/commands/task/ai-automation.ts`
+  - Pattern-based task analysis
+  - Heuristic complexity estimation
+  - Validation logic for review readiness
+- No external API dependencies - all logic runs locally
+- Zero-cost automation (no API calls, no subscriptions)
+
 ## [0.7.0-alpha.0] - 2025-10-24
 
 ### Added

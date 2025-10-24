@@ -47,7 +47,7 @@ export async function listTemplatesCommand() {
     if (custom.length > 0) {
       console.log(chalk.bold.magenta('\nCustom Templates:'));
       for (const template of custom) {
-        const name = template.replace('custom:', '');
+        const _name = template.replace('custom:', '');
         console.log(`  ✨  ${chalk.magenta(template)} - ${chalk.gray('User-defined template')}`);
       }
     }
@@ -118,9 +118,7 @@ export async function showTemplateCommand(templateName: string) {
     console.log(chalk.gray('─'.repeat(60)));
 
     console.log(chalk.gray('\nUsage:'));
-    console.log(
-      `  ${chalk.cyan(`backmark task create "Task title" --template ${templateName}`)}`
-    );
+    console.log(`  ${chalk.cyan(`backmark task create "Task title" --template ${templateName}`)}`);
   } catch (error) {
     spinner.fail(chalk.red(`Failed to load template '${templateName}'`));
     console.error(chalk.yellow((error as Error).message));

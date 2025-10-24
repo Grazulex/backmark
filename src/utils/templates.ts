@@ -44,7 +44,7 @@ export async function listTemplates(backlogPath?: string): Promise<string[]> {
       .filter((f) => f.startsWith('task-') && f.endsWith('.md'))
       .map((f) => f.replace('task-', '').replace('.md', ''));
     templates.push(...taskTemplates);
-  } catch (error) {
+  } catch (_error) {
     // Templates directory might not exist in development
     console.warn('Built-in templates directory not found');
   }
@@ -162,7 +162,7 @@ export async function ensureUserTemplatesDir(backlogPath: string): Promise<void>
   const userDir = getUserTemplatesDir(backlogPath);
   try {
     await fs.mkdir(userDir, { recursive: true });
-  } catch (error) {
+  } catch (_error) {
     // Directory might already exist, that's fine
   }
 }
