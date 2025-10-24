@@ -20,6 +20,28 @@ const banner = chalk.bold.blue(`
 ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 `);
 
+// Custom version output
+const versionInfo = () => {
+  const pkg = { version: '0.6.2' }; // Will be replaced during build
+  console.log(boxen(
+    `${chalk.bold.blue('Backmark')} ${chalk.green(`v${pkg.version}`)}\n\n` +
+    `${chalk.gray('Environment:')}\n` +
+    `  Node.js:  ${chalk.white(process.version)}\n` +
+    `  Platform: ${chalk.white(process.platform)}\n` +
+    `  Arch:     ${chalk.white(process.arch)}\n\n` +
+    `${chalk.gray('Links:')}\n` +
+    `  Docs:     ${chalk.cyan('https://github.com/Grazulex/backmark#readme')}\n` +
+    `  Issues:   ${chalk.cyan('https://github.com/Grazulex/backmark/issues')}\n` +
+    `  Npm:      ${chalk.cyan('https://www.npmjs.com/package/@grazulex/backmark')}`,
+    {
+      padding: 1,
+      margin: { top: 1, bottom: 1, left: 0, right: 0 },
+      borderStyle: 'round',
+      borderColor: 'blue',
+    }
+  ));
+};
+
 program
   .name('backmark')
   .description(
@@ -33,7 +55,36 @@ program
       }
     )
   )
-  .version('0.6.1');
+  .version('0.6.2', '-V, --version', 'Display version information')
+  .on('option:version', () => {
+    versionInfo();
+    process.exit(0);
+  })
+  .addHelpText('after', `
+${chalk.bold.yellow('Examples:')}
+  ${chalk.gray('# Initialize a new backlog')}
+  ${chalk.cyan('$ backmark init "My Project"')}
+
+  ${chalk.gray('# Create a task')}
+  ${chalk.cyan('$ backmark task create "Add login feature" --priority high')}
+
+  ${chalk.gray('# List tasks')}
+  ${chalk.cyan('$ backmark task list --status "In Progress"')}
+
+  ${chalk.gray('# View Kanban board')}
+  ${chalk.cyan('$ backmark board')}
+
+  ${chalk.gray('# Search tasks')}
+  ${chalk.cyan('$ backmark search "authentication"')}
+
+  ${chalk.gray('# Project overview')}
+  ${chalk.cyan('$ backmark overview')}
+
+${chalk.bold.yellow('Documentation:')}
+  Quick Start:  ${chalk.cyan('https://github.com/Grazulex/backmark/blob/main/docs/quick-start.md')}
+  AI Workflow:  ${chalk.cyan('https://github.com/Grazulex/backmark/blob/main/docs/ai-workflow.md')}
+  Troubleshooting: ${chalk.cyan('https://github.com/Grazulex/backmark/blob/main/docs/troubleshooting.md')}
+`);
 
 // Init command
 program

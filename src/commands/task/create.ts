@@ -11,6 +11,7 @@ import {
   formatTaskId,
   icons,
 } from '../../utils/colors';
+import { Errors } from '../../utils/errors';
 import { logger } from '../../utils/logger';
 
 interface CreateTaskOptions {
@@ -61,7 +62,8 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     if (options.parent) {
       const parentTask = await backlog.getTaskById(options.parent);
       if (!parentTask) {
-        spinner.fail(chalk.red(`Parent task #${options.parent} not found`));
+        spinner.fail();
+        console.error(Errors.parentTaskNotFound(options.parent));
         process.exit(1);
       }
     }
@@ -179,8 +181,8 @@ export async function createTask(title: string, options: CreateTaskOptions) {
       console.log(chalk.magenta(`  backmark task view ${task.id} --ai-all\n`));
     }
   } catch (error) {
-    spinner.fail(chalk.red('Failed to create task'));
-    logger.error((error as Error).message);
+    spinner.fail();
+    console.error(Errors.commandFailed('create task', error as Error));
     process.exit(1);
   } finally {
     await backlog?.close();

@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { load as parse } from 'js-yaml';
 import type { ChangelogEntry, Config, Task, TaskData, TaskFilters } from '../types';
 import { getCurrentTimestamp } from '../utils/date';
+import { Errors } from '../utils/errors';
 import { FileSystemRepository } from './repositories/FileSystemRepository';
 import { LokiIndexedRepository } from './repositories/LokiIndexedRepository';
 import type { TaskRepository } from './repositories/TaskRepository';
@@ -90,7 +91,7 @@ export class Backlog {
 
       return new Backlog(cwd, config, repository);
     } catch (_error) {
-      throw new Error('Backlog not initialized. Run ' + '`backmark init`' + ' first.');
+      throw new Error(Errors.backlogNotInitialized());
     }
   }
 
@@ -177,7 +178,7 @@ export class Backlog {
   async updateTask(id: number, updates: Partial<Task>, user?: string): Promise<Task> {
     const task = await this.getTaskById(id);
     if (!task) {
-      throw new Error(`Task #${id} not found`);
+      throw new Error(Errors.taskNotFound(id));
     }
 
     const now = getCurrentTimestamp();
@@ -234,7 +235,7 @@ export class Backlog {
 
   async addAINote(id: number, note: string, user = 'AI'): Promise<Task> {
     const task = await this.getTaskById(id);
-    if (!task) throw new Error(`Task #${id} not found`);
+    if (!task) throw new Error(Errors.taskNotFound(id));
 
     const timestamp = getCurrentTimestamp();
     const timestampedNote = `**${timestamp}** - ${note}\n`;
@@ -281,7 +282,7 @@ export class Backlog {
   private async addSubtaskToParent(parentId: number, subtaskId: number): Promise<void> {
     const parent = await this.getTaskById(parentId);
     if (!parent) {
-      throw new Error(`Parent task #${parentId} not found`);
+      throw new Error(Errors.parentTaskNotFound(parentId));
     }
 
     if (!parent.subtasks.includes(subtaskId)) {

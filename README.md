@@ -3122,6 +3122,19 @@ Found a security issue? Please email security@backmark.dev (or create a private 
 
 > **Philosophy**: Backmark is designed for **vibe coding with AI**. Features focus on improving human-AI collaboration, not replacing traditional project management tools.
 
+### v0.6.x - Foundation & Polish (✅ Completed)
+- [x] **Core Task Management** - Complete CRUD operations with hierarchy
+- [x] **AI Workflow Features** - Dedicated sections (plan, notes, documentation, review)
+- [x] **Performance Optimization** - LokiJS indexing for fast queries (1000+ tasks)
+- [x] **Test Coverage** - 80%+ coverage for critical modules (repositories, utils, core)
+- [x] **Comprehensive Documentation** - Quick Start, AI Workflow Guide, Troubleshooting
+- [x] **Enhanced CLI UX** - Better help output, examples, and error messages
+- [x] **Kanban Board** - Interactive terminal UI with blessed
+- [x] **Search & Overview** - Fuzzy search and project statistics
+- [x] **Task Dependencies** - Hierarchies, subtasks, dependencies, and blockers
+- [x] **Acceptance Criteria** - Checklist-based task completion tracking
+- [x] **Validation System** - Pre-close checks for subtasks, dependencies, criteria
+
 ### v0.7.0 - AI Workflow Enhancement (Q1 2025)
 - [ ] **AI Task Templates** - Pre-configured templates for AI-driven tasks
   - Feature template with structured `ai_plan` sections
