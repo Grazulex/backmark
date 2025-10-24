@@ -23,29 +23,64 @@ npm run test:coverage
 
 ## Test Coverage
 
-Currently tested components:
+**Overall Coverage: 27.33%**
+**Utils Module: 81.23%** ✅ (Goal: 80%+ ACHIEVED!)
 
-### Unit Tests
+### Test Statistics
+- 📊 **140 total tests**
+- ✅ **127 passing**
+- ⏭️ **13 skipped** (features not yet implemented)
+- ❌ **0 failing**
 
-- ✅ **StatsCalculator** (`utils/stats.ts`) - Project statistics and analytics
+### Unit Tests (120 tests)
+
+- ✅ **StatsCalculator** (`utils/stats.ts`) - **90.17% coverage**
   - Summary statistics (total, completion rate, status breakdown)
   - Milestone progress tracking
-  - Team activity analysis
+  - Team activity analysis with AI detection
   - AI collaboration metrics
-  - Alert detection
+  - Alert detection (blocked, critical, overdue)
   - Filtering by milestone and date range
+  - Helper functions (progress bar, formatters)
 
-- ✅ **TaskValidator** (`utils/validators.ts`) - Task validation system
+- ✅ **TaskValidator** (`utils/validators.ts`) - **81.11% coverage**
   - Blocking validations (subtasks, dependencies, blocked_by, acceptance criteria)
-  - Warnings (AI review, date mismatches)
+  - Warnings (AI review for AI-assigned tasks)
   - Force flag bypass
-  - Configuration options
+  - Configuration options respect
+  - Edge cases and error handling
+  - Formatting functions
 
-### Integration Tests
+- ✅ **Fuzzy Search** (`utils/fuzzy-search.ts`) - **100% coverage**
+  - Search by title, description, labels
+  - Threshold and maxResults options
+  - Case-insensitive matching
+  - Partial matches and special characters
 
-- ⏭️ **Task CRUD operations** - To be implemented
-- ⏭️ **Search functionality** - To be implemented
-- ⏭️ **Board operations** - To be implemented
+- ✅ **Date Utils** (`utils/date.ts`) - **91.3% coverage**
+  - Date formatting with patterns
+  - Timestamp generation
+  - Date validation
+
+- ✅ **Colors & Formatting** (`utils/colors.ts`) - **71.42% coverage**
+  - Status and priority colorization
+  - Task ID formatting with zero-padding
+  - Date formatting
+  - Icon definitions
+
+### Integration Tests (20 tests)
+
+- ✅ **Backlog** (`core/backlog.ts`) - **70.83% coverage**
+  - Task creation with auto-incrementing IDs
+  - Task retrieval by ID
+  - Task updates with changelog
+  - Filtering by status and priority
+  - Configuration management
+  - Auto-migration of config
+
+- ✅ **LokiIndexedRepository** - **77.68% coverage**
+  - Indexed task operations
+  - Performance optimizations for large datasets
 
 ## Skipped Tests
 
