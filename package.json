@@ -7,7 +7,7 @@
   "bin": {
     "backmark": "./dist/cli.js"
   },
-  "files": ["dist", "templates", ".claude", "README.md", "LICENSE"],
+  "files": ["dist", "templates", ".claude", "README.md", "LICENSE", "CHANGELOG.md"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Grazulex/backmark.git"
