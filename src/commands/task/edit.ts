@@ -6,12 +6,12 @@ import type { Task, TaskPriority, TaskStatus } from '../../types';
 import { colorizePriority, colorizeStatus, formatTaskId, icons } from '../../utils/colors';
 import { logger } from '../../utils/logger';
 import {
-	DEFAULT_VALIDATION_CONFIG,
-	TaskValidator,
-	formatSuggestions,
-	formatValidationResult,
-	formatWarnings,
-	type ValidationConfig,
+  DEFAULT_VALIDATION_CONFIG,
+  TaskValidator,
+  type ValidationConfig,
+  formatSuggestions,
+  formatValidationResult,
+  formatWarnings,
 } from '../../utils/validators';
 
 interface EditTaskOptions {
@@ -158,94 +158,94 @@ export async function assignTask(taskId: string, assignees: string) {
 }
 
 interface CloseTaskOptions {
-	force?: boolean;
+  force?: boolean;
 }
 
 export async function closeTask(taskId: string, options?: CloseTaskOptions) {
-	const spinner = ora('Validating task...').start();
-	let backlog: Backlog | null = null;
+  const spinner = ora('Validating task...').start();
+  let backlog: Backlog | null = null;
 
-	try {
-		backlog = await Backlog.load();
-		const id = Number.parseInt(taskId, 10);
+  try {
+    backlog = await Backlog.load();
+    const id = Number.parseInt(taskId, 10);
 
-		if (Number.isNaN(id)) {
-			spinner.fail('Invalid task ID');
-			process.exit(1);
-		}
+    if (Number.isNaN(id)) {
+      spinner.fail('Invalid task ID');
+      process.exit(1);
+    }
 
-		const task = await backlog.getTaskById(id);
-		if (!task) {
-			spinner.fail(`Task ${formatTaskId(id, true)} not found`);
-			process.exit(1);
-		}
+    const task = await backlog.getTaskById(id);
+    if (!task) {
+      spinner.fail(`Task ${formatTaskId(id, true)} not found`);
+      process.exit(1);
+    }
 
-		// Get validation config from backlog config
-		const config = backlog.getConfig();
-		const validationConfig: ValidationConfig = {
-			...DEFAULT_VALIDATION_CONFIG,
-			...(config.validations?.close || {}),
-		};
+    // Get validation config from backlog config
+    const config = backlog.getConfig();
+    const validationConfig: ValidationConfig = {
+      ...DEFAULT_VALIDATION_CONFIG,
+      ...(config.validations?.close || {}),
+    };
 
-		// Create validator
-		const validator = new TaskValidator(validationConfig);
+    // Create validator
+    const validator = new TaskValidator(validationConfig);
 
-		// Get all tasks for validation
-		const allTasks = await backlog.getTasks({});
+    // Get all tasks for validation
+    const allTasks = await backlog.getTasks({});
 
-		// Validate close
-		const validationResult = validator.validateClose(task, allTasks, options?.force || false);
+    // Validate close
+    const validationResult = validator.validateClose(task, allTasks, options?.force || false);
 
-		spinner.stop();
+    spinner.stop();
 
-		// If validation failed
-		if (!validationResult.valid) {
-			const errorMessage = formatValidationResult(validationResult, task.id, task.title);
-			console.log(errorMessage);
-			process.exit(1);
-		}
+    // If validation failed
+    if (!validationResult.valid) {
+      const errorMessage = formatValidationResult(validationResult, task.id, task.title);
+      console.log(errorMessage);
+      process.exit(1);
+    }
 
-		// Show warnings if any
-		if (validationResult.warnings.length > 0) {
-			console.log(formatWarnings(validationResult.warnings));
+    // Show warnings if any
+    if (validationResult.warnings.length > 0) {
+      console.log(formatWarnings(validationResult.warnings));
 
-			// Ask for confirmation
-			const { confirm } = await inquirer.prompt([
-				{
-					type: 'confirm',
-					name: 'confirm',
-					message: 'Continue closing this task?',
-					default: true,
-				},
-			]);
+      // Ask for confirmation
+      const { confirm } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message: 'Continue closing this task?',
+          default: true,
+        },
+      ]);
 
-			if (!confirm) {
-				console.log(chalk.yellow('\nTask close cancelled'));
-				return;
-			}
-		}
+      if (!confirm) {
+        console.log(chalk.yellow('\nTask close cancelled'));
+        return;
+      }
+    }
 
-		// Close the task
-		spinner.start('Closing task...');
-		await backlog.updateTask(id, { status: 'Done' }, 'user');
-		spinner.succeed(chalk.green('Task closed successfully!'));
+    // Close the task
+    spinner.start('Closing task...');
+    await backlog.updateTask(id, { status: 'Done' }, 'user');
+    spinner.succeed(chalk.green('Task closed successfully!'));
 
-		console.log(
-			chalk.green(
-				`\n${icons.done} Task ${formatTaskId(id, true)} marked as Done${options?.force ? ' (forced)' : ''}\n`,
-			),
-		);
+    console.log(
+      chalk.green(
+        `\n${icons.done} Task ${formatTaskId(id, true)} marked as Done${options?.force ? ' (forced)' : ''}\n`
+      )
+    );
 
-		// Get and show suggestions
-		const suggestions = validator.getSuggestionsAfterClose(task, allTasks);
-		if (suggestions.length > 0) {
-			console.log(formatSuggestions(suggestions));
-		}
-	} catch (error) {
-		spinner.fail(chalk.red('Failed to close task'));
-		logger.error((error as Error).message);
-		process.exit(1);
-	} finally {
-		await backlog?.close();
-	}
+    // Get and show suggestions
+    const suggestions = validator.getSuggestionsAfterClose(task, allTasks);
+    if (suggestions.length > 0) {
+      console.log(formatSuggestions(suggestions));
+    }
+  } catch (error) {
+    spinner.fail(chalk.red('Failed to close task'));
+    logger.error((error as Error).message);
+    process.exit(1);
+  } finally {
+    await backlog?.close();
+  }
 }
