@@ -23,6 +23,9 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
 
   // Load tasks
   const loadTasks = useCallback(async () => {
+    // Refresh the index to get latest changes from file system
+    await backlog.refresh();
+
     const newTasksByColumn: Record<string, Task[]> = {};
     for (const column of columns) {
       newTasksByColumn[column] = await backlog.getTasksByStatus(column);

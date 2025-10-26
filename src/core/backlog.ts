@@ -279,6 +279,14 @@ export class Backlog {
   }
 
   /**
+   * Refresh the task index from the file system
+   * Useful for real-time updates in interactive UIs
+   */
+  async refresh(): Promise<void> {
+    await this.repository.sync?.();
+  }
+
+  /**
    * Close the backlog and cleanup resources
    * Important for LokiJS to stop autosave timer
    */
