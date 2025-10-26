@@ -33,7 +33,8 @@ export function colorizePriority(priority: TaskPriority): string {
     high: chalk.red,
     critical: chalk.bgRed.white.bold,
   };
-  return colorMap[priority](priority);
+  const colorFn = colorMap[priority] || chalk.white;
+  return colorFn(priority);
 }
 
 export function formatTaskId(id: number, zeroPadded = true): string {
