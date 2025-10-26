@@ -1,6 +1,6 @@
 {
   "name": "@grazulex/backmark",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Markdown-native task management with colorful CLI and Kanban board",
   "type": "module",
   "main": "dist/cli.js",

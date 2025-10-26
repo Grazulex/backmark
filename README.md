@@ -65,6 +65,7 @@
   - [Hierarchy & Dependencies](#hierarchy--dependencies)
   - [Search](#search)
   - [Kanban Board](#kanban-board)
+  - [Configuration Management](#configuration-management)
 - [🎯 Vibe Coding Workflow](#-vibe-coding-workflow)
   - [Recommended Workflow for Human-AI Collaboration](#recommended-workflow-for-human-ai-collaboration)
 - [🗂️ Task File Structure](#️-task-file-structure)
@@ -77,6 +78,7 @@
   - [Example 2: Feature with Subtasks](#example-2-feature-with-subtasks)
   - [Example 3: AI-Driven Development](#example-3-ai-driven-development)
   - [Example 4: Sprint Planning](#example-4-sprint-planning)
+  - [Example 5: Customizing Workflow with Config Management](#example-5-customizing-workflow-with-config-management)
 - [🔍 Advanced Tips](#-advanced-tips)
 - [🤖 Using with Claude Code](#-using-with-claude-code)
 - [⚖️ Comparison with Other Tools](#️-comparison-with-other-tools)
@@ -1404,6 +1406,187 @@ Statistics:
 
 ---
 
+### Configuration Management
+
+#### `backmark config list-statuses`
+List all valid task statuses defined in your configuration.
+
+**Examples:**
+```bash
+backmark config list-statuses
+
+# Output:
+# 📋 Valid Statuses:
+#
+#   • To Do
+#   • In Progress
+#   • Review
+#   • Done
+#
+# Total: 4 status(es)
+```
+
+#### `backmark config list-priorities`
+List all valid task priorities defined in your configuration.
+
+**Examples:**
+```bash
+backmark config list-priorities
+
+# Output:
+# ⚡ Valid Priorities:
+#
+#   • low
+#   • medium
+#   • high
+#   • critical
+#
+# Total: 4 priorities
+```
+
+#### `backmark config add-status <status>`
+Add a new status to your board configuration.
+
+**Smart Validation:**
+- ✅ Checks if status already exists
+- ✅ Updates `backlog/config.yml` automatically
+- ✅ Shows current status list after adding
+
+**Examples:**
+```bash
+# Add a new status
+backmark config add-status "Testing"
+
+# Output:
+# ✓ Status "Testing" added successfully!
+#
+# Current statuses:
+#   • To Do
+#   • In Progress
+#   • Review
+#   • Testing
+#   • Done
+```
+
+#### `backmark config remove-status <status>`
+Remove a status from your board configuration.
+
+**Smart Validation:**
+- ⚠️ Validates no tasks use this status before removing
+- ⚠️ Shows affected tasks if removal blocked
+- ✅ Updates `backlog/config.yml` automatically
+
+**Examples:**
+```bash
+# Remove a status (with validation)
+backmark config remove-status "Testing"
+
+# If no tasks use it:
+# ✓ Status "Testing" removed successfully!
+#
+# Remaining statuses:
+#   • To Do
+#   • In Progress
+#   • Review
+#   • Done
+
+# If tasks exist with this status:
+# ⚠  Cannot remove status "Testing"
+#
+# ⚠️  There are 3 tasks with this status.
+#
+# Please update or remove these tasks first:
+#   • #001 - Implement authentication
+#   • #005 - Add search feature
+#   • #007 - Fix navigation bug
+```
+
+#### `backmark config add-priority <priority>`
+Add a new priority level to your configuration.
+
+**Smart Validation:**
+- ✅ Checks if priority already exists
+- ✅ Updates `backlog/config.yml` automatically
+- ✅ Shows current priority list after adding
+
+**Examples:**
+```bash
+# Add a new priority
+backmark config add-priority "urgent"
+
+# Output:
+# ✓ Priority "urgent" added successfully!
+#
+# Current priorities:
+#   • low
+#   • medium
+#   • high
+#   • critical
+#   • urgent
+```
+
+#### `backmark config remove-priority <priority>`
+Remove a priority level from your configuration.
+
+**Smart Validation:**
+- ⚠️ Validates no tasks use this priority before removing
+- ⚠️ Shows affected tasks if removal blocked
+- ✅ Updates `backlog/config.yml` automatically
+
+**Examples:**
+```bash
+# Remove a priority (with validation)
+backmark config remove-priority "urgent"
+
+# If no tasks use it:
+# ✓ Priority "urgent" removed successfully!
+#
+# Remaining priorities:
+#   • low
+#   • medium
+#   • high
+#   • critical
+
+# If tasks exist with this priority:
+# ⚠  Cannot remove priority "urgent"
+#
+# ⚠️  There are 5 tasks with this priority.
+#
+# Please update or remove these tasks first:
+#   • #002 - Security patch
+#   • #008 - Database backup
+#   • #012 - Fix crash bug
+#   ... and 2 more
+```
+
+**Configuration Validation:**
+
+When creating or editing tasks, Backmark automatically validates:
+- ✅ **Status values** must exist in `board.columns`
+- ✅ **Priority values** must exist in `board.priorities`
+- ⚠️ Invalid values will show an error with available options
+
+**Example validation errors:**
+```bash
+# Try to create task with invalid status
+backmark task create "New feature" -s "Invalid Status"
+
+# Error:
+# ✗ Invalid status "Invalid Status"
+#
+# Valid statuses: To Do, In Progress, Review, Done
+
+# Try to edit task with invalid priority
+backmark task edit 1 -p "invalid"
+
+# Error:
+# ✗ Invalid priority "invalid"
+#
+# Valid priorities: low, medium, high, critical
+```
+
+---
+
 ## 🎯 Vibe Coding Workflow
 
 ### Recommended Workflow for Human-AI Collaboration
@@ -2691,6 +2874,86 @@ backmark board show --watch
 # 6. At end of sprint, check completion
 backmark task list --milestone "Sprint-5" --status "Done"
 ```
+
+### Example 5: Customizing Workflow with Config Management
+```bash
+# 1. Check current workflow statuses
+backmark config list-statuses
+
+# Output:
+# 📋 Valid Statuses:
+#   • To Do
+#   • In Progress
+#   • Review
+#   • Done
+
+# 2. Add custom statuses for your team's workflow
+backmark config add-status "Testing"
+backmark config add-status "Staging"
+backmark config add-status "Blocked"
+
+# Your workflow is now:
+# To Do → In Progress → Review → Testing → Staging → Done
+# (with Blocked as a special status)
+
+# 3. Check current priorities
+backmark config list-priorities
+
+# Output:
+# ⚡ Valid Priorities:
+#   • low
+#   • medium
+#   • high
+#   • critical
+
+# 4. Add custom priority for urgent hotfixes
+backmark config add-priority "urgent"
+
+# 5. Create tasks with your custom workflow
+backmark task create "Deploy new API" \
+  -s "Testing" \
+  -p urgent \
+  -a "DevOps Team"
+
+# 6. Move task through your custom workflow
+backmark task edit 1 --status "Staging"
+backmark task edit 1 --status "Done"
+
+# 7. Later, if you want to simplify your workflow
+# First check if any tasks use a status before removing it
+backmark config remove-status "Staging"
+
+# If tasks exist with this status:
+# ⚠  Cannot remove status "Staging"
+# ⚠️  There are 2 tasks with this status.
+# Please update or remove these tasks first:
+#   • #015 - Deploy new API
+#   • #018 - Update documentation
+
+# Update those tasks first
+backmark task edit 15 --status "Done"
+backmark task edit 18 --status "Done"
+
+# Now you can remove it
+backmark config remove-status "Staging"
+# ✓ Status "Staging" removed successfully!
+
+# 8. Validation prevents errors
+backmark task create "New feature" -s "NonExistent"
+# Error: ✗ Invalid status "NonExistent"
+# Valid statuses: To Do, In Progress, Review, Testing, Blocked, Done
+
+backmark task edit 1 -p "invalid"
+# Error: ✗ Invalid priority "invalid"
+# Valid priorities: low, medium, high, critical, urgent
+```
+
+**Why customize your workflow?**
+- 🎯 **Match your team's process**: Add statuses like "QA", "Staging", "Deployed"
+- ⚡ **Custom priorities**: Add "urgent", "nice-to-have", or priority numbers
+- 🔒 **Prevent errors**: Validation ensures everyone uses the same statuses
+- 🧹 **Keep it clean**: Remove unused statuses/priorities when simplifying
+- 📋 **Team alignment**: Everyone sees the same workflow in `board show`
 
 ---
 

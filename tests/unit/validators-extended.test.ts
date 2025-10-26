@@ -331,9 +331,13 @@ describe('validators.ts - Extended Coverage', () => {
   describe('Edge Cases', () => {
     it('should handle task with undefined fields', () => {
       const task = createMockTask({
+        // biome-ignore lint/suspicious/noExplicitAny: Testing undefined fields
         subtasks: undefined as any,
+        // biome-ignore lint/suspicious/noExplicitAny: Testing undefined fields
         dependencies: undefined as any,
+        // biome-ignore lint/suspicious/noExplicitAny: Testing undefined fields
         blocked_by: undefined as any,
+        // biome-ignore lint/suspicious/noExplicitAny: Testing undefined fields
         acceptance_criteria: undefined as any,
       });
       const allTasks = [task];

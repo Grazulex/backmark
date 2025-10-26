@@ -69,6 +69,7 @@ describe('colors.ts', () => {
 
     // Unknown priorities will cause error - no default case
     it.skip('should handle unknown priority', () => {
+      // biome-ignore lint/suspicious/noExplicitAny: Testing unknown priority
       const result = colorizePriority('unknown' as any);
       expect(result).toContain('unknown');
     });

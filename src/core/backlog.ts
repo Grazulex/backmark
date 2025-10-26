@@ -34,8 +34,56 @@ export class Backlog {
 
       const backlogPath = path.join(cwd, 'backlog');
 
-      // Auto-migrate: add performance settings if missing
+      // Auto-migrate: handle old config format
       let needsSave = false;
+
+      // Migrate old format: statuses -> board.columns
+      // biome-ignore lint/suspicious/noExplicitAny: Need to access old config format during migration
+      const configAny = config as any;
+      if (configAny.statuses && !config.board) {
+        config.board = {
+          columns: configAny.statuses,
+          priorities: ['low', 'medium', 'high', 'critical'],
+        };
+        configAny.statuses = undefined;
+        needsSave = true;
+      }
+
+      // Migrate old format: project_name -> project.name
+      if (configAny.project_name !== undefined && !config.project) {
+        config.project = {
+          name: configAny.project_name || 'My Project',
+          createdAt: new Date().toISOString(),
+        };
+        configAny.project_name = undefined;
+        needsSave = true;
+      }
+
+      // Ensure board exists (create if missing)
+      if (!config.board) {
+        config.board = {
+          columns: ['To Do', 'In Progress', 'Review', 'Done'],
+          priorities: ['low', 'medium', 'high', 'critical'],
+        };
+        needsSave = true;
+      }
+
+      // Ensure project exists (create if missing)
+      if (!config.project) {
+        config.project = {
+          name: 'My Project',
+          createdAt: new Date().toISOString(),
+        };
+        needsSave = true;
+      }
+
+      // Auto-migrate: add priorities if missing
+      if (!config.board.priorities) {
+        config.board.priorities = ['low', 'medium', 'high', 'critical'];
+        needsSave = true;
+      }
+
+      // Auto-migrate: add performance settings if missing
       if (!config.performance) {
         config.performance = {
           useIndex: true,
@@ -61,12 +109,6 @@ export class Backlog {
             allow_force: true,
           },
         };
-        needsSave = true;
-      }
-
-      // Auto-migrate: add priorities if missing
-      if (!config.board.priorities) {
-        config.board.priorities = ['low', 'medium', 'high', 'critical'];
         needsSave = true;
       }
 
