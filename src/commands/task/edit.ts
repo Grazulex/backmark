@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import { Backlog } from '../../core/backlog';
+import { ValidationError } from '../../core/validator';
 import type { Task, TaskPriority, TaskStatus } from '../../types';
 import { colorizePriority, colorizeStatus, formatTaskId, icons } from '../../utils/colors';
 import { logger } from '../../utils/logger';
@@ -113,7 +114,18 @@ export async function editTask(taskId: string, options: EditTaskOptions) {
     console.log();
   } catch (error) {
     spinner.fail(chalk.red('Failed to update task'));
-    logger.error((error as Error).message);
+
+    // Handle validation errors with custom formatting
+    if (error instanceof ValidationError) {
+      console.error(chalk.red.bold(`\n✖ ${error.message}\n`));
+      if (error.suggestions.length > 0) {
+        console.error(error.suggestions.join('\n'));
+        console.error('');
+      }
+    } else {
+      logger.error((error as Error).message);
+    }
+
     process.exit(1);
   } finally {
     await backlog?.close();
@@ -150,7 +162,18 @@ export async function assignTask(taskId: string, assignees: string) {
     );
   } catch (error) {
     spinner.fail(chalk.red('Failed to assign task'));
-    logger.error((error as Error).message);
+
+    // Handle validation errors with custom formatting
+    if (error instanceof ValidationError) {
+      console.error(chalk.red.bold(`\n✖ ${error.message}\n`));
+      if (error.suggestions.length > 0) {
+        console.error(error.suggestions.join('\n'));
+        console.error('');
+      }
+    } else {
+      logger.error((error as Error).message);
+    }
+
     process.exit(1);
   } finally {
     await backlog?.close();
@@ -243,7 +266,18 @@ export async function closeTask(taskId: string, options?: CloseTaskOptions) {
     }
   } catch (error) {
     spinner.fail(chalk.red('Failed to close task'));
-    logger.error((error as Error).message);
+
+    // Handle validation errors with custom formatting
+    if (error instanceof ValidationError) {
+      console.error(chalk.red.bold(`\n✖ ${error.message}\n`));
+      if (error.suggestions.length > 0) {
+        console.error(error.suggestions.join('\n'));
+        console.error('');
+      }
+    } else {
+      logger.error((error as Error).message);
+    }
+
     process.exit(1);
   } finally {
     await backlog?.close();

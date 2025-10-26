@@ -14,6 +14,7 @@ export interface ProjectConfig {
 
 export interface BoardConfig {
   columns: string[];
+  priorities: string[];
 }
 
 export interface DisplayConfig {
@@ -55,6 +56,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   board: {
     columns: ['To Do', 'In Progress', 'Review', 'Done'],
+    priorities: ['low', 'medium', 'high', 'critical'],
   },
   display: {
     dateFormat: 'yyyy-MM-dd HH:mm',

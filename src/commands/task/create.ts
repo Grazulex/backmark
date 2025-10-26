@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import { Backlog } from '../../core/backlog';
+import { ValidationError } from '../../core/validator';
 import type { TaskPriority } from '../../types';
 import {
   colorizePriority,
@@ -223,7 +224,18 @@ export async function createTask(title: string, options: CreateTaskOptions) {
     }
   } catch (error) {
     spinner.fail();
-    console.error(Errors.commandFailed('create task', error as Error));
+
+    // Handle validation errors with custom formatting
+    if (error instanceof ValidationError) {
+      console.error(chalk.red.bold(`\n✖ ${error.message}\n`));
+      if (error.suggestions.length > 0) {
+        console.error(error.suggestions.join('\n'));
+        console.error('');
+      }
+    } else {
+      console.error(Errors.commandFailed('create task', error as Error));
+    }
+
     process.exit(1);
   } finally {
     await backlog?.close();

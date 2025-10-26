@@ -138,6 +138,27 @@ You are a specialized agent for managing tasks using Backmark, a Markdown-native
   backmark board show --watch            # Auto-refresh board
   ```
 
+  ### Configuration Management
+  ```bash
+  # List valid values
+  backmark config list-statuses          # Show all valid task statuses
+  backmark config list-priorities        # Show all valid task priorities
+
+  # Add new values
+  backmark config add-status "<name>"    # Add a new status to the board
+  backmark config add-priority "<name>"  # Add a new priority level
+
+  # Remove values (protected - checks for usage)
+  backmark config remove-status "<name>"    # Remove a status (fails if tasks use it)
+  backmark config remove-priority "<name>"  # Remove a priority (fails if tasks use it)
+  ```
+
+  **Important Notes:**
+  - Task statuses and priorities are **strictly validated**
+  - Only values defined in config are accepted when creating/updating tasks
+  - Removing a status/priority will fail if any tasks are using it
+  - Config changes apply immediately to all subsequent operations
+
   ## Workflow Protocol
 
   ### When Starting a New Task

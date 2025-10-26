@@ -3,6 +3,14 @@ import boxen from 'boxen';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { boardCommands } from './commands/board/index.js';
+import {
+  addPriority,
+  addStatus,
+  listPriorities,
+  listStatuses,
+  removePriority,
+  removeStatus,
+} from './commands/config.js';
 import { initCommand } from './commands/init.js';
 import { overviewCommand } from './commands/overview.js';
 import { searchCommand } from './commands/search.js';
@@ -22,7 +30,7 @@ const banner = chalk.bold.blue(`
 
 // Custom version output
 const versionInfo = () => {
-  const pkg = { version: '0.10.0' }; // Will be replaced during build
+  const pkg = { version: '0.11.0' }; // Will be replaced during build
   console.log(
     boxen(
       `${chalk.bold.blue('Backmark')} ${chalk.green(`v${pkg.version}`)}\n\n` +
@@ -57,7 +65,7 @@ program
       }
     )
   )
-  .version('0.10.0', '-V, --version', 'Display version information')
+  .version('0.11.0', '-V, --version', 'Display version information')
   .on('option:version', () => {
     versionInfo();
     process.exit(0);
@@ -106,6 +114,24 @@ taskCommands(task);
 // Board commands
 const board = program.command('board').description('Kanban board visualization');
 boardCommands(board);
+
+// Config commands
+const config = program.command('config').description('Manage backlog configuration');
+
+config.command('list-statuses').description('List all valid statuses').action(listStatuses);
+
+config.command('list-priorities').description('List all valid priorities').action(listPriorities);
+
+config.command('add-status <status>').description('Add a new status').action(addStatus);
+
+config.command('remove-status <status>').description('Remove a status').action(removeStatus);
+
+config.command('add-priority <priority>').description('Add a new priority').action(addPriority);
+
+config
+  .command('remove-priority <priority>')
+  .description('Remove a priority')
+  .action(removePriority);
 
 // Search command
 program

@@ -8,18 +8,21 @@ import { Errors } from '../utils/errors';
 import { FileSystemRepository } from './repositories/FileSystemRepository';
 import { LokiIndexedRepository } from './repositories/LokiIndexedRepository';
 import type { TaskRepository } from './repositories/TaskRepository';
+import { TaskValidator } from './validator';
 
 export class Backlog {
   private rootPath: string;
   private backlogPath: string;
   private config: Config;
   private repository: TaskRepository;
+  private validator: TaskValidator;
 
   private constructor(rootPath: string, config: Config, repository: TaskRepository) {
     this.rootPath = rootPath;
     this.backlogPath = path.join(rootPath, 'backlog');
     this.config = config;
     this.repository = repository;
+    this.validator = new TaskValidator(config);
   }
 
   static async load(cwd: string = process.cwd()): Promise<Backlog> {
@@ -61,6 +64,12 @@ export class Backlog {
         needsSave = true;
       }
 
+      // Auto-migrate: add priorities if missing
+      if (!config.board.priorities) {
+        config.board.priorities = ['low', 'medium', 'high', 'critical'];
+        needsSave = true;
+      }
+
       // Save updated config if needed
       if (needsSave) {
         const { dump } = await import('js-yaml');
@@ -96,6 +105,13 @@ export class Backlog {
   }
 
   async createTask(data: TaskData, user?: string): Promise<Task> {
+    // Validate task data before creation
+    const status = data.status || this.config.board.columns[0];
+    const priority = data.priority || 'medium';
+
+    this.validator.validateStatus(status);
+    this.validator.validatePriority(priority);
+
     const id = await this.getNextTaskId();
     const fileName = this.sanitizeFileName(`task-${this.formatId(id)} - ${data.title}.md`);
     const filePath = path.join(this.backlogPath, fileName);
@@ -117,8 +133,8 @@ export class Backlog {
       updated_date: now,
 
       // Organisation
-      status: data.status || 'To Do',
-      priority: data.priority || 'medium',
+      status,
+      priority,
       milestone: data.milestone,
 
       // Personnes et labels
@@ -180,6 +196,9 @@ export class Backlog {
     if (!task) {
       throw new Error(Errors.taskNotFound(id));
     }
+
+    // Validate updates before applying
+    this.validator.validateTaskUpdates(updates);
 
     const now = getCurrentTimestamp();
 
@@ -269,6 +288,20 @@ export class Backlog {
       return this.config;
     }
     return key.split('.').reduce((obj, k) => obj?.[k], this.config as never) as T;
+  }
+
+  /**
+   * Get valid statuses from config
+   */
+  getValidStatuses(): string[] {
+    return this.validator.getValidStatuses();
+  }
+
+  /**
+   * Get valid priorities from config
+   */
+  getValidPriorities(): string[] {
+    return this.validator.getValidPriorities();
   }
 
   /**
