@@ -38,8 +38,11 @@ export async function searchCommand(query: string, options: SearchOptions) {
 
     const allTasks = await backlog.getTasks(filters);
 
-    // Get search config
-    const searchConfig = backlog.getConfig<{ threshold: number; maxResults: number }>('search');
+    // Get search config with defaults
+    const searchConfig = backlog.getConfig<{ threshold: number; maxResults: number }>('search') || {
+      threshold: 0.3,
+      maxResults: 50,
+    };
 
     // Fuzzy search
     const results = searchTasks(allTasks, query, {
