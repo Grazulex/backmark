@@ -33,6 +33,10 @@ export async function overviewCommand(options: OverviewOptions) {
     // Get all tasks (using cache if available - super fast!)
     const tasks = await backlog.getTasks({});
 
+    // Get valid statuses and completed statuses from config
+    const validStatuses = backlog.getValidStatuses();
+    const completedStatuses = backlog.getCompletedStatuses();
+
     // Build filter
     const filter: StatsFilter = {};
     if (options.milestone) {
@@ -46,7 +50,7 @@ export async function overviewCommand(options: OverviewOptions) {
     }
 
     // Calculate stats
-    const calculator = new StatsCalculator(tasks);
+    const calculator = new StatsCalculator(tasks, validStatuses, completedStatuses);
     const stats = calculator.calculate(filter);
 
     spinner.stop();
@@ -183,27 +187,40 @@ function displayCompact(stats: OverviewStats, options: OverviewOptions) {
 }
 
 function displayTaskStatistics(summary: OverviewStats['summary']) {
-  const lines = [
-    '',
-    chalk.white(`  Total Tasks:        ${chalk.bold(summary.total)}`),
-    '',
-    chalk.green(
-      `  Completed:          ${summary.byStatus.Done || 0} (${formatPercentage(summary.completionRate)})  ${createProgressBar(summary.completionRate, 25)}`
-    ),
-    chalk.yellow(
-      `  In Progress:        ${summary.byStatus['In Progress'] || 0} (${formatPercentage((summary.byStatus['In Progress'] / summary.total) * 100)})  ${createProgressBar((summary.byStatus['In Progress'] / summary.total) * 100, 25)}`
-    ),
-    chalk.cyan(
-      `  Review:             ${summary.byStatus.Review || 0} (${formatPercentage((summary.byStatus.Review / summary.total) * 100)})  ${createProgressBar((summary.byStatus.Review / summary.total) * 100, 25)}`
-    ),
-  ];
+  const lines = ['', chalk.white(`  Total Tasks:        ${chalk.bold(summary.total)}`), ''];
 
-  if (summary.byStatus.Blocked > 0) {
-    lines.push(
-      chalk.red(
-        `  Blocked:            ${summary.byStatus.Blocked} (${formatPercentage((summary.byStatus.Blocked / summary.total) * 100)})  ${createProgressBar((summary.byStatus.Blocked / summary.total) * 100, 25)}`
-      )
-    );
+  // Display completion rate first (sum of all completed statuses)
+  lines.push(
+    chalk.green(
+      `  Completed:          ${Math.round(summary.completionRate)}% (${Math.round((summary.completionRate / 100) * summary.total)} tasks)  ${createProgressBar(summary.completionRate, 25)}`
+    )
+  );
+
+  lines.push('');
+
+  // Dynamically display all statuses from byStatus
+  for (const [status, count] of Object.entries(summary.byStatus)) {
+    if (count === 0) continue; // Skip statuses with 0 tasks
+
+    const percentage = (count / summary.total) * 100;
+    const bar = createProgressBar(percentage, 25);
+    const statusLabel = status.padEnd(20);
+
+    // Color based on status
+    let line: string;
+    if (status === 'Done' || status === 'Publish') {
+      line = chalk.green(`  ${statusLabel}${count} (${formatPercentage(percentage)})  ${bar}`);
+    } else if (status === 'In Progress') {
+      line = chalk.yellow(`  ${statusLabel}${count} (${formatPercentage(percentage)})  ${bar}`);
+    } else if (status === 'Blocked') {
+      line = chalk.red(`  ${statusLabel}${count} (${formatPercentage(percentage)})  ${bar}`);
+    } else if (status === 'Review') {
+      line = chalk.cyan(`  ${statusLabel}${count} (${formatPercentage(percentage)})  ${bar}`);
+    } else {
+      line = chalk.gray(`  ${statusLabel}${count} (${formatPercentage(percentage)})  ${bar}`);
+    }
+
+    lines.push(line);
   }
 
   lines.push('');

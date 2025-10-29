@@ -15,6 +15,7 @@ export interface ProjectConfig {
 export interface BoardConfig {
   columns: string[];
   priorities: string[];
+  completedStatuses?: string[]; // Statuses that mark a task as completed (trigger closed_date)
 }
 
 export interface DisplayConfig {
@@ -57,6 +58,7 @@ export const DEFAULT_CONFIG: Config = {
   board: {
     columns: ['To Do', 'In Progress', 'Review', 'Done'],
     priorities: ['low', 'medium', 'high', 'critical'],
+    completedStatuses: ['Done'], // Default: only 'Done' marks completion
   },
   display: {
     dateFormat: 'yyyy-MM-dd HH:mm',

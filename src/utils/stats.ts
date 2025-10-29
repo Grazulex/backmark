@@ -58,7 +58,11 @@ export interface StatsFilter {
 }
 
 export class StatsCalculator {
-  constructor(private tasks: Task[]) {}
+  constructor(
+    private tasks: Task[],
+    private validStatuses?: string[],
+    private completedStatuses?: string[]
+  ) {}
 
   calculate(filter?: StatsFilter): OverviewStats {
     const filteredTasks = this.filterTasks(filter);
@@ -96,15 +100,20 @@ export class StatsCalculator {
   private calculateSummary(tasks: Task[]): OverviewStats['summary'] {
     const total = tasks.length;
 
-    // Count by status
-    const byStatus: Record<TaskStatus, number> = {
-      'To Do': 0,
-      'In Progress': 0,
-      Review: 0,
-      Done: 0,
-      Blocked: 0,
-      Cancelled: 0,
-    };
+    // Count by status - use config if available, otherwise use defaults
+    const statusList = this.validStatuses || [
+      'To Do',
+      'In Progress',
+      'Review',
+      'Done',
+      'Blocked',
+      'Cancelled',
+    ];
+
+    const byStatus: Record<TaskStatus, number> = {};
+    for (const status of statusList) {
+      byStatus[status as TaskStatus] = 0;
+    }
 
     for (const task of tasks) {
       byStatus[task.status] = (byStatus[task.status] || 0) + 1;
@@ -122,12 +131,18 @@ export class StatsCalculator {
       byPriority[task.priority] = (byPriority[task.priority] || 0) + 1;
     }
 
-    // Calculate completion rate
-    const completed = byStatus.Done || 0;
+    // Calculate completion rate (sum all completed statuses)
+    const completedStatusList = this.completedStatuses || ['Done'];
+    const completed = completedStatusList.reduce(
+      (sum, status) => sum + (byStatus[status as TaskStatus] || 0),
+      0
+    );
     const completionRate = total > 0 ? (completed / total) * 100 : 0;
 
     // Calculate average duration (for completed tasks)
-    const completedTasks = tasks.filter((t) => t.status === 'Done' && t.closed_date);
+    const completedTasks = tasks.filter(
+      (t) => completedStatusList.includes(t.status) && t.closed_date
+    );
     let avgDuration = 0;
 
     if (completedTasks.length > 0) {
@@ -180,7 +195,8 @@ export class StatsCalculator {
       if (!stats) continue;
       stats.total++;
 
-      if (task.status === 'Done') {
+      const completedStatusList = this.completedStatuses || ['Done'];
+      if (completedStatusList.includes(task.status)) {
         stats.completed++;
       } else if (task.status === 'In Progress') {
         stats.inProgress++;
@@ -223,7 +239,8 @@ export class StatsCalculator {
         if (!stats) continue;
         stats.total++;
 
-        if (task.status === 'Done') {
+        const completedStatusList = this.completedStatuses || ['Done'];
+        if (completedStatusList.includes(task.status)) {
           stats.completed++;
         } else if (task.status === 'In Progress') {
           stats.inProgress++;
@@ -244,21 +261,26 @@ export class StatsCalculator {
   private calculateAlerts(tasks: Task[]): OverviewStats['alerts'] {
     const now = new Date();
     const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const completedStatusList = this.completedStatuses || ['Done'];
 
     return {
       blocked: tasks.filter((t) => t.status === 'Blocked').length,
-      critical: tasks.filter((t) => t.priority === 'critical' && t.status !== 'Done').length,
+      critical: tasks.filter(
+        (t) => t.priority === 'critical' && !completedStatusList.includes(t.status)
+      ).length,
       overdue: tasks.filter((t) => {
-        if (!t.end_date || t.status === 'Done') return false;
+        if (!t.end_date || completedStatusList.includes(t.status)) return false;
         return new Date(t.end_date) < now;
       }).length,
       dueThisWeek: tasks.filter((t) => {
-        if (!t.end_date || t.status === 'Done') return false;
+        if (!t.end_date || completedStatusList.includes(t.status)) return false;
         const endDate = new Date(t.end_date);
         return endDate >= now && endDate <= oneWeekFromNow;
       }).length,
       noCriteria: tasks.filter(
-        (t) => t.status !== 'Done' && (!t.acceptance_criteria || t.acceptance_criteria.length === 0)
+        (t) =>
+          !completedStatusList.includes(t.status) &&
+          (!t.acceptance_criteria || t.acceptance_criteria.length === 0)
       ).length,
     };
   }
@@ -274,7 +296,8 @@ export class StatsCalculator {
     ).length;
     const withReview = aiTasks.filter((t) => t.ai_review && t.ai_review.trim().length > 0).length;
 
-    const completed = aiTasks.filter((t) => t.status === 'Done');
+    const completedStatusList = this.completedStatuses || ['Done'];
+    const completed = aiTasks.filter((t) => completedStatusList.includes(t.status));
 
     // Calculate AI velocity (last 4 weeks)
     const now = new Date();
@@ -299,7 +322,10 @@ export class StatsCalculator {
   }
 
   private calculateVelocity(tasks: Task[]): OverviewStats['velocity'] {
-    const completedTasks = tasks.filter((t) => t.status === 'Done' && t.closed_date);
+    const completedStatusList = this.completedStatuses || ['Done'];
+    const completedTasks = tasks.filter(
+      (t) => completedStatusList.includes(t.status) && t.closed_date
+    );
 
     // Group by week
     const weekMap = new Map<string, number>();

@@ -64,7 +64,14 @@ export class Backlog {
         config.board = {
           columns: ['To Do', 'In Progress', 'Review', 'Done'],
           priorities: ['low', 'medium', 'high', 'critical'],
+          completedStatuses: ['Done'],
         };
+        needsSave = true;
+      }
+
+      // Auto-migrate: add completedStatuses if missing
+      if (!config.board.completedStatuses) {
+        config.board.completedStatuses = ['Done'];
         needsSave = true;
       }
 
@@ -248,9 +255,14 @@ export class Backlog {
     const changes: string[] = [];
     if (updates.status && updates.status !== task.status) {
       changes.push(`status: ${task.status} → ${updates.status}`);
-      // Si la tâche passe à "Done", ajouter closed_date
-      if (updates.status === 'Done') {
+      // Si la tâche passe à un status "completed", ajouter closed_date
+      const completedStatuses = this.config.board.completedStatuses || ['Done'];
+      if (completedStatuses.includes(updates.status)) {
         updates.closed_date = now;
+      }
+      // Si la tâche sort d'un status "completed", effacer closed_date
+      if (completedStatuses.includes(task.status) && !completedStatuses.includes(updates.status)) {
+        updates.closed_date = null;
       }
     }
     if (updates.priority && updates.priority !== task.priority) {
@@ -337,6 +349,20 @@ export class Backlog {
    */
   getValidStatuses(): string[] {
     return this.validator.getValidStatuses();
+  }
+
+  /**
+   * Get completed statuses from config
+   */
+  getCompletedStatuses(): string[] {
+    return this.config.board.completedStatuses || ['Done'];
+  }
+
+  /**
+   * Check if a status is considered completed
+   */
+  isCompletedStatus(status: string): boolean {
+    return this.getCompletedStatuses().includes(status);
   }
 
   /**
