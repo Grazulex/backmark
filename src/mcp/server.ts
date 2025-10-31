@@ -7,8 +7,8 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { registerTools, handleToolCall } from './tools.js';
-import { registerResources, handleResourceRead } from './resources.js';
+import { handleResourceRead, registerResources } from './resources.js';
+import { handleToolCall, registerTools } from './tools.js';
 
 /**
  * Backmark MCP Server
@@ -21,7 +21,7 @@ class BackmarkMCPServer {
     this.server = new Server(
       {
         name: 'backmark-mcp',
-        version: '0.11.3',
+        version: '1.0.0',
       },
       {
         capabilities: {

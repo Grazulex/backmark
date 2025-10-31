@@ -1,5 +1,5 @@
-import type { ResourceDefinition } from './types.js';
 import { Backlog } from '../core/backlog.js';
+import type { ResourceDefinition } from './types.js';
 
 /**
  * Register all available MCP resources
@@ -403,9 +403,9 @@ async function getStats(): Promise<{
   // Calculate statistics
   const totalTasks = tasks.length;
   const completedStatuses = config.board?.completedStatuses || ['Done'];
-  const completed = tasks.filter(t => completedStatuses.includes(t.status)).length;
-  const inProgress = tasks.filter(t => t.status === 'In Progress').length;
-  const toDo = tasks.filter(t => t.status === 'To Do').length;
+  const completed = tasks.filter((t) => completedStatuses.includes(t.status)).length;
+  const inProgress = tasks.filter((t) => t.status === 'In Progress').length;
+  const toDo = tasks.filter((t) => t.status === 'To Do').length;
   const completionRate = totalTasks > 0 ? Math.round((completed / totalTasks) * 100) : 0;
 
   const stats = {

@@ -481,7 +481,8 @@ async function handleTaskView(
   if (task.start_date) output += `**Start Date:** ${task.start_date}\n`;
   if (task.end_date) output += `**End Date:** ${task.end_date}\n`;
   if (task.parent_task) output += `**Parent Task:** #${task.parent_task}\n`;
-  if (task.dependencies?.length) output += `**Dependencies:** ${task.dependencies.map((d) => `#${d}`).join(', ')}\n`;
+  if (task.dependencies?.length)
+    output += `**Dependencies:** ${task.dependencies.map((d) => `#${d}`).join(', ')}\n`;
   output += `\n## Description\n\n${task.description}\n`;
 
   if (task.ai_plan) {
@@ -633,9 +634,9 @@ async function handleSearch(
   const allTasks = await backlog.getTasks(filters);
   const query = args.query.toLowerCase();
 
-  const results = allTasks.filter(task =>
-    task.title.toLowerCase().includes(query) ||
-    task.description.toLowerCase().includes(query)
+  const results = allTasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(query) || task.description.toLowerCase().includes(query)
   );
 
   if (results.length === 0) {
@@ -651,8 +652,7 @@ async function handleSearch(
 
   const resultList = results
     .map(
-      (task) =>
-        `#${task.id} - ${task.title}\n  Status: ${task.status} | Priority: ${task.priority}`
+      (task) => `#${task.id} - ${task.title}\n  Status: ${task.status} | Priority: ${task.priority}`
     )
     .join('\n\n');
 
@@ -679,9 +679,9 @@ async function handleOverview(
   // Calculate statistics
   const totalTasks = tasks.length;
   const completedStatuses = config.board?.completedStatuses || ['Done'];
-  const completed = tasks.filter(t => completedStatuses.includes(t.status)).length;
-  const inProgress = tasks.filter(t => t.status === 'In Progress').length;
-  const toDo = tasks.filter(t => t.status === 'To Do').length;
+  const completed = tasks.filter((t) => completedStatuses.includes(t.status)).length;
+  const inProgress = tasks.filter((t) => t.status === 'In Progress').length;
+  const toDo = tasks.filter((t) => t.status === 'To Do').length;
   const completionRate = totalTasks > 0 ? Math.round((completed / totalTasks) * 100) : 0;
 
   // Group by priority
@@ -743,7 +743,7 @@ async function handleBoardShow(
   let output = '# Kanban Board\n\n';
 
   for (const columnName of columns) {
-    const columnTasks = tasks.filter(t => t.status === columnName);
+    const columnTasks = tasks.filter((t) => t.status === columnName);
     output += `## ${columnName} (${columnTasks.length})\n\n`;
     for (const task of columnTasks) {
       output += `- #${task.id}: ${task.title} [${task.priority}]\n`;
