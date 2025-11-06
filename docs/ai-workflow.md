@@ -2134,34 +2134,41 @@ backmark task create "Build app - Phase 3: Polish" --assignees "Claude" --depend
 
 ---
 
-## 🔗 Integration with Claude Code
+## 🔗 Integration with Claude Code (MCP)
 
-Backmark has deep integration with [Claude Code](https://claude.com/claude-code):
+Backmark provides deep integration with [Claude Code](https://claude.com/claude-code) via Model Context Protocol (MCP):
 
-### Install the Backmark Agent
+### Configure MCP Server
 
-```bash
-# During init, you'll be prompted:
-backmark init "My Project"
-# > Install Backmark agent for Claude Code? [Y/n]
+Add Backmark MCP server to your Claude Code settings:
 
-# Or install manually:
-cp node_modules/@grazulex/backmark/.claude/agents/backmark-agent.md \
-   .claude/agents/backmark-agent.md
+```json
+{
+  "mcpServers": {
+    "backmark": {
+      "command": "npx",
+      "args": ["-y", "@grazulex/backmark", "mcp-server"],
+      "cwd": "/path/to/your/project"
+    }
+  }
+}
 ```
 
-### Using Claude Code with Backmark
+**Steps**:
+1. Open Claude Code MCP settings
+2. Add the above configuration
+3. Update `cwd` to your project path
+4. Restart Claude Code
 
-Once the agent is installed, Claude Code can:
+### Using Claude Code with Backmark MCP
+
+Once MCP is configured, Claude Code can:
 
 1. **Read task context**:
    ```
-   Human: /agent backmark-manager
-   Claude: I can now access your Backmark tasks!
-
    Human: What should I work on next?
-   Claude: Let me check your backlog...
-   [Reads task list]
+   Claude: Let me check your backlog via MCP...
+   [Reads task list through MCP]
    Claude: You have 3 high-priority tasks. The most urgent is #42: "Fix login bug"
    ```
 
@@ -2191,13 +2198,12 @@ Once the agent is installed, Claude Code can:
    Claude: I see we were implementing the dashboard. The authentication is done, now we need to add the widgets. Continuing...
    ```
 
-### Best Practices with Claude Code
+### Best Practices with Claude Code MCP
 
-1. **Always start with context**:
+1. **Let Claude access tasks directly**:
    ```
-   Human: /agent backmark-manager
    Human: What's the current task I'm working on?
-   Claude: [Reads Backmark]
+   Claude: [Reads Backmark via MCP]
    Claude: You're working on #42. Let me check the details...
    ```
 

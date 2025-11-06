@@ -47,7 +47,7 @@ my-project/
     └── .gitignore      # Ignore cache files
 ```
 
-**Note**: You can also install the Backmark agent for Claude Code when prompted. This enables deeper AI integration.
+**Note**: For deeper AI integration, configure the Backmark MCP server in your Claude Code settings. See [Using with Claude Code](../README.md#-using-with-claude-code-mcp-integration) in the main README.
 
 ---
 
@@ -566,7 +566,7 @@ Now that you know the basics, explore more:
 
 1. **AI Workflow**: Read [AI Workflow Guide](ai-workflow.md) for advanced AI collaboration
 2. **Best Practices**: Learn task organization patterns
-3. **Integration**: Set up the Claude Code agent for seamless AI integration
+3. **MCP Integration**: Set up the Backmark MCP server for seamless AI integration with Claude Code
 4. **Troubleshooting**: Check [Troubleshooting Guide](troubleshooting.md) if you encounter issues
 
 ---

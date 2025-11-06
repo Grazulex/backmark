@@ -1,6 +1,6 @@
 {
   "name": "@grazulex/backmark",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Markdown-native task management with colorful CLI and Kanban board",
   "type": "module",
   "main": "dist/cli.js",
@@ -8,7 +8,7 @@
     "backmark": "./dist/cli.js",
     "backmark-mcp-server": "./dist/mcp-server.js"
   },
-  "files": ["dist", "templates", ".claude", "README.md", "LICENSE", "CHANGELOG.md"],
+  "files": ["dist", "templates", "README.md", "LICENSE", "CHANGELOG.md"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Grazulex/backmark.git"
@@ -71,10 +71,10 @@
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.2",
-    "@vitest/coverage-v8": "^2.1.9",
+    "@vitest/coverage-v8": "^4.0.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.0.7"
   },
   "engines": {
     "node": ">=18.0.0"

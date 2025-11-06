@@ -544,35 +544,58 @@ Error: Failed to parse task file: Invalid YAML in frontmatter
 
 ## 🔗 Integration Issues
 
-### Issue: Claude Code agent not working
+### Issue: MCP server not working with Claude Code
 
 **Symptoms**:
-- Claude Code can't find Backmark commands
-- Agent not responding
+- Claude Code can't access Backmark via MCP
+- MCP server not responding
+- "Server not found" errors
 
 **Solutions**:
 
-1. **Verify agent is installed**:
+1. **Verify MCP server configuration**:
+   - Check your Claude Code MCP settings
+   - Should include:
+   ```json
+   {
+     "mcpServers": {
+       "backmark": {
+         "command": "npx",
+         "args": ["-y", "@grazulex/backmark", "mcp-server"],
+         "cwd": "/path/to/your/project"
+       }
+     }
+   }
+   ```
+
+2. **Test MCP server manually**:
    ```bash
-   ls .claude/agents/backmark-agent.md
+   # Run server directly
+   npx @grazulex/backmark mcp-server
+   # Should start without errors
+   ```
+
+3. **Check Backmark installation**:
+   ```bash
+   # Verify backmark is installed
+   npm list -g @grazulex/backmark
+   # Or in local project
+   npm list @grazulex/backmark
+   ```
+
+4. **Verify project has backlog initialized**:
+   ```bash
+   ls backlog/config.yml
    # Should exist
    ```
 
-2. **Reinstall agent**:
-   ```bash
-   # Copy from node_modules
-   mkdir -p .claude/agents
-   cp node_modules/@grazulex/backmark/.claude/agents/backmark-agent.md \
-      .claude/agents/backmark-agent.md
-   ```
-
-3. **Check Claude Code version**:
-   - Requires Claude Code with agent support
+5. **Check Claude Code MCP support**:
+   - Requires Claude Code with MCP support
    - Update Claude Code if needed
 
-4. **Restart Claude Code**:
+6. **Restart Claude Code**:
    - Exit and restart
-   - Agent should be recognized
+   - MCP servers reload on startup
 
 ---
 

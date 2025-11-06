@@ -154,7 +154,7 @@
 - **AI assignees**: Special highlighting for AI team members (Claude, GPT, Copilot, etc.)
 - **Vibe coding workflow**: Optimized for seamless human-AI collaboration
 - **Complete history**: Track all AI contributions with full audit trail
-- **Claude Code integration**: Optional agent/skill for automated task management
+- **MCP Server**: Model Context Protocol server for deep AI integration with Claude Code and compatible tools
 
 ### 🎨 Beautiful CLI
 - **Colorful output**:
@@ -311,10 +311,10 @@ backlog/
     └── tasks.db
 ```
 
-**Claude Code Agent (Optional):**
-- Automatically installed to `~/.config/claude-code/skills/backmark.md`
-- Enables Claude to manage tasks during development sessions
-- Provides specialized commands and protocols for AI task management
+**MCP Integration (Optional):**
+- Add Backmark MCP server to your Claude Code settings for deep AI integration
+- Enables Claude to manage tasks programmatically during development
+- See [Using with Claude Code](#-using-with-claude-code-mcp-integration) for setup
 
 ### 2. Create Your First Task
 
@@ -2405,10 +2405,6 @@ backmark/
 │       ├── task.ts              # Task type definitions
 │       ├── config.ts            # Config type definitions
 │       └── index.ts             # Type exports
-├── .claude/
-│   ├── agents/
-│   │   └── backmark-agent.md   # Claude Code agent
-│   └── settings.local.json
 ├── tests/
 │   ├── unit/                    # Unit tests
 │   └── integration/             # Integration tests
@@ -3079,9 +3075,9 @@ backmark task list --milestone "v1.0" --status "Done"
 
 ---
 
-## 🤖 Using with Claude Code
+## 🤖 Using with Claude Code (MCP Integration)
 
-Backmark is designed to work seamlessly with Claude Code, transforming AI task management.
+Backmark provides a Model Context Protocol (MCP) server that enables deep integration with Claude Code and other MCP-compatible AI tools.
 
 ### Quick Setup
 
@@ -3093,31 +3089,63 @@ npm install -g @grazulex/backmark
 cd /path/to/your/project
 backmark init "Your Project"
 
-# 3. Claude Code can now use Backmark!
+# 3. Add MCP server to your Claude Code settings
+# Add this to your MCP settings configuration:
 ```
 
-### What Claude Code Does with Backmark
+**MCP Settings Configuration:**
 
-When working in a Backmark-enabled project, Claude Code will:
+```json
+{
+  "mcpServers": {
+    "backmark": {
+      "command": "npx",
+      "args": ["-y", "@grazulex/backmark", "mcp-server"],
+      "cwd": "/path/to/your/project"
+    }
+  }
+}
+```
 
-1. **📋 Create tasks** for features, bugs, and refactors
+### MCP Server Features
+
+The Backmark MCP server exposes:
+
+**Resources:**
+- Task list and details
+- Backlog configuration
+- Project documentation
+
+**Tools:**
+- Create, update, and manage tasks
+- Add AI plans, notes, documentation, and reviews
+- Manage acceptance criteria
+- Search and filter tasks
+- View task hierarchies and dependencies
+
+### What Claude Code Can Do with Backmark MCP
+
+When working with the MCP server, Claude Code can:
+
+1. **📋 Create tasks** programmatically during development
 2. **📝 Document plans** before implementing (`ai-plan`)
 3. **🚧 Log progress** continuously (`ai-note`)
 4. **📚 Generate docs** during implementation (`ai-doc`)
 5. **✅ Self-review** when complete (`ai-review`)
 6. **📊 Track criteria** and check them off as completed
+7. **🔍 Search and filter** tasks based on any criteria
 
-### Example Claude Code Session
+### Example MCP Session
 
 ```
 You: "Implement user authentication with JWT"
 
-Claude Code:
+Claude Code (via MCP):
 ✓ Created task #5: "Implement user authentication"
-✓ Added implementation plan
+✓ Added implementation plan via MCP
 ✓ Status → In Progress
 [...implements the feature...]
-✓ Logged 8 progress notes
+✓ Logged 8 progress notes via MCP
 ✓ Generated API documentation
 ✓ Self-review complete
 ✓ Status → Done
@@ -3125,13 +3153,13 @@ Claude Code:
 View with: backmark task view 5 --ai-all
 ```
 
-### Monitoring Claude's Work
+### Monitoring AI Work
 
 ```bash
 # Watch board in real-time
 backmark board show --watch
 
-# View Claude's tasks
+# View AI-assigned tasks
 backmark task list --assignee "Claude"
 
 # See detailed AI sections
@@ -3142,6 +3170,16 @@ backmark task view <id> --ai-plan
 
 # Just the notes (dev log)
 backmark task view <id> --ai-notes
+```
+
+### Running MCP Server Manually
+
+```bash
+# Start the MCP server directly
+npx @grazulex/backmark mcp-server
+
+# Or if installed globally
+backmark-mcp-server
 ```
 
 ---
@@ -3288,10 +3326,13 @@ A: Manually delete the file in `backlog/`. Delete command planned for v0.6.
 ### AI Integration
 
 **Q: Do I need Claude Code to use Backmark?**
-A: No! Backmark works standalone. Claude Code integration is optional.
+A: No! Backmark works standalone. MCP integration with Claude Code is optional but recommended for enhanced AI workflow.
+
+**Q: What is MCP integration?**
+A: MCP (Model Context Protocol) allows Claude Code to programmatically manage tasks. It's more powerful than manual CLI usage.
 
 **Q: Can I use Backmark with other AI assistants (GPT, Copilot)?**
-A: Yes! The AI features work with any assistant. Just assign tasks to them.
+A: Yes! The AI features work with any assistant. For non-MCP tools, they can use the CLI commands.
 
 **Q: What if I don't use AI at all?**
 A: Totally fine! Just ignore the `ai-*` commands and sections.
@@ -3513,16 +3554,6 @@ backmark task list
 ```
 
 ### AI Integration Issues
-
-#### Problem: Claude Code agent not working
-**Solution:**
-```bash
-# Agent is located in the project:
-ls .claude/agents/backmark-agent.md
-
-# You can manually copy it to Claude Code skills if needed:
-cp .claude/agents/backmark-agent.md ~/.config/claude-code/skills/backmark.md
-```
 
 #### Problem: AI sections not showing
 **Solution:**
@@ -3747,12 +3778,12 @@ Found a security issue? Please email security@backmark.dev (or create a private 
   - Based on subtasks, dependencies, acceptance criteria
   - AI confidence score (plan coverage, review completeness)
 
-### v1.0.0 - AI Context & Integration (Q3 2025)
-- [ ] **MCP Server** (Model Context Protocol) - Deep AI agent integration
+### v1.0.0 - AI Context & Integration ✅
+- [x] **MCP Server** (Model Context Protocol) - Deep AI agent integration ✅
   - Expose Backmark data as MCP resources
   - AI agents can read/update tasks programmatically
-  - Automatic task creation from AI conversations
-- [ ] **Code-to-Task Linking** - Connect tasks to codebase
+  - Full integration with Claude Code and MCP-compatible tools
+- [ ] **Code-to-Task Linking** - Connect tasks to codebase (Future)
   - Detect related files/functions mentioned in tasks
   - Track which code was modified for each task
   - AI can auto-link code references

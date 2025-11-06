@@ -30,7 +30,7 @@ const banner = chalk.bold.blue(`
 
 // Custom version output
 const versionInfo = () => {
-  const pkg = { version: '1.0.0' }; // Will be replaced during build
+  const pkg = { version: '1.1.0' }; // Will be replaced during build
   console.log(
     boxen(
       `${chalk.bold.blue('Backmark')} ${chalk.green(`v${pkg.version}`)}\n\n` +
@@ -65,7 +65,7 @@ program
       }
     )
   )
-  .version('1.0.0', '-V, --version', 'Display version information')
+  .version('1.1.0', '-V, --version', 'Display version information')
   .on('option:version', () => {
     versionInfo();
     process.exit(0);
@@ -104,7 +104,6 @@ program
   .command('init')
   .description('Initialize a new backlog in the current directory')
   .argument('[name]', 'Project name')
-  .option('--install-agent', 'Install Backmark agent for Claude Code')
   .action(initCommand);
 
 // Task commands
