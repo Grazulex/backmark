@@ -369,8 +369,7 @@ export function registerTools(): ToolDefinition[] {
     // AI Automation
     {
       name: 'backmark_task_ai_breakdown',
-      description:
-        'Automatically break down a complex task into subtasks based on AI analysis',
+      description: 'Automatically break down a complex task into subtasks based on AI analysis',
       inputSchema: {
         type: 'object',
         properties: {
@@ -1006,8 +1005,7 @@ async function handleTemplatesList(
 
   if (builtIn.length > 0) {
     output += '## Built-in Templates\n\n';
-    output +=
-      '- **feature**: New feature development with structured AI plan sections\n';
+    output += '- **feature**: New feature development with structured AI plan sections\n';
     output += '- **bugfix**: Bug fix with debugging checklist and root cause analysis\n';
     output += '- **refactoring**: Code refactoring with quality metrics and patterns\n';
     output += '- **research**: Research/investigation with comparison matrix\n';
@@ -1116,7 +1114,7 @@ async function handleTaskAiBreakdown(
     createdSubtasks.push(created);
   }
 
-  let output = `# Task Breakdown Complete\n\n`;
+  let output = '# Task Breakdown Complete\n\n';
   output += `Task #${args.id} has been broken down into ${createdSubtasks.length} subtasks:\n\n`;
 
   for (const subtask of createdSubtasks) {
@@ -1375,7 +1373,7 @@ async function handleTaskTree(
     throw new Error(`Task #${args.id} not found`);
   }
 
-  let output = `# Task Hierarchy Tree\n\n`;
+  let output = '# Task Hierarchy Tree\n\n';
 
   // Show parent if exists
   if (task.parent_task) {
