@@ -97,3 +97,46 @@ export interface OverviewArgs {
 export interface BoardShowArgs {
   milestone?: string;
 }
+
+// Template management
+export interface TemplateShowArgs {
+  name: string;
+}
+
+export interface TaskCreateWithTemplateArgs {
+  title: string;
+  template: string;
+  description?: string;
+  status?: string;
+  priority?: string;
+  assignees?: string[];
+  labels?: string[];
+  milestone?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+// AI Automation
+export interface TaskIdArgs {
+  id: number;
+}
+
+// Acceptance Criteria
+export interface AcceptanceCriterionArgs {
+  id: number;
+  text: string;
+}
+
+export interface CheckCriterionArgs {
+  id: number;
+  index: number;
+}
+
+// Configuration
+export interface ConfigAddStatusArgs {
+  status: string;
+}
+
+export interface ConfigAddPriorityArgs {
+  priority: string;
+}
