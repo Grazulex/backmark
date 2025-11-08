@@ -65,7 +65,7 @@ program
       }
     )
   )
-  .version('1.2.0', '-V, --version', 'Display version information')
+  .version('1.2.1', '-V, --version', 'Display version information')
   .on('option:version', () => {
     versionInfo();
     process.exit(0);
