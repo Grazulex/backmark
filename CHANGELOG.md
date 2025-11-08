@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Offers actionable next steps
 
 ### Improved
-- Enhanced `.claude/agents/backmark-agent.md` with AI automation workflow
+- Enhanced AI workflow documentation with AI automation guidance
   - Added guidance on when to use ai-breakdown, ai-estimate, ai-review-ready
   - Integrated automation commands into Before/After Implementation sections
   - Updated best practices with smart task breakdown patterns
@@ -84,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error messages for missing templates with helpful suggestions
 
 ### Documentation
-- Updated `.claude/agents/backmark-agent.md` with template usage and examples
+- Updated AI workflow documentation with template usage and examples
 - Added comprehensive "Pattern 0: Using Task Templates" to AI Workflow Guide
 - Updated Quick Start guide with template section and examples
 - Enhanced README with complete template reference and examples

@@ -30,7 +30,7 @@ const banner = chalk.bold.blue(`
 
 // Custom version output
 const versionInfo = () => {
-  const pkg = { version: '1.2.0' }; // Will be replaced during build
+  const pkg = { version: '1.2.1' }; // Will be replaced during build
   console.log(
     boxen(
       `${chalk.bold.blue('Backmark')} ${chalk.green(`v${pkg.version}`)}\n\n` +
