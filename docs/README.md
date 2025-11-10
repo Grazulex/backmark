@@ -4,13 +4,13 @@ All Backmark documentation is now available at **[backmark.tech](https://backmar
 
 ## 📚 Quick Links
 
-- 🚀 [Getting Started](https://backmark.tech/getting-started)
-- 🤖 [AI Workflow Guide](https://backmark.tech/ai-workflow)
-- 📋 [Command Reference](https://backmark.tech/commands)
-- ⚙️ [Configuration](https://backmark.tech/configuration)
-- 🔌 [MCP Integration](https://backmark.tech/mcp)
-- 🏗️ [Architecture](https://backmark.tech/architecture)
-- 🐛 [Troubleshooting](https://backmark.tech/troubleshooting)
+- 🚀 [Getting Started](https://backmark.tech/getting-started.html)
+- 🤖 [AI Workflow Guide](https://backmark.tech/ai-workflow.html)
+- 📋 [Command Reference](https://backmark.tech/commands.html)
+- ⚙️ [Configuration](https://backmark.tech/configuration.html)
+- 🔌 [MCP Integration](https://backmark.tech/mcp.html)
+- 🏗️ [Architecture](https://backmark.tech/architecture.html)
+- 📖 [Installation Guide](https://backmark.tech/install.html)
 
 ## 🎬 Video Tutorial
 

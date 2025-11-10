@@ -62,7 +62,7 @@ backmark task ai-plan 1 "
 backmark board
 ```
 
-**→ [Complete Getting Started Guide](https://backmark.tech/getting-started)**
+**→ [Complete Getting Started Guide](https://backmark.tech/getting-started.html)**
 
 ---
 
@@ -130,7 +130,7 @@ Backmark is built for **vibe coding** - a collaborative workflow where humans an
 - 🤖 **AI** implements, documents, tests, and self-reviews
 - 🔄 **Backmark** maintains shared context across sessions
 
-**→ [Learn More About Vibe Coding](https://backmark.tech/vibe-coding)**
+**→ [Learn More About Vibe Coding](https://backmark.tech/vibe-coding.html)**
 
 ---
 
@@ -142,14 +142,14 @@ Complete documentation is available at **[backmark.tech](https://backmark.tech)*
 
 | Guide | Description |
 |-------|-------------|
-| [📖 Installation](https://backmark.tech/install) | Multiple installation methods, troubleshooting |
-| [🚀 Getting Started](https://backmark.tech/getting-started) | First steps, basic commands, examples |
-| [🤖 AI Workflow](https://backmark.tech/ai-workflow) | Complete guide to AI collaboration patterns |
-| [📋 Commands](https://backmark.tech/commands) | Full command reference with examples |
-| [⚙️ Configuration](https://backmark.tech/configuration) | Customize workflows, board columns, validations |
-| [🔌 MCP Integration](https://backmark.tech/mcp) | Setup Claude Code integration |
-| [🏗️ Architecture](https://backmark.tech/architecture) | How Backmark works under the hood |
-| [🐛 Troubleshooting](https://backmark.tech/troubleshooting) | Common issues and solutions |
+| [📖 Installation](https://backmark.tech/install.html) | Multiple installation methods, troubleshooting |
+| [🚀 Getting Started](https://backmark.tech/getting-started.html) | First steps, basic commands, examples |
+| [🤖 AI Workflow](https://backmark.tech/ai-workflow.html) | Complete guide to AI collaboration patterns |
+| [📋 Commands](https://backmark.tech/commands.html) | Full command reference with examples |
+| [⚙️ Configuration](https://backmark.tech/configuration.html) | Customize workflows, board columns, validations |
+| [🔌 MCP Integration](https://backmark.tech/mcp.html) | Setup Claude Code integration |
+| [🏗️ Architecture](https://backmark.tech/architecture.html) | How Backmark works under the hood |
+| [🐛 Troubleshooting](https://backmark.tech/getting-started.html#troubleshooting) | Common issues and solutions |
 
 ---
 
@@ -199,7 +199,7 @@ backmark task view 1 --ai-all
 backmark task edit 1 --status "Done"
 ```
 
-**→ [See More Workflow Examples](https://backmark.tech/ai-workflow#complete-session-examples)**
+**→ [See More Workflow Examples](https://backmark.tech/ai-workflow.html#complete-session-examples)**
 
 ---
 
@@ -257,7 +257,7 @@ backmark --version
 
 ### Other Methods
 
-See the [complete installation guide](https://backmark.tech/install) for:
+See the [complete installation guide](https://backmark.tech/install.html) for:
 - Local project installation
 - npx usage
 - Building from source
@@ -289,7 +289,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 | **CLI Native** | ✅ | ❌ | ❌ | ⚠️ |
 | **MCP Integration** | ✅ | ❌ | ❌ | ❌ |
 
-**→ [Detailed Comparison](https://backmark.tech/why)**
+**→ [Detailed Comparison](https://backmark.tech/why.html)**
 
 ---
 
@@ -306,7 +306,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - 🔜 Custom workflows (v1.1)
 - 🔜 Plugin system (v1.2)
 
-See the [full roadmap](https://backmark.tech/changelog) for details.
+See the [full roadmap](https://backmark.tech/changelog.html) for details.
 
 ---
 
