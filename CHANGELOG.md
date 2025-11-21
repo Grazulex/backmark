@@ -5,6 +5,14 @@ All notable changes to Backmark will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-11-21
+
+### Fixed
+- **Board TUI**: Fixed React key duplication warnings when rendering tasks
+  - Changed task keys from `task.id` to `${column}-${task.id}-${absoluteIndex}` to ensure uniqueness
+  - Prevents warnings: "Encountered two children with the same key"
+  - Improves stability when tasks change status during auto-refresh
+
 ## [0.8.0] - 2025-10-24
 
 ### Added

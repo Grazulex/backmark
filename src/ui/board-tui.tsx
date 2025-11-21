@@ -188,7 +188,7 @@ const Board: React.FC<BoardProps> = ({ backlog, columns }) => {
                       const absoluteIndex = scrollOffset + idx;
                       const isTaskSelected = isSelected && absoluteIndex === selectedTaskIndex;
                       return (
-                        <Box key={task.id} flexDirection="column">
+                        <Box key={`${column}-${task.id}-${absoluteIndex}`} flexDirection="column">
                           {/* Single line: ID + Priority + Title */}
                           <Text
                             inverse={isTaskSelected}
