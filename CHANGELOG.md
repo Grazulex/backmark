@@ -5,6 +5,14 @@ All notable changes to Backmark will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-10-23
+
+### Security
+- Update dependencies within existing ranges: `npm audit` now reports no vulnerabilities (was high: `@modelcontextprotocol/sdk` cross-client data leak GHSA-345p-7cg4-v4c7, `fast-uri` host confusion/SSRF; moderate: `ajv`, `body-parser`, `@vitest/mocker`)
+
+### Fixed
+- **Search**: an empty query returns no results again (fuse.js 7.5 now returns every task for an empty query)
+
 ## [1.2.1] - 2025-11-21
 
 ### Fixed
